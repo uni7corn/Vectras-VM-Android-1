@@ -12,6 +12,7 @@ import com.vectras.qemu.MainSettingsManager;
 import com.vectras.vm.R;
 import com.vectras.vm.databinding.ActivityX11DisplaySettingsBinding;
 import com.vectras.vm.main.core.DisplaySystem;
+import com.vectras.vm.setupwizard.TurnipZinkSetupWizardActivity;
 import com.vectras.vm.utils.DeviceUtils;
 import com.vectras.vm.utils.DialogUtils;
 import com.vectras.vm.utils.PackageUtils;
@@ -74,6 +75,8 @@ public class X11DisplaySettingsActivity extends AppCompatActivity {
         binding.swUseExternal.setOnCheckedChangeListener((buttonView, isChecked) -> MainSettingsManager.setExternalX11(this, isChecked));
         binding.lnUseExternal.setOnClickListener(v -> binding.swUseExternal.toggle());
 
+        binding.lnTurnipZink.setOnClickListener(v -> startActivity(new Intent(this, TurnipZinkSetupWizardActivity.class)));
+
         isInitialized = true;
 
         uiController(binding.swEnabled.isChecked());
@@ -85,5 +88,6 @@ public class X11DisplaySettingsActivity extends AppCompatActivity {
         binding.lnRunQemuWithXterm.setEnabled(isEnabled);
         binding.lnUseSdl.setEnabled(isEnabled);
         binding.lnUseExternal.setEnabled(isEnabled);
+        binding.lnTurnipZink.setEnabled(isEnabled);
     }
 }

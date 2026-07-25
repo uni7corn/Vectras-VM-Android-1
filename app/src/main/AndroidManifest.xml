@@ -46,6 +46,7 @@
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".settings.EqualizerActivity"
@@ -309,6 +310,11 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="10.0" />
+
+        <activity
+            android:name=".setupwizard.TurnipZinkSetupWizardActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

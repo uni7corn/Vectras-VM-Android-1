@@ -153,6 +153,7 @@ Help support the project by contributing!
 - [Alpine Linux](https://www.alpinelinux.org/)
 - [Glide](https://github.com/bumptech/glide)
 - [Gson](https://github.com/google/gson)
+- [Mesa for Android Container](https://github.com/lfdevs/mesa-for-android-container)
 - [OkHttp](https://github.com/square/okhttp)
 - [PROOT](https://proot-me.github.io/)
 - [QEMU](https://github.com/qemu/qemu)
