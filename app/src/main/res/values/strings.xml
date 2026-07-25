@@ -684,6 +684,13 @@
     <string name="wifi_card_dummy">Wi-Fi card (dummy)</string>
     <string name="pick">Pick</string>
     <string name="capacity_too_large">Capacity too large.</string>
+    <string name="turnip_and_zink">Turnip &amp; Zink</string>
+    <string name="ready_to_install">Ready to install.</string>
+    <string name="please_try_again_later">Please try again later.</string>
+    <string name="turnip_and_zink_setting_note">Nightly! Leverage the power of your device\'s Adreno GPU to enhance the graphics performance of QEMU 3dfx and more.</string>
+    <string name="has_meets_the_requirements_to_install_content">Your device has met the requirements and is ready to begin installation now.</string>
+    <string name="your_device_does_not_meet_the_requirements_to_continue">Your device does not meet the requirements to continue.</string>
+
 
 
     <!--======================TERMUX STRINGS====================-->

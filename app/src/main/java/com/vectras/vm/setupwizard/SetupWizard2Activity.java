@@ -470,13 +470,13 @@ public class SetupWizard2Activity extends AppCompatActivity {
                             " echo \"Installing Qemu...\";" +
                             " tar -xzvf setup.tar.gz -C /;" +
                             " rm setup.tar.gz;" +
-                            " chmod 775 /usr/local/bin/*;";
+                            " chmod 755 /usr/local/bin/*;";
                 } else {
                     if (isCustomSetupMode) {
                         cmd += " echo \"Installing Qemu...\";" +
                                 " tar -xzvf " + tarPath + " -C /;" +
                                 " rm " + tarPath + ";" +
-                                " chmod 775 /usr/local/bin/*;" +
+                                " chmod 755 /usr/local/bin/*;" +
                                 " echo \"Just a sec...\";" +
                                 " mkdir -p ~/.vnc && echo -e \"555555\\n555555\" | vncpasswd -f > ~/.vnc/passwd && chmod 0600 ~/.vnc/passwd;";
                     } else {
@@ -488,7 +488,7 @@ public class SetupWizard2Activity extends AppCompatActivity {
                                 " echo \"Installing Qemu...\";" +
                                 " tar -xzvf setup.tar.gz -C /;" +
                                 " rm setup.tar.gz;" +
-                                " chmod 775 /usr/local/bin/*;" +
+                                " chmod 755 /usr/local/bin/*;" +
                                 " echo \"Just a sec...\";" +
                                 " mkdir -p ~/.vnc && echo -e \"555555\\n555555\" | vncpasswd -f > ~/.vnc/passwd && chmod 0600 ~/.vnc/passwd;";
 
