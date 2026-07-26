@@ -3,7 +3,7 @@ clear
 unset qemuurl
 architecture=$(uname -m)
 if [[ "$architecture" =~ "aarch64" ]]; then
-    qemuurl="https://archive.org/download/qemu-7-2-22-for-vectras-vm-nbab/base-june-2026-vectras-vm-arm64-v8a.tar.gz"
+    qemuurl="https://archive.org/download/qemu-7-2-22-for-vectras-vm-nbab/base-july-2026-vectras-vm-arm64-v8a.tar.gz"
 elif [[ "$architecture" =~ "x86_64" ]]; then
     qemuurl="https://archive.org/download/qemu-7-2-22-for-vectras-vm-nbab/base-july-2026-vectras-vm-x86_64.tar.gz"
 fi
