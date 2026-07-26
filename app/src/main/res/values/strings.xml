@@ -690,6 +690,8 @@
     <string name="turnip_and_zink_setting_note">Nightly! Leverage the power of your device\'s Adreno GPU to enhance the graphics performance of QEMU 3dfx and more.</string>
     <string name="has_meets_the_requirements_to_install_content">Your device has met the requirements and is ready to begin installation now.</string>
     <string name="your_device_does_not_meet_the_requirements_to_continue">Your device does not meet the requirements to continue.</string>
+    <string name="error_in_core_feature_content">A core feature of the app has just experienced an issue. You may need to close and reopen the app for the features to work properly again.</string>
+    <string name="force_stop">Force stop</string>
 
 
 

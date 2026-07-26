@@ -129,6 +129,8 @@ public class MainService extends Service {
 
                 if (!(log.trim().isEmpty() || log.trim().equals(MainStartVM.TAG_FINISHED_WITHOUT_ERROR))) {
                     new Handler(Looper.getMainLooper()).post(() -> {
+                        MainStartVM.dismissDialog();
+
                         if (!VMManager.isExecutedCommandError(command, log, context)) {
                             String finalLog = log.contains(MainStartVM.TAG_FINISHED_WITHOUT_ERROR) ? log.substring(0, log.lastIndexOf(MainStartVM.TAG_FINISHED_WITHOUT_ERROR) - 1) : log;
 
@@ -152,8 +154,13 @@ public class MainService extends Service {
                     return;
                 }
 
-                new Handler(Looper.getMainLooper()).post(() -> DialogUtils.twoDialog(context, "Execution Result", exception.getMessage(), context.getString(R.string.copy), context.getString(R.string.close), true, R.drawable.round_terminal_24, true,
-                        () -> ClipboardUltils.copyToClipboard(context, exception.getMessage()), null, null));
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    VMManager.isQemuStopedWithError = true;
+                    MainStartVM.dismissDialog();
+
+                    DialogUtils.twoDialog(context, "Execution Result", exception.getMessage(), context.getString(R.string.copy), context.getString(R.string.close), true, R.drawable.round_terminal_24, true,
+                            () -> ClipboardUltils.copyToClipboard(context, exception.getMessage()), null, null);
+                });
             }
         });
     }

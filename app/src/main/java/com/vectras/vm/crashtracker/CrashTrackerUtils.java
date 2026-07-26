@@ -5,6 +5,7 @@ import android.os.Build;
 
 import com.vectras.vm.R;
 import com.vectras.vm.utils.DeviceUtils;
+import com.vectras.vm.utils.DialogUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,5 +51,19 @@ public class CrashTrackerUtils {
         }
 
         return predictions.toString().trim();
+    }
+
+    public static void showCoreFeatureErrorDialog(Context context, Exception exception) {
+        DialogUtils.twoDialog(context,
+                context.getString(R.string.oops),
+                context.getString(R.string.error_in_core_feature_content) + (exception != null ? "\n\n" + exception.getMessage() : ""),
+                context.getString(R.string.force_stop),
+                context.getString(R.string.close),
+                true,
+                R.drawable.error_96px,
+                true,
+                () -> System.exit(0),
+                null,
+                null);
     }
 }

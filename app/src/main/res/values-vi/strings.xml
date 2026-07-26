@@ -669,6 +669,8 @@
     <string name="turnip_and_zink_setting_note">Thử nghiệm! Tận dụng sức mạnh của GPU Adreno trên thiết bị của bạn để cải thiện hiệu năng đồ hoạ của QEMU 3dfx và hơn thế nữa.</string>
     <string name="has_meets_the_requirements_to_install_content">Thiết bị của bạn đã đáp ứng được với các điều kiện và sẵn sàng để bắt đầu cài đặt ngay bây giờ.</string>
     <string name="your_device_does_not_meet_the_requirements_to_continue">Thiết bị của bạn không đáp ứng đủ các điều kiện để tiếp tục.</string>
+    <string name="error_in_core_feature_content">Một tính năng cốt lõi của ứng dụng vừa xảy ra sự cố. Bạn có thể cần đóng ứng dụng và mở lại để các tính năng hoạt động bình thường trở lại.</string>
+    <string name="force_stop">Buộc dừng</string>
 
     <!--======================TERMUX STRINGS====================-->
     <string name="application_name" translatable="false">Vterm</string>
