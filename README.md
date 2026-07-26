@@ -86,7 +86,7 @@ QEMU 9.2.2 - 3dfx is here!
 
 ### 💽 3Dfx Wrappers
 Play classic games with 3Dfx support on Windows 95, 98, ME, 2000, and XP! Turnip & Zink will help improve performance if your device has a supported Adreno GPU. Note: It may be unstable and have low performance.
-- [⬇️ Download here](https://github.com/AnBui2004/Vectras-VM-Emu-Android/blob/master/3dfx/old/3dfx-wrappers-i686.iso)
+- [⬇️ Download here](https://github.com/AnBui2004/Vectras-VM-Emu-Android/blob/master/3dfx/4.1.1%2B/3dfx-wrappers-i686.iso)
 
 ### 😼 Advanced
 Advanced options are [here](ADVANCED.md).
