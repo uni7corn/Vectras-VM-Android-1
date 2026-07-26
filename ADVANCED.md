@@ -66,8 +66,8 @@ QEMU 7.2.22 - 3dfx (for Vectras VM 4.2.2+):
 ## 💽 3Dfx Wrappers
 
 ### New:
-- [For i686](https://github.com/AnBui2004/Vectras-VM-Emu-Android/blob/master/3dfx/old/3dfx-wrappers-i686.iso)
-- [For i586](https://github.com/AnBui2004/Vectras-VM-Emu-Android/blob/master/3dfx/old/3dfx-wrappers-i586.iso)
+- [For i686](https://github.com/AnBui2004/Vectras-VM-Emu-Android/blob/master/3dfx/4.1.1%2B/3dfx-wrappers-i686.iso)
+- [For i586](https://github.com/AnBui2004/Vectras-VM-Emu-Android/blob/master/3dfx/4.1.1%2B/3dfx-wrappers-i586.iso)
 
 ### Old:
 - [For QEMU 9.2.x - 3dfx](https://github.com/AnBui2004/Vectras-VM-Emu-Android/blob/master/3dfx/old/3dfx-wrappers-3.5.0.iso)
