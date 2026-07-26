@@ -18,6 +18,7 @@ import com.vectras.vm.MainService;
 import com.vectras.vm.R;
 import com.vectras.vm.StartVM;
 import com.vectras.vm.VMManager;
+import com.vectras.vm.crashtracker.CrashTrackerUtils;
 import com.vectras.vm.logger.VectrasStatus;
 import com.vectras.vm.main.vms.DataMainRoms;
 import com.vectras.vm.manager.QmpSender;
@@ -90,7 +91,21 @@ public class MainStartVM {
         }
 
         new Thread(() -> {
-            if (!VMManager.isVMRunning(activity, vmConfig.vmID)) VmFileManager.removeTemp(activity, vmConfig.vmID);
+            if (!VMManager.isVMRunning(activity, vmConfig.vmID)) {
+                try {
+                    VmFileManager.removeTemp(activity, vmConfig.vmID);
+                } catch (SecurityException e) {
+                    VMManager.isQemuStopedWithError = true;
+
+                    if (
+                            activity != null &&
+                                    !activity.isFinishing() &&
+                                    !activity.isDestroyed()
+                    )
+                        activity.runOnUiThread(() -> CrashTrackerUtils.showCoreFeatureErrorDialog(activity, e));
+                    return;
+                }
+            }
 
             String env = StartVM.env(activity, vmConfig);
             activity.runOnUiThread(() -> startNow(activity, vmConfig.itemName, env, vmConfig.vmID, vmConfig.itemIcon, dialog));
