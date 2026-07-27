@@ -284,11 +284,11 @@ public class VmControllerDialog extends DialogFragment {
                             binding.lnSecondaryCdrom.setVisibility(View.GONE);
                         }
 
-                        if (!infoBlock.contains(AppConfig.basefiledir + "3dfx-wrappers.iso"))
+                        if (!infoBlock.contains(AppConfig.basefiledir + "3dfx-wrappers-i686.iso"))
                             binding.ivEject3dfx.setVisibility(View.GONE);
 
                         binding.ln3dfx.setOnClickListener(v -> {
-                            if (infoBlock.contains(AppConfig.basefiledir + "3dfx-wrappers.iso")) {
+                            if (infoBlock.contains(AppConfig.basefiledir + "3dfx-wrappers-i686.iso")) {
                                 QmpSender.ejectDynamicSecondaryOpticalDisc(requireActivity(), infoBlock);
                             } else {
                                 ToolsManager.mount3dfxWrappers(requireActivity());

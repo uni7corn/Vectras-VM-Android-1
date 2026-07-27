@@ -17,6 +17,7 @@ import com.vectras.vm.R;
 import com.vectras.vm.VectrasApp;
 import com.vectras.vm.core.ShellExecutor;
 import com.vectras.vm.core.TermuxX11;
+import com.vectras.vm.main.MainActivity;
 import com.vectras.vm.setupwizard.SetupFeatureCore;
 import com.vectras.vm.utils.DialogUtils;
 import com.vectras.vm.utils.FileUtils;
@@ -118,12 +119,12 @@ public class DisplaySystem {
                         null
                 );
             } else {
-                if (!isUseBuiltInX11() ) {
-                    if (!PackageUtils.isInstalled("com.termux.x11", context)) {
-                        DialogUtils.needInstallTermuxX11(context);
-                        return;
-                    }
+                if (!PackageUtils.isInstalled("com.termux.x11", context)) {
+                    DialogUtils.needInstallTermuxX11(context);
+                    return;
+                }
 
+                if (!isUseBuiltInX11()) {
                     Log.d(TAG, "launchX11: Opened: com.termux.x11.MainActivity.");
                     Intent intent = new Intent();
                     intent.setClassName("com.termux.x11", "com.termux.x11.MainActivity");
@@ -133,7 +134,10 @@ public class DisplaySystem {
 
                     startTermuxX11(context);
                 } else {
-                    context.startActivity(new Intent(context, X11Activity.class));
+                    Intent intent = new Intent();
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    intent.setClass(context, X11Activity.class);
+                    context.startActivity(intent);
                 }
                 startDesktop(context);
             }

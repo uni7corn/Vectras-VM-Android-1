@@ -535,8 +535,8 @@ public class MainActivity extends AppCompatActivity implements RomStoreFragment.
                 startActivity(intent);
             } else if (id == R.id.navigation_qemu_doc) {
                 Intent intent = new Intent();
-                if (FileUtils.isFileExists(getFilesDir().getPath() + "/distro/usr/local/share/qemu/doc/index.html")) {
-                    intent.putExtra("url", "file://" + getFilesDir().getPath() + "/distro/usr/local/share/qemu/doc/index.html");
+                if (FileUtils.isFileExists(getFilesDir().getPath() + "/distro/usr/local/share/doc/qemu/index.html")) {
+                    intent.putExtra("url", "file://" + getFilesDir().getPath() + "/distro/usr/local/share/doc/qemu/index.html");
                     intent.setClass(this, WebViewActivity.class);
                 } else {
                     intent.setAction(ACTION_VIEW);

@@ -17,7 +17,7 @@ public class WifiCardEmulatorManager {
         File vmTemp = new File(VmFileManager.getTempPath(context, vmId));
 
         try {
-            String wifiAsl = SetupFeatureCore.readTextFromAssets(context, "roms/wifi.asl");
+            String wifiAsl = SetupFeatureCore.readTextFromAssets(context, "asl/wifi.asl");
 
             FileUtils.writeToFile(vmTemp.getAbsolutePath(), "wifi.asl", wifiAsl);
 

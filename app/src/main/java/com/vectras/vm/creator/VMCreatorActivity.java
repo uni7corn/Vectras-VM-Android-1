@@ -33,6 +33,7 @@ import com.vectras.vm.creator.configs.ListManager;
 import com.vectras.vm.creator.editor.AdvancedConfigsDialog;
 import com.vectras.vm.creator.editor.BoardConfigsDialog;
 import com.vectras.vm.creator.editor.NetworkConfigsDialog;
+import com.vectras.vm.creator.editor.SoundConfigsDialog;
 import com.vectras.vm.creator.utils.CreatorUtils;
 import com.vectras.vm.creator.editor.FirmwareConfigsDialog;
 import com.vectras.vm.creator.editor.StorageConfigsDialog;
@@ -233,6 +234,15 @@ public class VMCreatorActivity extends AppCompatActivity {
             dialog.setConfigs(current);
             dialog.setOnDismiss(this::loadConfig);
             dialog.show(getSupportFragmentManager(), "network_configs_dialog");
+        });
+
+        binding.lnSound.setOnClickListener(v -> {
+            save();
+
+            SoundConfigsDialog dialog = new SoundConfigsDialog();
+            dialog.setConfigs(current);
+            dialog.setOnDismiss(this::loadConfig);
+            dialog.show(getSupportFragmentManager(), "sound_configs_dialog");
         });
 
         binding.lnAdvanced.setOnClickListener(v -> {
@@ -473,7 +483,7 @@ public class VMCreatorActivity extends AppCompatActivity {
             }
 
             ArrayList<HashMap<String, Object>> listCpuCores = ListManager.cores(MainSettingsManager.getArch(this));
-            if (current.cores > listCpuCores.size() - 1)
+            if (current.cores >= listCpuCores.size())
                 current.cores = listCpuCores.size() - 1;
 
             if (current.itemIcon != null && !current.itemIcon.isEmpty()) {
@@ -527,16 +537,22 @@ public class VMCreatorActivity extends AppCompatActivity {
 
         String currentArch = MainSettingsManager.getArch(this);
 
-        if (currentArch.equals(MainSettingsManager.X86_64_ARCH)) {
-            current.cores = Math.min(1, VMCreatorSelector.getCpuCorePosition(new CpuHelper().getCpuCores() - 1));
-        } else if (currentArch.equals(MainSettingsManager.ARM64_ARCH)) {
-            current.cores = Math.min(2, VMCreatorSelector.getCpuCorePosition(new CpuHelper().getCpuCores() - 1));
-            current.nvirt = true;
+        switch (currentArch) {
+            case MainSettingsManager.X86_64_ARCH ->
+                    current.cores = Math.min(1, VMCreatorSelector.getCpuCorePosition(new CpuHelper().getCpuCores() - 1));
+            case MainSettingsManager.ARM64_ARCH -> {
+                current.cores = Math.min(2, VMCreatorSelector.getCpuCorePosition(new CpuHelper().getCpuCores() - 1));
+                current.nvirt = true;
+            }
+            case MainSettingsManager.PPC_ARCH -> current.cores = 0;
         }
 
         current.memory = 512;
 
         current.networkCard = 3; // Intel E1000 (82540EM)
+
+        // ENSONIQ AudioPCI ES1370 : Intel HD Audio Controller (ich6)
+        current.soundCard = currentArch.equals(MainSettingsManager.PPC_ARCH) ? 5 : 2;
     }
 
     private void checkVMID() {

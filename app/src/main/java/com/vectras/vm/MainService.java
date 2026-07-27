@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.vectras.vm.main.core.MainStartVM;
 import com.vectras.vm.manager.VmServiceManager;
+import com.vectras.vm.settings.SettingsData;
 import com.vectras.vm.utils.ClipboardUltils;
 import com.vectras.vm.utils.DialogUtils;
 import com.vectras.vterm.Terminal2;
@@ -132,6 +133,8 @@ public class MainService extends Service {
                         MainStartVM.dismissDialog();
 
                         if (!VMManager.isExecutedCommandError(command, log, context)) {
+                            if (!SettingsData.alwaysShowLog(context) && status == terminal2.SUCCESS) return;
+
                             String finalLog = log.contains(MainStartVM.TAG_FINISHED_WITHOUT_ERROR) ? log.substring(0, log.lastIndexOf(MainStartVM.TAG_FINISHED_WITHOUT_ERROR) - 1) : log;
 
                             DialogUtils.twoDialog(context, vmName, finalLog, context.getString(R.string.copy), context.getString(R.string.close), true, R.drawable.stack_24px, true,

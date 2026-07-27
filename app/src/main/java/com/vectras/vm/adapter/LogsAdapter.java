@@ -143,7 +143,7 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.logViewHolder>
             LogItem logItem = currentLevelEntries.get(position);
             String msg = logItem.getString(mContext);
             String time = getTime(logItem, mTimeFormat);
-            text = (!time.isEmpty() ? String.format("[%s] ", time) : "") + msg;
+            text = (!time.isEmpty() ? String.format("%s | ", time) : "") + msg;
             if (forceLightText) viewHolder.textLog.setTextColor(android.graphics.Color.WHITE);
             viewHolder.textLog.setText(Html.fromHtml(text));
         } catch (Exception e) {

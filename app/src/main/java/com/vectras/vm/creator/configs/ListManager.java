@@ -251,4 +251,17 @@ public class ListManager {
         UniversalPickerDialog.putToList(list, 8192);
         return list;
     }
+
+    public static ArrayList<HashMap<String, Object>> soundCards(Context context) {
+        ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+        UniversalPickerDialog.putToList(list, context.getString(R.string.none), "");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.intel_hd_audio_controller_ich9), "ich9-intel-hda");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.intel_hd_audio_controller_ich6), "intel-hda");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.crystal_semiconductor_cs4231a), "cs4231a");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.intel_82801aa_ac97_audio), "ac97");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.ensoniq_audiopci_es1370), "ES1370");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.creative_sound_blaster_16), "sb16");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.yamaha_ym3812_opl2), "adlib");
+        return list;
+    }
 }

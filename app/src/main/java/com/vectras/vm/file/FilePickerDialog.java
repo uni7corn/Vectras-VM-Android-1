@@ -291,7 +291,7 @@ public class FilePickerDialog extends DialogFragment {
             case ".conf", ".ini" -> CONFIG_FILE;
             case ".zip", ".7z", ".rar" -> ZIP_FILE;
             case ".java", ".kt", ".js", ".py", ".c", ".cpp", ".h", ".xml", ".html", ".css", ".lua", ".go", ".asl" -> DEV_FILE;
-            case ".dll" -> SYSTEM_FILE;
+            case ".dll", ".fd" -> SYSTEM_FILE;
             case ".deb", ".rpm" -> PACKAGE_FILE;
             case ".ttf", ".otf" -> FONT_FILE;
             case ".jks" -> KEY_FILE;
