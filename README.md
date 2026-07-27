@@ -77,12 +77,12 @@ We publish a **new beta release after every commit** — so you can always test 
 [![Download Beta](https://img.shields.io/badge/Download-Beta-blue?style=for-the-badge&logo=github)](https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases)
 
 ### ⚙️ Bootstraps
-QEMU 9.2.2 - 3dfx is here!
+QEMU 7.2.22 - 3dfx is here!
 
-- [For Android ARM (64-bit)](https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases/download/4.1.1/base-may-2026-vectras-vm-arm64-v8a.tar.gz)
-- [For Android ARM (32-bit)](https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases/download/3.5.4/base-vectras-vm-armeabi-v7a.tar.gz)
-- [For Android x86 (64-bit)](https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases/download/3.5.1/base-generic-vectras-vm-x86_64.tar.gz)
-- [For Android x86 (32-bit)](https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases/download/3.5.4/base-vectras-vm-x86.tar.gz)
+- [For Android ARM (64-bit)](https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases/download/4.4.7/base-qemu-7.2.22-3dfx-july-2026-vectras-vm-arm64-v8a.tar.gz)
+- [For Android ARM (32-bit)](https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases/download/4.4.7/base-qemu-7.2.22-july-2026-vectras-vm-armeabi-v7a.tar.gz)
+- [For Android x86 (64-bit)](https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases/download/4.4.7/base-qemu-7.2.22-3dfx-july-2026-vectras-vm-x86_64.tar.gz)
+- [For Android x86 (32-bit)](https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases/download/4.4.7/base-qemu-7.2.22-july-2026-vectras-vm-x86.tar.gz)
 
 ### 💽 3Dfx Wrappers
 Play classic games with 3Dfx support on Windows 95, 98, ME, 2000, and XP! Turnip & Zink will help improve performance if your device has a supported Adreno GPU. Note: It may be unstable and have low performance.
