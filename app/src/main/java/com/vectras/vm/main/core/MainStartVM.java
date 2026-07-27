@@ -165,7 +165,7 @@ public class MainStartVM {
             if (MainSettingsManager.getVmUi(context).equals("X11") && !VMManager.isVMRunning(context, vmID)) {
                 if (MainSettingsManager.getRunQemuWithXterm(context)) {
                     String logFilePath = VmFileManager.getLog(context, vmID);
-                    runCommandFormat = String.format(runCommandFormat, "mkdir -p \"" + new File(logFilePath).getParent() + "\"; echo \"\" > " + logFilePath + "; xterm -e bash -c \"%s 2>&1 | tee " + logFilePath + "\"; cat " + logFilePath + "; rm " + logFilePath);
+                    runCommandFormat = String.format(runCommandFormat, "mkdir -p \"" + new File(logFilePath).getParent() + "\"; xterm -e bash -c \"%s 2>&1 | tee " + logFilePath + "\"; cat " + logFilePath + "; rm " + logFilePath);
                 } else {
                     runCommandFormat = String.format(runCommandFormat, "bash -c \"%s\"");
                 }
@@ -314,9 +314,10 @@ public class MainStartVM {
     ) {
         VMManager.isQemuStopedWithError = false;
 
-        String cleanUpCommand = " && echo \"" + TAG_FINISHED_WITHOUT_ERROR + "\"\nrm -r " + Config.getCacheVMPath(vmID);
+        String cleanUpCommand = " && echo '" + TAG_FINISHED_WITHOUT_ERROR + "'\nrm -r " + Config.getCacheVMPath(vmID);
 
-        String finalCommand = VMManager.addAudioDevWav(vmID, String.format(runCommandFormat, env + cleanUpCommand));
+        String finalCommand = VMManager.addAudioDevWav(vmID, String.format(runCommandFormat, env));
+        finalCommand = "echo ===== COMMAND =====\necho\necho \"" + finalCommand + "\"\necho\necho ===== LOGS =====\necho\n" + finalCommand + cleanUpCommand;
 
         if (MainSettingsManager.getVmUi(context).equals("X11")) {
             finalCommand = "export DISPLAY=:0 && " + finalCommand;

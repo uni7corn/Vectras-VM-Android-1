@@ -55,11 +55,19 @@ public class VMCreatorSelector {
     }
 
     public static void networkCard(Activity activity, int position, UniversalPickerDialog.UniversalPickerDialogCallback callback) {
-        showDialog(activity, ListManager.networkCards(activity), position, callback, activity.getString(R.string.network_card));
+        showDialog(activity, ListManager.networkCards(activity), position, callback, activity.getString(R.string.cards));
     }
 
     public static HashMap<String, Object> getNetworkCard(Context context, int position) {
         return ListManager.networkCards(context).get(position);
+    }
+
+    public static void soundCard(Activity activity, int position, UniversalPickerDialog.UniversalPickerDialogCallback callback) {
+        showDialog(activity, ListManager.soundCards(activity), position, callback, activity.getString(R.string.cards));
+    }
+
+    public static HashMap<String, Object> getSoundCard(Context context, int position) {
+        return ListManager.soundCards(context).get(position);
     }
 
     public static HashMap<String, Object> getBootFrom(Context context, int position) {

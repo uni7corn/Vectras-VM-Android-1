@@ -39,6 +39,8 @@ import androidx.core.content.FileProvider;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.vectras.vm.R;
+import com.vectras.vm.file.FilePickerDialog;
+import com.vectras.vm.manager.VmFileManager;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -899,17 +901,24 @@ public class FileUtils {
         try {
             context.startActivity(intent);
         } catch (Exception e) {
-            DialogUtils.oneDialog(
-                    context,
-                    context.getString(R.string.oops),
-                    context.getString(R.string.there_is_no_app_to_perform_this_action),
-                    context.getString(R.string.ok),
-                    true,
-                    R.drawable.error_96px,
-                    true,
-                    null,
-                    null
-            );
+            if (context instanceof Activity activity) {
+                FilePickerDialog filePickerDialog = new FilePickerDialog();
+                filePickerDialog.setLockHome(true);
+                filePickerDialog.browse(activity, folderPath);
+            } else {
+                DialogUtils.oneDialog(
+                        context,
+                        context.getString(R.string.oops),
+                        context.getString(R.string.there_is_no_app_to_perform_this_action),
+                        context.getString(R.string.ok),
+                        true,
+                        R.drawable.error_96px,
+                        true,
+                        null,
+                        null
+                );
+            }
+
             Log.e(TAG, "openFolder: " + e.getMessage());
         }
     }

@@ -113,51 +113,51 @@ public class Minitools extends AppCompatActivity {
         binding.reinstallsystem.setOnClickListener(v -> DialogUtils.twoDialog(Minitools.this, getResources().getString(R.string.reinstall_system), getResources().getString(R.string.reinstall_system_content), getResources().getString(R.string.continuetext), getResources().getString(R.string.cancel), true, R.drawable.system_update_24px, true,
                 this::eraserSystem, null, null));
 
-        if (FirmwareManager.isExistOne()) {
-            binding.lnResetUefiBios.setOnClickListener(v -> {
-                ProgressDialog progressDialog = new ProgressDialog(this);
-                progressDialog.setText(getString(R.string.just_a_sec));
-                progressDialog.show();
-
-                new Thread(() -> {
-                    boolean isQemuRunning = ProcessManager.isQemuRunning(this);
-                    runOnUiThread(() -> {
-                        progressDialog.dismiss();
-
-                        if (isQemuRunning) {
-                            DialogUtils.oopsDialog(Minitools.this, getString(R.string.need_to_shut_down_all_running_vm_note));
-                        } else {
-                            DialogUtils.twoDialog(
-                                    Minitools.this,
-                                    getString(R.string.reset_uefi_bios),
-                                    getString(R.string.reset_uefi_bios_note),
-                                    getString(R.string.reset),
-                                    getString(R.string.cancel),
-                                    true,
-                                    R.drawable.restore_page_24px,
-                                    true,
-                                    () -> {
-                                        progressDialog.show();
-
-                                        new Thread(() -> {
-                                            FirmwareManager.deleteAll();
-                                            runOnUiThread(() -> {
-                                                progressDialog.dismiss();
-
-                                                binding.lnResetUefiBios.setVisibility(GONE);
-                                                Toast.makeText(Minitools.this, getString(R.string.done), Toast.LENGTH_LONG).show();
-                                            });
-                                        }).start();
-                                    },
-                                    null,
-                                    null);
-                        }
-                    });
-                }).start();
-            });
-        } else {
-            binding.lnResetUefiBios.setVisibility(GONE);
-        }
+//        if (FirmwareManager.isExistOne()) {
+//            binding.lnResetUefiBios.setOnClickListener(v -> {
+//                ProgressDialog progressDialog = new ProgressDialog(this);
+//                progressDialog.setText(getString(R.string.just_a_sec));
+//                progressDialog.show();
+//
+//                new Thread(() -> {
+//                    boolean isQemuRunning = ProcessManager.isQemuRunning(this);
+//                    runOnUiThread(() -> {
+//                        progressDialog.dismiss();
+//
+//                        if (isQemuRunning) {
+//                            DialogUtils.oopsDialog(Minitools.this, getString(R.string.need_to_shut_down_all_running_vm_note));
+//                        } else {
+//                            DialogUtils.twoDialog(
+//                                    Minitools.this,
+//                                    getString(R.string.reset_uefi_bios),
+//                                    getString(R.string.reset_uefi_bios_note),
+//                                    getString(R.string.reset),
+//                                    getString(R.string.cancel),
+//                                    true,
+//                                    R.drawable.restore_page_24px,
+//                                    true,
+//                                    () -> {
+//                                        progressDialog.show();
+//
+//                                        new Thread(() -> {
+//                                            FirmwareManager.erase();
+//                                            runOnUiThread(() -> {
+//                                                progressDialog.dismiss();
+//
+//                                                binding.lnResetUefiBios.setVisibility(GONE);
+//                                                Toast.makeText(Minitools.this, getString(R.string.done), Toast.LENGTH_LONG).show();
+//                                            });
+//                                        }).start();
+//                                    },
+//                                    null,
+//                                    null);
+//                        }
+//                    });
+//                }).start();
+//            });
+//        } else {
+//            binding.lnResetUefiBios.setVisibility(GONE);
+//        }
 
         ListUtils.setupMirrorListForListmap(mirrorlist);
     }

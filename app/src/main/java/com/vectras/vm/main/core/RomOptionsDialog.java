@@ -1,5 +1,7 @@
 package com.vectras.vm.main.core;
 
+import static android.view.View.GONE;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
@@ -15,14 +17,19 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.vectras.qemu.Config;
+import com.vectras.qemu.MainSettingsManager;
 import com.vectras.vm.creator.VMCreatorActivity;
 import com.vectras.vm.ExportRomActivity;
 import com.vectras.vm.R;
 import com.vectras.vm.VMManager;
+import com.vectras.vm.file.FilePickerDialog;
 import com.vectras.vm.main.vms.DataMainRoms;
+import com.vectras.vm.manager.FirmwareManager;
 import com.vectras.vm.manager.VmAudioManager;
 import com.vectras.vm.manager.VmControllerDialog;
 import com.vectras.vm.manager.VmFileManager;
+import com.vectras.vm.settings.Minitools;
+import com.vectras.vm.utils.DialogUtils;
 import com.vectras.vm.utils.FileUtils;
 import com.vectras.vm.utils.ProgressDialog;
 
@@ -108,6 +115,50 @@ public class RomOptionsDialog {
                         bottomSheetDialog.cancel();
                     });
                 }).start();
+            });
+
+            if (vmConfig.isUseDefaultBios && FirmwareManager.isAVarFileExist(VmFileManager.getPath(vmConfig.vmID)) && !VMManager.isNeedLoadMigrate()) {
+                v.findViewById(R.id.ln_reset_uefi_bios).setOnClickListener(v7 -> {
+                    DialogUtils.twoDialog(
+                            activity,
+                            activity.getString(R.string.reset_uefi_bios),
+                            activity.getString(R.string.reset_uefi_bios_note),
+                            activity.getString(R.string.reset),
+                            activity.getString(R.string.cancel),
+                            true,
+                            R.drawable.restore_page_24px,
+                            true,
+                            () -> {
+                                ProgressDialog progressDialog = new ProgressDialog(activity);
+                                progressDialog.show();
+
+                                new Thread(() -> {
+                                    FirmwareManager.erase();
+                                    activity.runOnUiThread(() -> {
+                                        progressDialog.dismiss();
+                                        Toast.makeText(activity, activity.getString(R.string.done), Toast.LENGTH_LONG).show();
+                                    });
+                                }).start();
+                            },
+                            null,
+                            null);
+
+                    bottomSheetDialog.cancel();
+                });
+            } else {
+                v.findViewById(R.id.ln_reset_uefi_bios).setVisibility(GONE);
+            }
+
+            v.findViewById(R.id.ln_show_in_folder).setOnClickListener(v6 -> {
+                if (MainSettingsManager.getBuiltInFilePicker(activity)) {
+                    FilePickerDialog filePickerDialog = new FilePickerDialog();
+                    filePickerDialog.setHomeName(vmConfig.itemName);
+                    filePickerDialog.setLockHome(true);
+                    filePickerDialog.browse(activity, VmFileManager.getPath(vmConfig.vmID));
+                } else {
+                    FileUtils.openFolder(activity, VmFileManager.getPath(vmConfig.vmID));
+                }
+                bottomSheetDialog.cancel();
             });
 
             v.findViewById(R.id.ln_remove).setOnClickListener(v1 -> {

@@ -97,7 +97,7 @@ public class TurnipZinkSetupWizardActivity extends AppCompatActivity {
             return;
         }
 
-        if (FileUtils.isFileExists(AppConfig.internalDataDirPath + "/distro/usr/share/drirc.d/00-mesa-defaults.conf")) {
+        if (FileUtils.isFileExists(AppConfig.internalDataDirPath + "/distro/usr/lib/dri/zink_dri.so")) {
             new Handler(Looper.getMainLooper()).postDelayed(() -> uiControllder(STEP_INSTALLED), 1000);
             return;
         }
@@ -169,7 +169,7 @@ public class TurnipZinkSetupWizardActivity extends AppCompatActivity {
                 if (isFinishing() || isDestroyed()) return;
 
                 runOnUiThread(() -> {
-                    if (log.contains(COMPLETED_MARK) && FileUtils.isFileExists(AppConfig.internalDataDirPath + "/distro/usr/share/drirc.d/00-mesa-defaults.conf")) {
+                    if (log.contains(COMPLETED_MARK) && FileUtils.isFileExists(AppConfig.internalDataDirPath + "/distro/usr/lib/dri/zink_dri.so")) {
                         uiControllder(STEP_INSTALLED);
                     } else {
                         logs = log;

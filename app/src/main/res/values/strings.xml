@@ -623,7 +623,7 @@
     <string name="filters">Filters</string>
     <string name="filters_settings_note">Search with more control and browse faster.</string>
     <string name="reset_uefi_bios">Reset UEFI/BIOS</string>
-    <string name="reset_uefi_bios_note">All default UEFI/BIOS settings will be reset. Do you want to continue?</string>
+    <string name="reset_uefi_bios_note">All UEFI/BIOS settings will be reset. Do you want to continue?</string>
     <string name="need_to_shut_down_all_running_vm_note">You need to shut down all running virtual machines to perform this action.</string>
     <string name="auto_switch_to_external_mouse">Auto switch to external mouse</string>
     <string name="auto_switch_to_external_mouse_note">Automatically switches when the mouse is connected and disconnected.</string>
@@ -692,6 +692,11 @@
     <string name="your_device_does_not_meet_the_requirements_to_continue">Your device does not meet the requirements to continue.</string>
     <string name="error_in_core_feature_content">A core feature of the app has just experienced an issue. You may need to close and reopen the app for the features to work properly again.</string>
     <string name="force_stop">Force stop</string>
+    <string name="sound">Sound</string>
+    <string name="sound_note">Sound card,...</string>
+    <string name="cards">Cards</string>
+    <string name="always_show_logs">Always show logs</string>
+    <string name="always_show_logs_setting_note">The log display dialog will appear even if no serious problems occurred with the virtual machine after it was powered off.</string>
 
 
 
@@ -1056,6 +1061,15 @@ E.g. <b>META</b> for <i>META key</i>, \n
     <string name="pegasos2" translatable="false">bPlan Pegasos II</string>
     <string name="amigaone" translatable="false">Eyetech AmigaOne</string>
     <string name="sam460ex" translatable="false">aCube Sam460ex</string>
+
+    <!-- Sound cards -->
+    <string name="intel_hd_audio_controller_ich9" translatable="false">Intel HD Audio Controller (ich9)</string>
+    <string name="intel_hd_audio_controller_ich6" translatable="false">Intel HD Audio Controller (ich6)</string>
+    <string name="crystal_semiconductor_cs4231a" translatable="false">Crystal Semiconductor CS4231A</string>
+    <string name="intel_82801aa_ac97_audio" translatable="false">Intel 82801AA AC97 Audio</string>
+    <string name="ensoniq_audiopci_es1370" translatable="false">ENSONIQ AudioPCI ES1370</string>
+    <string name="creative_sound_blaster_16" translatable="false">Creative Sound Blaster 16</string>
+    <string name="yamaha_ym3812_opl2" translatable="false">Yamaha YM3812 (OPL2)</string>
 
     <!-- Feature: User Profile -->
 
