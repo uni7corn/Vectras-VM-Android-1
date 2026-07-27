@@ -3,9 +3,9 @@ clear
 unset qemuurl
 architecture=$(uname -m)
 if [[ "$architecture" =~ "aarch64" ]]; then
-    qemuurl="https://archive.org/download/qemu-7-2-22-for-vectras-vm-nbab/base-july-2026-vectras-vm-arm64-v8a.tar.gz"
+    qemuurl="https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases/download/4.4.7/base-qemu-7.2.22-3dfx-july-2026-vectras-vm-arm64-v8a.tar.gz"
 elif [[ "$architecture" =~ "x86_64" ]]; then
-    qemuurl="https://archive.org/download/qemu-7-2-22-for-vectras-vm-nbab/base-july-2026-vectras-vm-x86_64.tar.gz"
+    qemuurl="https://github.com/AnBui2004/Vectras-VM-Emu-Android/releases/download/4.4.7/base-qemu-7.2.22-3dfx-july-2026-vectras-vm-x86_64.tar.gz"
 fi
 
 if [[ -z "$qemuurl" ]]; then
