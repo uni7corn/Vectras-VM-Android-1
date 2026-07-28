@@ -54,6 +54,14 @@ public class VMCreatorSelector {
         showDialog(activity, ListManager.memoryCapacity(activity, arch), position, callback, activity.getString(R.string.memory_capacity_mb), markSelected);
     }
 
+    public static void graphicsCard(Activity activity, int position, UniversalPickerDialog.UniversalPickerDialogCallback callback) {
+        showDialog(activity, ListManager.graphicCards(activity), position, callback, activity.getString(R.string.cards));
+    }
+
+    public static HashMap<String, Object> getGraphicsCard(Context context, int position) {
+        return ListManager.graphicCards(context).get(position);
+    }
+
     public static void networkCard(Activity activity, int position, UniversalPickerDialog.UniversalPickerDialogCallback callback) {
         showDialog(activity, ListManager.networkCards(activity), position, callback, activity.getString(R.string.cards));
     }

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ListManager {
+    public static String NONE_VALUE = "-1";
+
     public static ArrayList<HashMap<String, Object>> bootFrom(Context context) {
         ArrayList<HashMap<String, Object>> list = new ArrayList<>();
         UniversalPickerDialog.putToList(list, context.getString(R.string.defaulttext), "");
@@ -262,6 +264,20 @@ public class ListManager {
         UniversalPickerDialog.putToList(list, context.getString(R.string.ensoniq_audiopci_es1370), "ES1370");
         UniversalPickerDialog.putToList(list, context.getString(R.string.creative_sound_blaster_16), "sb16");
         UniversalPickerDialog.putToList(list, context.getString(R.string.yamaha_ym3812_opl2), "adlib");
+        return list;
+    }
+
+    public static ArrayList<HashMap<String, Object>> graphicCards(Context context) {
+        ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+        UniversalPickerDialog.putToList(list, context.getString(R.string.none), NONE_VALUE);
+        UniversalPickerDialog.putToList(list, context.getString(R.string.defaulttext), "");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.standard_vga), "VGA");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.vmware_svga), "vmware-svga");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.cirrus_vga), "cirrus-vga");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.qxl_vga), "qxl-vga");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.virtio_vga), "virtio-vga");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.bochs), "bochs-display");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.ati), "ati-vga");
         return list;
     }
 }

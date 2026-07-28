@@ -715,6 +715,11 @@ public class VMManager {
                 MainStartVM.startTryAgain(_activity);
                 isTryAgain = true;
             }
+        } else if (_result.contains("opengl is not available")) {
+            DialogUtils.twoDialog(_activity, _activity.getResources().getString(R.string.problem_has_been_detected), _activity.getResources().getString(R.string.qemu_opengl_is_not_available_content) + "\n\n" + _result, _activity.getString(R.string.go_to_settings), _activity.getString(R.string.close), true, R.drawable.desktop_24px, true,
+                    () -> _activity.startActivity(new Intent(_activity, X11DisplaySettingsActivity.class)),
+                    null, null);
+            isQemuStopedWithError = true;
         } else if (_result.contains("No such file or directory")) {
             //Error code: NO_SUCH_FILE_OR_DIRECTORY
             DialogUtils.oneDialog(_activity, _activity.getString(R.string.problem_has_been_detected), _activity.getString(R.string.error_NO_SUCH_FILE_OR_DIRECTORY) + "\n\n" + _result, R.drawable.file_copy_24px);

@@ -449,7 +449,7 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
                             .setTitle("Permission denied")
                             .setMessage("Android requires WRITE_SECURE_SETTINGS permission to start accessibility service automatically.\n" +
                                     "Please, launch this command using ADB:\n" +
-                                    "adb shell pm grant com.vectras.vm.x11 android.permission.WRITE_SECURE_SETTINGS")
+                                    "adb shell pm grant " + requireContext().getPackageName() + " android.permission.WRITE_SECURE_SETTINGS")
                             .setNegativeButton("OK", null)
                             .create()
                             .show();
@@ -460,7 +460,7 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
             requireContext().sendBroadcast(new Intent(ACTION_PREFERENCES_CHANGED) {{
                 putExtra("key", key);
                 putExtra("fromBroadcast", true);
-                setPackage("com.vectras.vm");
+                setPackage(requireContext().getPackageName());
             }});
 
             return true;
@@ -622,7 +622,7 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
                         Intent intent0 = new Intent(ACTION_PREFERENCES_CHANGED);
                         intent0.putExtra("key", key);
                         intent0.putExtra("fromBroadcast", true);
-                        intent0.setPackage("com.vectras.vm");
+                        intent0.setPackage(context.getPackageName());
                         context.sendBroadcast(intent0);
                     }
                     edit.commit();
@@ -673,7 +673,7 @@ public class LoriePreferences extends AppCompatActivity implements PreferenceFra
 
             in.detachFd();
             bundle.putBinder(null, iface);
-            i.setPackage("com.vectras.vm");
+            i.setPackage(BuildConfig.APPLICATION_ID);
             i.putExtra(null, bundle);
             if (getuid() == 0 || getuid() == 2000)
                 i.setFlags(0x00400000 /* FLAG_RECEIVER_FROM_SHELL */);

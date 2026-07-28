@@ -1,6 +1,6 @@
 package com.vectras.vm.x11.utils;
 
-import static com.termux.shared.termux.extrakeys.ExtraKeysConstants.PRIMARY_KEY_CODES_FOR_STRINGS;
+import static com.vectras.vm.x11.extrakeys.ExtraKeysConstants.PRIMARY_KEY_CODES_FOR_STRINGS;
 import static com.vectras.vm.x11.X11Activity.toggleKeyboardVisibility;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.termux.shared.termux.extrakeys.*;
+import com.vectras.vm.x11.extrakeys.*;
 import com.vectras.vm.x11.LoriePreferences;
 import com.vectras.vm.x11.X11Activity;
 

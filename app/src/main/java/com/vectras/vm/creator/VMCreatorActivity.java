@@ -32,6 +32,7 @@ import com.vectras.vm.R;
 import com.vectras.vm.creator.configs.ListManager;
 import com.vectras.vm.creator.editor.AdvancedConfigsDialog;
 import com.vectras.vm.creator.editor.BoardConfigsDialog;
+import com.vectras.vm.creator.editor.GraphicsConfigsDialog;
 import com.vectras.vm.creator.editor.NetworkConfigsDialog;
 import com.vectras.vm.creator.editor.SoundConfigsDialog;
 import com.vectras.vm.creator.utils.CreatorUtils;
@@ -225,6 +226,15 @@ public class VMCreatorActivity extends AppCompatActivity {
             dialog.setConfigs(current);
             dialog.setOnDismiss(this::loadConfig);
             dialog.show(getSupportFragmentManager(), "firmware_configs_dialog");
+        });
+
+        binding.lnGraphics.setOnClickListener(v -> {
+            save();
+
+            GraphicsConfigsDialog dialog = new GraphicsConfigsDialog();
+            dialog.setConfigs(current);
+            dialog.setOnDismiss(this::loadConfig);
+            dialog.show(getSupportFragmentManager(), "graphics_configs_dialog");
         });
 
         binding.lnNetwork.setOnClickListener(v -> {
@@ -518,18 +528,18 @@ public class VMCreatorActivity extends AppCompatActivity {
         if (DeviceUtils.is64bit()) {
             defQemuParams = switch (MainSettingsManager.getArch(this)) {
                 case "ARM64" ->
-                        "-accel tcg,thread=multi -device nec-usb-xhci -device usb-kbd -device usb-mouse -device VGA";
+                        "-accel tcg,thread=multi -device nec-usb-xhci -device usb-kbd -device usb-mouse";
                 case "PPC" -> "-M mac99 -accel tcg,thread=multi";
                 default ->
-                        "-accel tcg,thread=multi -vga std -usb -device usb-tablet";
+                        "-accel tcg,thread=multi -usb -device usb-tablet";
             };
         } else {
             defQemuParams = switch (MainSettingsManager.getArch(this)) {
                 case "ARM64" ->
-                        "-device nec-usb-xhci -device usb-kbd -device usb-mouse -device VGA";
+                        "-device nec-usb-xhci -device usb-kbd -device usb-mouse";
                 case "PPC" -> "-M mac99";
                 default ->
-                        "-vga std -usb -device usb-tablet";
+                        "-usb -device usb-tablet";
             };
         }
         binding.title.setText(getString(R.string.new_vm));
@@ -548,6 +558,8 @@ public class VMCreatorActivity extends AppCompatActivity {
         }
 
         current.memory = 512;
+
+        current.graphicCard = 1; // Default
 
         current.networkCard = 3; // Intel E1000 (82540EM)
 

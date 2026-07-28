@@ -52,61 +52,65 @@
                 app:icon="@drawable/radio_button_unchecked_24px"/>
         </LinearLayout>
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/stub"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/black"
-            android:gravity="center_horizontal|center_vertical"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/x11_image"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_launcher_foreground"
-                android:contentDescription="X Logo"
-                tools:ignore="HardcodedText" />
-
-            <Space
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="20dp" />
+                android:layout_height="match_parent"
+                android:alpha="0.9"
+                android:background="#E6000000"/>
 
-            <TextView
-                android:id="@+id/textView"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="@string/not_connected"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:orientation="vertical" >
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="40dp" />
+                <ImageView
+                    android:id="@+id/x11_image"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/cast_warning_24px"
+                    app:tint="@android:color/white"
+                    android:contentDescription="X Logo"
+                    tools:ignore="HardcodedText" />
 
-            <Button
-                android:id="@+id/preferences_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/preferences_button_text" />
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="@string/no_signal"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="10dp" />
+                <Button
+                    android:id="@+id/preferences_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings"
+                    android:textColor="@android:color/black"
+                    android:backgroundTint="@android:color/white" />
 
-            <Button
-                android:id="@+id/help_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/help_button_text" />
-        </LinearLayout>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="10dp" />
 
+                <Button
+                    android:id="@+id/help_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/help_button_text"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+        </FrameLayout>
 
     </FrameLayout>
 

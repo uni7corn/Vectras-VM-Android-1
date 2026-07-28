@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
 public class SettingsData {
+    // System
+
     public static boolean alwaysShowLog(Context context) {
         return get(context, "alwaysShowLog");
     }
@@ -13,6 +15,18 @@ public class SettingsData {
     public static void alwaysShowLog(Context context, boolean value) {
         set(context, "alwaysShowLog", value);
     }
+
+    // X11
+
+    public static boolean opengl(Context context) {
+        return get(context, "opengl");
+    }
+
+    public static void opengl(Context context, boolean value) {
+        set(context, "opengl", value);
+    }
+
+    // Core
 
     public static boolean get(Context context, String key) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

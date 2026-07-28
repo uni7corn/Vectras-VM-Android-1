@@ -774,7 +774,7 @@ public class VmControllerDialog extends DialogFragment {
     }
 
     private void showErrorSelectedFileDialog() {
-        DialogUtils.oneDialog(requireActivity(),
+        requireActivity().runOnUiThread(() -> DialogUtils.oneDialog(requireActivity(),
                 getString(R.string.oops),
                 getString(R.string.invalid_file_path_content),
                 getString(R.string.ok),
@@ -783,6 +783,6 @@ public class VmControllerDialog extends DialogFragment {
                 true,
                 null,
                 null
-        );
+        ));
     }
 }

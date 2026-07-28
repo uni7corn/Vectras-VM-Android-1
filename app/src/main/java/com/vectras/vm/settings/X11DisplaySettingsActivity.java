@@ -1,7 +1,5 @@
 package com.vectras.vm.settings;
 
-import static android.os.Build.VERSION.SDK_INT;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -13,7 +11,6 @@ import com.vectras.vm.R;
 import com.vectras.vm.databinding.ActivityX11DisplaySettingsBinding;
 import com.vectras.vm.main.core.DisplaySystem;
 import com.vectras.vm.setupwizard.TurnipZinkSetupWizardActivity;
-import com.vectras.vm.utils.DeviceUtils;
 import com.vectras.vm.utils.DialogUtils;
 import com.vectras.vm.utils.PackageUtils;
 import com.vectras.vm.x11.LoriePreferences;
@@ -42,6 +39,7 @@ public class X11DisplaySettingsActivity extends AppCompatActivity {
         binding.swEnabled.setChecked(MainSettingsManager.getVmUi(this).equals("X11"));
         binding.swRunQemuWithXterm.setChecked(MainSettingsManager.getRunQemuWithXterm(this));
         binding.swUseSdl.setChecked(MainSettingsManager.getUseSdl(this));
+        binding.swUseOpengl.setChecked(SettingsData.opengl(this));
         binding.swUseExternal.setChecked(MainSettingsManager.getExternalX11(this));
 
         binding.swEnabled.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -72,6 +70,9 @@ public class X11DisplaySettingsActivity extends AppCompatActivity {
         binding.swUseSdl.setOnCheckedChangeListener((buttonView, isChecked) -> MainSettingsManager.setUseSdl(this, isChecked));
         binding.lnUseSdl.setOnClickListener(v -> binding.swUseSdl.toggle());
 
+        binding.swUseOpengl.setOnCheckedChangeListener((buttonView, isChecked) -> SettingsData.opengl(this, isChecked));
+        binding.lnUseOpengl.setOnClickListener(v -> binding.swUseOpengl.toggle());
+
         binding.swUseExternal.setOnCheckedChangeListener((buttonView, isChecked) -> MainSettingsManager.setExternalX11(this, isChecked));
         binding.lnUseExternal.setOnClickListener(v -> binding.swUseExternal.toggle());
 
@@ -87,6 +88,7 @@ public class X11DisplaySettingsActivity extends AppCompatActivity {
         binding.lnPreferences.setEnabled(isEnabled);
         binding.lnRunQemuWithXterm.setEnabled(isEnabled);
         binding.lnUseSdl.setEnabled(isEnabled);
+        binding.lnUseOpengl.setEnabled(isEnabled);
         binding.lnUseExternal.setEnabled(isEnabled);
         binding.lnTurnipZink.setEnabled(isEnabled);
     }

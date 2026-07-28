@@ -455,7 +455,7 @@
     <string name="visit_now">即刻访问</string>
     <string name="you_are_ready_to_go">一切就绪!</string>
     <string name="shared_folder_is_not_used_because_i386_does_not_support_it">I386不支持共享文件夹，功能已关闭</string>
-    <string name="use_uefi_for_x64_only">使用UEFI（仅对x64生效）</string>
+    <string name="use_uefi">使用UEFI</string>
     <string name="remove_and_do_not_keep_files">移除虚拟机文件</string>
     <string name="remove_but_keep_files">保留虚拟机文件</string>
     <string name="remove_vm_content">要移除吗？您可以决定相关文件的去留</string>
@@ -684,9 +684,9 @@
     <string name="x11_action_back_to_display">返回显示屏</string>
     <string name="x11_desc_ui_environment">X11用户界面环境</string>
     <string name="software_and_driver">软件和驱动</string>
-    <string name="cpu_support_3dfx_content">您设备的 CPU 支持 3dfx 加速。但它可能不稳定或无法正常工作。</string>
-    <string name="cpu_not_support_3dfx_content">您设备的 CPU 不支持 3dfx 加速。</string>
-    <string name="threedfx_is_not_available">3dfx 不可用。</string>
+    <string name="cpu_support_3dfx_content">您设备的 CPU 支持 3Dfx 加速。但它可能不稳定或无法正常工作。</string>
+    <string name="cpu_not_support_3dfx_content">您设备的 CPU 不支持 3Dfx 加速。</string>
+    <string name="threedfx_is_not_available">3Dfx 不可用。</string>
     <string name="X11_display">X11 显示</string>
     <string name="settings_for_X11_display">X11 显示设置。</string>
     <string name="use_X11_display">使用 X11 显示</string>
@@ -695,7 +695,7 @@
     <string name="run_qemu_with_xterm_note">使用 Qemu 监视器更轻松地运行命令，无需切换。</string>
     <string name="go_to_termux_x11_settings">前往 Termux:X11 设置。</string>
     <string name="use_sdl">使用 SDL</string>
-    <string name="use_sdl_note">如果您想使用 3dfx 并玩老游戏，请开启此选项（仅适用于 x86_64 和 i386）。</string>
+    <string name="use_sdl_note">如果您想使用 3Dfx 并玩老游戏，请开启此选项（仅适用于 x86_64 和 i386）。</string>
     <string name="free_palistine">解放巴勒斯坦</string>
     <string name="x86_64">x86_64</string>
     <string name="error_CR_CVBI4">发生错误。ROM信息已损坏，已应用部分默认设置。错误代码：CR_CVBI4。</string>
@@ -738,11 +738,11 @@
     <string name="system_update">系统更新</string>
     <string name="system_update_note">有系统更新可用，立即更新以获得完整体验。</string>
     <string name="qemu_documentation">QEMU 文档</string>
-    <string name="you_need_to_switch_to_sdl_to_use_3dfx">您需要切换到SDL才能使用3dfx。</string>
+    <string name="you_need_to_switch_to_sdl_to_use_3dfx">您需要切换到SDL才能使用3Dfx。</string>
     <string name="device_manager">设备管理器</string>
     <string name="show_in_folder">在文件夹中显示</string>
     <string name="exit">退出</string>
-    <string name="threedfx">3dfx</string>
+    <string name="threedfx">3Dfx</string>
     <string name="refresh">刷新</string>
     <string name="last_crash_note">非常抱歉，应用之前发生了崩溃。</string>
     <string name="virtual_mouse">虚拟鼠标</string>
@@ -788,7 +788,7 @@
     <string name="view_in_an_bui_app">在 An Bui 应用中查看</string>
     <string name="view_in_an_bui_app_note">您可以在此处查看和获取。</string>
     <string name="tools">工具</string>
-    <string name="threedfx_wrappers">3dfx 包装器</string>
+    <string name="threedfx_wrappers">3Dfx 包装器</string>
     <string name="virtio_tools_for_windows">Windows VirtIO 工具</string>
     <string name="download_required">需要下载</string>
     <string name="this_tool_needs_to_be_downloaded_before_use">此工具需要先下载才能使用。下载完成后将通知您。</string>

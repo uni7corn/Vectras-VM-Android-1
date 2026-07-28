@@ -1,4 +1,4 @@
-package com.termux.shared.termux.extrakeys;
+package com.vectras.vm.x11.extrakeys;
 
 import android.widget.Button;
 

@@ -31,7 +31,7 @@ public class KeyInterceptor extends AccessibilityService {
 
     public static void launch(@NonNull Context ctx) {
         try {
-            String service = "com.vectras.vm/.x11.utils.KeyInterceptor";
+            String service = ctx.getPackageName() + "/" + KeyInterceptor.class.getName();
             String enabled = Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
 
             if (enabled == null || enabled.isEmpty())
@@ -47,7 +47,7 @@ public class KeyInterceptor extends AccessibilityService {
                     .setTitle("Permission denied")
                     .setMessage("Android requires WRITE_SECURE_SETTINGS permission to start accessibility service automatically.\n" +
                             "Please, launch this command using ADB:\n" +
-                            "adb shell pm grant com.vectras.vm android.permission.WRITE_SECURE_SETTINGS")
+                            "adb shell pm grant " + ctx.getPackageName() + " android.permission.WRITE_SECURE_SETTINGS")
                     .setNegativeButton("OK", null)
                     .create()
                     .show();
