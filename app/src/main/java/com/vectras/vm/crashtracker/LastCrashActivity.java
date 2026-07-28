@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -68,6 +67,13 @@ public class LastCrashActivity extends AppCompatActivity {
 
     private void read() {
         log = FileUtils.isFileExists(AppConfig.lastCrashLogPath) ? FileUtils.readAFile(AppConfig.lastCrashLogPath) : "";
+
+        if (log.isEmpty()) {
+            binding.btnReport.setVisibility(View.GONE);
+            binding.tvContent.setText(R.string.there_are_no_logs);
+            return;
+        }
+
         binding.tvContent.setText(log.length() > 100000 ? log.substring(0, 100000) + "..." : log);
     }
 
@@ -92,7 +98,7 @@ public class LastCrashActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Terminal2 terminal2 = new Terminal2(this);
                     terminal2.setDefaultShellBash();
-                    terminal2.execute("curl -F \"file=@/tmp/" + fileName + "\" -H \"X-Upload-Token:2026_07_21\" https://go.anbui.ovh/uploadlog && rm /tmp/" + fileName, new Terminal2.Terminal2Callback() {
+                    terminal2.execute("curl -F \"file=@/tmp/" + fileName + "\" -H \"X-Upload-Token:2026_07_21\" https://go.anbui.ovh/uploadlog; rm /tmp/" + fileName, new Terminal2.Terminal2Callback() {
                         @Override
                         public void onRunning(String command, String newLine) {
                             // Nothing to do.

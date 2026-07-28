@@ -204,6 +204,8 @@ public class ExportRomActivity extends AppCompatActivity {
 
         vmConfigMap.put("sharedFolder", current.sharedFolder);
 
+        vmConfigMap.put("graphicCard", current.graphicCard);
+
         vmConfigMap.put("networkCard", current.networkCard);
 
         vmConfigMap.put("wifi", current.wifi);

@@ -7,6 +7,7 @@ import android.util.Log;
 import com.vectras.qemu.Config;
 import com.vectras.qemu.MainSettingsManager;
 import com.vectras.qemu.utils.RamInfo;
+import com.vectras.vm.creator.configs.ListManager;
 import com.vectras.vm.creator.utils.VMCreatorSelector;
 import com.vectras.vm.main.vms.DataMainRoms;
 import com.vectras.vm.manager.BatteryEmulatorManager;
@@ -16,6 +17,7 @@ import com.vectras.vm.manager.QemuManager;
 import com.vectras.vm.manager.VmFileManager;
 import com.vectras.vm.manager.WifiCardEmulatorManager;
 import com.vectras.vm.settings.ItemSettingsSelector;
+import com.vectras.vm.settings.SettingsData;
 import com.vectras.vm.utils.CpuHelper;
 import com.vectras.vm.utils.DeviceUtils;
 import com.vectras.vm.utils.FileUtils;
@@ -129,6 +131,11 @@ public class StartVM {
             }
         }
 
+        String graphicsParams = "";
+        String graphics = Objects.requireNonNull(VMCreatorSelector.getGraphicsCard(activity, vmData.graphicCard).get("value")).toString();
+        if (!graphics.isEmpty()) {
+            graphicsParams = graphics.equals(ListManager.NONE_VALUE) ? " -vga none" : " -device " + graphics;
+        }
 
         String networkParams = "";
         String network = Objects.requireNonNull(VMCreatorSelector.getNetworkCard(activity, vmData.networkCard).get("value")).toString();
@@ -165,7 +172,7 @@ public class StartVM {
             bootParams = " -boot " + bootFromParams + (!bootFromParams.isEmpty() && !showBootMenuParams.isEmpty() ? "," : "") + showBootMenuParams + " ";
         }
 
-        extraParams = machineParams + cpuParams + memoryParams + bootParams + networkParams + soundParams + " " + extraParams;
+        extraParams = machineParams + cpuParams + memoryParams + bootParams + graphicsParams + networkParams + soundParams + " " + extraParams;
         return env(activity, extraParams, vmData.itemPath, false);
     }
 
@@ -405,6 +412,7 @@ public class StartVM {
         } else if (MainSettingsManager.getVmUi(context).equals("X11")) {
             params += "-display ";
             params += MainSettingsManager.getUseSdl(context) ? "sdl" : "gtk";
+            if (SettingsData.opengl(context)) params += ",gl=on";
             params += " -monitor ";
             params += MainSettingsManager.getRunQemuWithXterm(context) ? "stdio" : "vc";
         }

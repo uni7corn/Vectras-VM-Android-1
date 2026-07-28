@@ -67,6 +67,10 @@ public class DataMainRoms {
 
     public boolean sharedFolder;
 
+    // Graphics
+
+    public int graphicCard;
+
     // Network
 
     public int networkCard;

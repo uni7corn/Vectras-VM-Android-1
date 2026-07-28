@@ -528,7 +528,7 @@ public class AddIn {
 
     boolean isBlurring;
 
-    private void blurLayout() {
+    public void blurLayout() {
         if (isBlurring || !MainSettingsManager.getBlurEffect(activity)) return;
         isBlurring = true;
 
@@ -542,7 +542,7 @@ public class AddIn {
         }
     }
 
-    private void unBlurLayout() {
+    public void unBlurLayout() {
         if (!isBlurring) return;
         isBlurring = false;
 

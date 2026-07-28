@@ -270,7 +270,7 @@
     <string name="donatecontent">Nếu bạn thật sự rất thích Vectras VM, bạn có thể cân nhắc ủng hộ chúng tôi trên Patreon! Cảm ơn bạn rất nhiều luôn!</string>
     <string name="you_are_ready_to_go">Bạn đã sẵn sàng để bắt đầu rồi đấy!</string>
     <string name="shared_folder_is_not_used_because_i386_does_not_support_it">Thư mục được chia sẻ không được sử dụng vì i386 không hỗ trợ nó.</string>
-    <string name="use_uefi_for_x64_only">Dùng UEFI (chỉ x64)</string>
+    <string name="use_uefi">Dùng UEFI</string>
     <string name="remove_and_do_not_keep_files">Xoá và không giữ các tệp</string>
     <string name="remove_but_keep_files">Xoá và giữ các tệp</string>
     <string name="remove_vm_content">Bạn có muốn xoá nó không? Bạn có thể chọn giữ hoặc không giữ các tệp.</string>
@@ -475,16 +475,16 @@
     <string name="system_update">Cập nhật hệ thống</string>
     <string name="system_update_note">Đã có bản cập nhật hệ thống, hãy cập nhật ngay để có trải nghiệm tốt hơn.</string>
     <string name="use_sdl">Dùng SDL</string>
-    <string name="use_sdl_note">Hãy bật tùy chọn này nếu bạn muốn sử dụng 3dfx và chơi các trò chơi điện tử cổ điển (chỉ dành cho x86_64 và i386).</string>
+    <string name="use_sdl_note">Hãy bật tùy chọn này nếu bạn muốn sử dụng 3Dfx và chơi các trò chơi điện tử cổ điển (chỉ dành cho x86_64 và i386).</string>
     <string name="qemu_documentation">Tài liệu QEMU</string>
-    <string name="you_need_to_switch_to_sdl_to_use_3dfx">Bạn cần chuyển sang SDL để sử dụng 3dfx.</string>
+    <string name="you_need_to_switch_to_sdl_to_use_3dfx">Bạn cần chuyển sang SDL để sử dụng 3Dfx.</string>
     <string name="device_manager">Quản lý thiết bị</string>
     <string name="show_in_folder">Xem trong thư mục</string>
     <string name="exit">Thoát</string>
-    <string name="threedfx">3dfx</string>
-    <string name="cpu_support_3dfx_content">CPU của thiết bị bạn hỗ trợ tăng tốc cho 3dfx. Tuy nhiên, nó có hoạt động thật hay không thì hên xui.</string>
-    <string name="cpu_not_support_3dfx_content">CPU của thiết bị của bạn không hỗ trợ tăng tốc cho 3dfx.</string>
-    <string name="threedfx_is_not_available">3dfx không có sẵn.</string>
+    <string name="threedfx">3Dfx</string>
+    <string name="cpu_support_3dfx_content">CPU của thiết bị bạn hỗ trợ tăng tốc cho 3Dfx. Tuy nhiên, nó có hoạt động thật hay không thì hên xui.</string>
+    <string name="cpu_not_support_3dfx_content">CPU của thiết bị của bạn không hỗ trợ tăng tốc cho 3Dfx.</string>
+    <string name="threedfx_is_not_available">3Dfx không có sẵn.</string>
     <string name="refresh">Làm mới</string>
     <string name="last_crash_note">Xin lỗi nhé! Cơn ngất xỉu đã đến quá bất ngờ.</string>
     <string name="virtual_mouse">Chuột ảo</string>
@@ -529,7 +529,7 @@
     <string name="view_in_an_bui_app">Xem trong ứng dụng An Bùi</string>
     <string name="view_in_an_bui_app_note">Bạn có thể xem và lấy nó ở đây.</string>
     <string name="tools">Công cụ</string>
-    <string name="threedfx_wrappers">Trình bao bọc 3dfx</string>
+    <string name="threedfx_wrappers">Trình bao bọc 3Dfx</string>
     <string name="virtio_tools_for_windows">Công cụ VirtIO cho Windows</string>
     <string name="download_required">Càn tải xuống</string>
     <string name="this_tool_needs_to_be_downloaded_before_use">Công cụ này cần được tải xuống để sử dụng. Bạn sẽ được thông báo khi quá trình tải xuống hoàn thành.</string>
@@ -666,7 +666,7 @@
     <string name="wifi_card_dummy">Thẻ Wi-Fi (giả)</string>
     <string name="pick">Lựa chọn</string>
     <string name="capacity_too_large">Dung lượng quá lớn.</string>
-    <string name="turnip_and_zink_setting_note">Thử nghiệm! Tận dụng sức mạnh của GPU Adreno trên thiết bị của bạn để cải thiện hiệu năng đồ hoạ của QEMU 3dfx và hơn thế nữa.</string>
+    <string name="turnip_and_zink_setting_note">Thử nghiệm! Tận dụng sức mạnh của GPU Adreno trên thiết bị của bạn để cải thiện hiệu năng đồ hoạ của QEMU 3Dfx và hơn thế nữa.</string>
     <string name="has_meets_the_requirements_to_install_content">Thiết bị của bạn đã đáp ứng được với các điều kiện và sẵn sàng để bắt đầu cài đặt ngay bây giờ.</string>
     <string name="your_device_does_not_meet_the_requirements_to_continue">Thiết bị của bạn không đáp ứng đủ các điều kiện để tiếp tục.</string>
     <string name="error_in_core_feature_content">Một tính năng cốt lõi của ứng dụng vừa xảy ra sự cố. Bạn có thể cần đóng ứng dụng và mở lại để các tính năng hoạt động bình thường trở lại.</string>
@@ -676,6 +676,10 @@
     <string name="cards">Các thẻ</string>
     <string name="always_show_logs">Luôn hiện nhật ký</string>
     <string name="always_show_logs_setting_note">Hộp thoại hiển thị nhật ký sẽ xuất hiện dù máy ảo không có sự cố nghiêm trọng nào xảy ra sau khi tắt nguồn.</string>
+    <string name="graphics">Đồ hoạ</string>
+    <string name="graphics_note">Thẻ đồ hoạ,…</string>
+    <string name="opengl_setting_note">Màn hình sẽ hỗ trợ OpenGL khi chạy máy ảo. 3Dfx sẽ không hoạt động khi dùng tính năng này.</string>
+    <string name="qemu_opengl_is_not_available_content">OpenGL chỉ có sẵn khi dùng màn hình X11 và đã bật dùng Open GL. Đến cài đặt để tìm hiểu thêm.</string>
 
     <!--======================TERMUX STRINGS====================-->
     <string name="application_name" translatable="false">Vterm</string>

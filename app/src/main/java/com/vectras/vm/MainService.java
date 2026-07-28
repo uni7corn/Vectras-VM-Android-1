@@ -16,6 +16,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.vectras.vm.crashtracker.CrashTrackerUtils;
 import com.vectras.vm.main.core.MainStartVM;
 import com.vectras.vm.manager.VmServiceManager;
 import com.vectras.vm.settings.SettingsData;
@@ -161,7 +162,12 @@ public class MainService extends Service {
                     VMManager.isQemuStopedWithError = true;
                     MainStartVM.dismissDialog();
 
-                    DialogUtils.twoDialog(context, "Execution Result", exception.getMessage(), context.getString(R.string.copy), context.getString(R.string.close), true, R.drawable.round_terminal_24, true,
+                    if (Objects.requireNonNull(exception.getMessage()).contains("android.content.Context.getFilesDir()")) {
+                        CrashTrackerUtils.showCoreFeatureErrorDialog(activity,exception);
+                        return;
+                    }
+
+                    DialogUtils.twoDialog(context, activity.getString(R.string.something_went_wrong), exception.getMessage(), context.getString(R.string.copy), context.getString(R.string.close), true, R.drawable.round_terminal_24, true,
                             () -> ClipboardUltils.copyToClipboard(context, exception.getMessage()), null, null);
                 });
             }

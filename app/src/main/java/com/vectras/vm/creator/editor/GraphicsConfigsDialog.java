@@ -12,14 +12,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.vectras.vm.R;
 import com.vectras.vm.creator.utils.EditorUtils;
 import com.vectras.vm.creator.utils.VMCreatorSelector;
-import com.vectras.vm.databinding.CreatorSoundDialogBinding;
+import com.vectras.vm.databinding.CreatorGraphicsDialogBinding;
 import com.vectras.vm.main.vms.DataMainRoms;
 import com.vectras.vm.utils.DialogUtils;
 
 import java.util.Objects;
 
-public class SoundConfigsDialog extends BottomSheetDialogFragment {
-    final String TAG = "SoundConfigsDialog";
+public class GraphicsConfigsDialog extends BottomSheetDialogFragment {
+    final String TAG = "GraphicsConfigsDialog";
 
     String vmId;
     DataMainRoms configs;
@@ -33,7 +33,7 @@ public class SoundConfigsDialog extends BottomSheetDialogFragment {
         }
     }
 
-    CreatorSoundDialogBinding binding;
+    CreatorGraphicsDialogBinding binding;
 
     @NonNull
     @Override
@@ -46,7 +46,7 @@ public class SoundConfigsDialog extends BottomSheetDialogFragment {
             return EditorUtils.getDummyDialog(requireActivity());
         }
 
-        binding = CreatorSoundDialogBinding.inflate(getLayoutInflater());
+        binding = CreatorGraphicsDialogBinding.inflate(getLayoutInflater());
 
         BottomSheetDialog dialog = new BottomSheetDialog(requireActivity());
         dialog.setContentView(binding.getRoot());
@@ -62,13 +62,13 @@ public class SoundConfigsDialog extends BottomSheetDialogFragment {
         return dialog;
     }
 
-    SoundConfigsDialogCallback callback;
+    GraphicsConfigsDialogCallback callback;
 
-    public void setOnDismiss(SoundConfigsDialogCallback callback) {
+    public void setOnDismiss(GraphicsConfigsDialogCallback callback) {
         this.callback = callback;
     }
 
-    public interface SoundConfigsDialogCallback {
+    public interface GraphicsConfigsDialogCallback {
         void onDismiss(DataMainRoms configs);
     }
 
@@ -92,8 +92,8 @@ public class SoundConfigsDialog extends BottomSheetDialogFragment {
     private void initialize() {
         if (!isAdded()) return;
 
-        binding.sbvCardType.setOnClickListener(v -> VMCreatorSelector.soundCard(requireActivity(), configs.soundCard, ((position, name, value) -> {
-            configs.soundCard = position;
+        binding.sbvCardType.setOnClickListener(v -> VMCreatorSelector.graphicsCard(requireActivity(), configs.graphicCard, ((position, name, value) -> {
+            configs.graphicCard = position;
             binding.sbvCardType.setSubtitle(name);
         })));
 
@@ -103,10 +103,10 @@ public class SoundConfigsDialog extends BottomSheetDialogFragment {
     private void load() {
         if (!isAdded()) return;
 
-        binding.sbvCardType.setSubtitle(Objects.requireNonNull(VMCreatorSelector.getSoundCard(requireActivity(), configs.soundCard).get("name")).toString());
+        binding.sbvCardType.setSubtitle(Objects.requireNonNull(VMCreatorSelector.getGraphicsCard(requireActivity(), configs.graphicCard).get("name")).toString());
     }
 
     private void save() {
-        
+
     }
 }

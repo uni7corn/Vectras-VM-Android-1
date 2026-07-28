@@ -57,6 +57,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.math.MathUtils;
+import androidx.core.view.ViewCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.vectras.vm.R;
@@ -777,7 +778,7 @@ public class X11Activity extends AppCompatActivity {
         }
 
         int requestedOrientation;
-        switch (prefs.forceOrientation.get()) {
+        switch (SDK_INT >= VERSION_CODES.N ? (isInMultiWindowMode() ? "auto" : prefs.forceOrientation.get()) : prefs.forceOrientation.get()) {
             case "portrait": requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT; break;
             case "landscape": requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE; break;
             case "reverse portrait": requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT; break;
@@ -795,7 +796,7 @@ public class X11Activity extends AppCompatActivity {
                             LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS :
                             LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
                 else
-                    getWindow().getAttributes().layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT;
+                    getWindow().getAttributes().layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER;
             }
 
             window.setStatusBarColor(Color.BLACK);
@@ -826,7 +827,9 @@ public class X11Activity extends AppCompatActivity {
 
         window.setSoftInputMode(reseed ? SOFT_INPUT_ADJUST_RESIZE : SOFT_INPUT_ADJUST_PAN);
 
-        ((FrameLayout) findViewById(android.R.id.content)).getChildAt(0).setFitsSystemWindows(!fullscreen);
+        View contentChild = ((FrameLayout) findViewById(android.R.id.content)).getChildAt(0);
+        contentChild.setFitsSystemWindows(!fullscreen);
+        ViewCompat.requestApplyInsets(contentChild);
     }
 
     @Override
@@ -892,10 +895,14 @@ public class X11Activity extends AppCompatActivity {
             getLorieView().setVisibility(connected?View.VISIBLE:View.INVISIBLE);
 
             // We should recover connection in the case if file descriptor for some reason was broken...
-            if (!connected)
+            if (!connected) {
+                if (addIn != null) addIn.blurLayout();
                 tryConnect();
-            else if (SDK_INT >= VERSION_CODES.N) {
+            } else if (SDK_INT >= VERSION_CODES.N) {
+                if (addIn != null) addIn.unBlurLayout();
                 getLorieView().setPointerIcon(PointerIcon.getSystemIcon(this, PointerIcon.TYPE_NULL));
+            } else {
+                if (addIn != null) addIn.unBlurLayout();
             }
 
             onWindowFocusChanged(hasWindowFocus());

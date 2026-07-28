@@ -1,4 +1,4 @@
-package com.termux.shared.termux.extrakeys;
+package com.vectras.vm.x11.extrakeys;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,18 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.AttributeSet;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ScheduledExecutorService;
-
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,6 +23,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.button.MaterialButton;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A {@link View} showing extra keys (such as Escape, Ctrl, Alt) not normally available on an Android soft
@@ -92,7 +90,7 @@ public final class ExtraKeysView extends GridLayout {
 
         /**
          * This is called by {@link ExtraKeysView} when a button is clicked so that the client
-         * can perform any hepatic feedback. This is only called in the {@link Button.OnClickListener}
+         * can perform any hepatic feedback. This is only called in the {@link OnClickListener}
          * and not for every repeat. Its also called for {@link #mSpecialButtons}.
          *
          * @param view The view that was clicked.
@@ -382,7 +380,7 @@ public final class ExtraKeysView extends GridLayout {
                     }
                 });
 
-                LayoutParams param = new GridLayout.LayoutParams();
+                LayoutParams param = new LayoutParams();
                 param.width = 0;
                 param.height = 0;
                 param.setMargins(0, 0, 0, 0);
