@@ -505,6 +505,11 @@ public class LorieView extends SurfaceView implements InputStub {
 
     @Override
     public boolean dispatchKeyEventPreIme(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+            X11Activity.getInstance().onBackPressed();
+            return true;
+        }
+
         if (imeBuggyKeys.contains(event.getKeyCode())) {
             // IME does not handle/send events for some keys correctly correctly.
             // So we should send key release manually in the case if IME will not send it...
@@ -522,6 +527,11 @@ public class LorieView extends SurfaceView implements InputStub {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+            X11Activity.getInstance().onBackPressed();
+            return true;
+        }
+
         if (imeBuggyKeys.contains(event.getKeyCode())) {
             // remove messages we posted in dispatchKeyEventPreIme
             int action = event.getAction();

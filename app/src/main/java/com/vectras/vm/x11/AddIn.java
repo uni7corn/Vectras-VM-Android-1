@@ -46,6 +46,7 @@ import com.vectras.vm.manager.VmControllerDialog;
 import com.vectras.vm.manager.VmFileManager;
 import com.vectras.vm.manager.VmListManager;
 import com.vectras.vm.manager.VmPicker;
+import com.vectras.vm.settings.SettingsData;
 import com.vectras.vm.sound.StreamAudio;
 import com.vectras.vm.utils.DialogUtils;
 import com.vectras.vm.utils.UIUtils;
@@ -161,7 +162,9 @@ public class AddIn {
             ControlersOptionsFragment newFragment = new ControlersOptionsFragment();
             newFragment.binding = binding.controlsfragment;
             newFragment.show(ft, "Controllers");
-            newFragment.setOnDismiss = () -> binding.lnBubbleContainer.setVisibility(bindingControls.mainControl.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+
+            if (SettingsData.x11Bubble(activity))
+                newFragment.setOnDismiss = () -> binding.lnBubbleContainer.setVisibility(bindingControls.mainControl.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
         });
 
 
@@ -557,14 +560,15 @@ public class AddIn {
     }
 
     public void handleOnBack() {
-        if (bindingControls.mainControl.getVisibility() == View.GONE) {
+        if (bindingControls.mainControl.getVisibility() == View.GONE && !SettingsData.x11Bubble(activity)) {
             bindingControls.mainControl.setVisibility(View.VISIBLE);
-
-        } else if (streamAudio != null) {
-            if (!VmAudioManager.currentVmId.equals(Config.vmID))
-                streamAudio.setCross(null);
-            if (streamAudio.isPlaying()) streamAudio.stop();
         } else {
+            if (streamAudio != null) {
+                if (!VmAudioManager.currentVmId.equals(Config.vmID))
+                    streamAudio.setCross(null);
+                if (streamAudio.isPlaying()) streamAudio.stop();
+            }
+
             activity.finish();
         }
     }

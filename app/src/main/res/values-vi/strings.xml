@@ -680,6 +680,18 @@
     <string name="graphics_note">Thẻ đồ hoạ,…</string>
     <string name="opengl_setting_note">Màn hình sẽ hỗ trợ OpenGL khi chạy máy ảo. 3Dfx sẽ không hoạt động khi dùng tính năng này.</string>
     <string name="qemu_opengl_is_not_available_content">OpenGL chỉ có sẵn khi dùng màn hình X11 và đã bật dùng Open GL. Đến cài đặt để tìm hiểu thêm.</string>
+    <string name="input_devices">Các thiết bị nhập</string>
+    <string name="input_devices_note">Chuột, bàn phím,…</string>
+    <string name="mouse">Chuột</string>
+    <string name="usb_tablet">Cảm ứng USB</string>
+    <string name="types">Các loại</string>
+    <string name="acceleration">Tăng tốc</string>
+    <string name="acceleration_note">Loại tăng tốc,…</string>
+    <string name="acceleration_type">Loại tăng tốc</string>
+    <string name="tcg_single_thread">TCG (đơn luồng)</string>
+    <string name="tcg_multi_thread">TCG (đa luồng)</string>
+    <string name="bubble">Bong bóng</string>
+    <string name="bubble_setting_note">Dùng bong bóng dể hiện các phím điều khiển khi chúng bị ẩn thay vì dùng phím quay lại.</string>
 
     <!--======================TERMUX STRINGS====================-->
     <string name="application_name" translatable="false">Vterm</string>

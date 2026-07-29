@@ -36,6 +36,7 @@ public class BoardConfigsDialog extends BottomSheetDialogFragment {
     boolean isSave = true;
 
     int availableMemory = Integer.MAX_VALUE;
+    int warningMemory = Integer.MAX_VALUE;
 
     public void setConfigs(DataMainRoms configs) {
         this.configs = configs;
@@ -58,6 +59,9 @@ public class BoardConfigsDialog extends BottomSheetDialogFragment {
         }
 
         availableMemory = RamInfo.vectrasMemory(requireActivity());
+        warningMemory = availableMemory / 100 * 80;
+        if (availableMemory - warningMemory >= 1024) warningMemory = availableMemory / 100 * 90;
+        if (availableMemory - warningMemory >= 1024) warningMemory = availableMemory / 100 * 95;
 
         binding = CreatorBoardDialogBinding.inflate(getLayoutInflater());
 
@@ -168,7 +172,7 @@ public class BoardConfigsDialog extends BottomSheetDialogFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!editable.toString().isEmpty() && Integer.parseInt(editable.toString()) > (availableMemory / 100 * 80)) {
+                if (!editable.toString().isEmpty() && Integer.parseInt(editable.toString()) >= warningMemory) {
                     binding.cpiMemory.setError(getString(R.string.capacity_too_large));
                 } else {
                     binding.cpiMemory.setError(null);

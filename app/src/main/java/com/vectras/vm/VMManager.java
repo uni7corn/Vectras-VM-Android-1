@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.PropertyPermission;
 import java.util.Random;
 
 public class VMManager {
@@ -904,8 +905,16 @@ public class VMManager {
     public static void requestKillAllQemuProcess(Activity activity, Runnable runnable) {
         DialogUtils.twoDialog(activity, activity.getString(R.string.do_you_want_to_kill_all_qemu_processes), activity.getString(R.string.all_running_vms_will_be_forcibly_shut_down), activity.getString(R.string.kill_all), activity.getString(R.string.cancel), true, R.drawable.power_settings_new_24px, true,
                 () -> {
-                    killallqemuprocesses(activity);
+            ProgressDialog progressDialog = new ProgressDialog(activity);
+            progressDialog.setText(activity.getString(R.string.shutting_down));
+            progressDialog.show();
+            new Thread(() -> {
+                killallqemuprocesses(activity);
+                activity.runOnUiThread(() -> {
+                    progressDialog.reset();
                     if (runnable != null) runnable.run();
+                });
+            }).start();
                 }, null, null);
     }
 

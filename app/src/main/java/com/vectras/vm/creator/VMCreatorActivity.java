@@ -30,9 +30,11 @@ import com.vectras.qemu.MainSettingsManager;
 import com.vectras.vm.AppConfig;
 import com.vectras.vm.R;
 import com.vectras.vm.creator.configs.ListManager;
+import com.vectras.vm.creator.editor.AccelerationConfigsDialog;
 import com.vectras.vm.creator.editor.AdvancedConfigsDialog;
 import com.vectras.vm.creator.editor.BoardConfigsDialog;
 import com.vectras.vm.creator.editor.GraphicsConfigsDialog;
+import com.vectras.vm.creator.editor.InputDevicesConfigsDialog;
 import com.vectras.vm.creator.editor.NetworkConfigsDialog;
 import com.vectras.vm.creator.editor.SoundConfigsDialog;
 import com.vectras.vm.creator.utils.CreatorUtils;
@@ -210,6 +212,15 @@ public class VMCreatorActivity extends AppCompatActivity {
             dialog.show(getSupportFragmentManager(), "board_configs_dialog");
         });
 
+        binding.lnInputDevices.setOnClickListener(v -> {
+            save();
+
+            InputDevicesConfigsDialog dialog = new InputDevicesConfigsDialog();
+            dialog.setConfigs(current);
+            dialog.setOnDismiss(this::loadConfig);
+            dialog.show(getSupportFragmentManager(), "input_devices_configs_dialog");
+        });
+
         binding.lnStorage.setOnClickListener(v -> {
             save();
 
@@ -253,6 +264,15 @@ public class VMCreatorActivity extends AppCompatActivity {
             dialog.setConfigs(current);
             dialog.setOnDismiss(this::loadConfig);
             dialog.show(getSupportFragmentManager(), "sound_configs_dialog");
+        });
+
+        binding.lnAcceleration.setOnClickListener(v -> {
+            save();
+
+            AccelerationConfigsDialog dialog = new AccelerationConfigsDialog();
+            dialog.setConfigs(current);
+            dialog.setOnDismiss(this::loadConfig);
+            dialog.show(getSupportFragmentManager(), "acceleration_configs_dialog");
         });
 
         binding.lnAdvanced.setOnClickListener(v -> {
@@ -524,26 +544,9 @@ public class VMCreatorActivity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        String defQemuParams;
-        if (DeviceUtils.is64bit()) {
-            defQemuParams = switch (MainSettingsManager.getArch(this)) {
-                case "ARM64" ->
-                        "-accel tcg,thread=multi -device nec-usb-xhci -device usb-kbd -device usb-mouse";
-                case "PPC" -> "-M mac99 -accel tcg,thread=multi";
-                default ->
-                        "-accel tcg,thread=multi -usb -device usb-tablet";
-            };
-        } else {
-            defQemuParams = switch (MainSettingsManager.getArch(this)) {
-                case "ARM64" ->
-                        "-device nec-usb-xhci -device usb-kbd -device usb-mouse";
-                case "PPC" -> "-M mac99";
-                default ->
-                        "-usb -device usb-tablet";
-            };
-        }
+        current = new DataMainRoms();
+
         binding.title.setText(getString(R.string.new_vm));
-        current.itemExtra = defQemuParams;
 
         String currentArch = MainSettingsManager.getArch(this);
 
@@ -565,6 +568,9 @@ public class VMCreatorActivity extends AppCompatActivity {
 
         // ENSONIQ AudioPCI ES1370 : Intel HD Audio Controller (ich6)
         current.soundCard = currentArch.equals(MainSettingsManager.PPC_ARCH) ? 5 : 2;
+
+        // TCG (multi-threaded) : TCG (single-threaded)
+        current.accel = DeviceUtils.is64bit() ? 2 : 1;
     }
 
     private void checkVMID() {
@@ -601,14 +607,14 @@ public class VMCreatorActivity extends AppCompatActivity {
             DialogUtils.oneDialog(this, getString(R.string.oops), getString(R.string.need_set_name), getString(R.string.ok), true, R.drawable.error_96px, true, null, null);
         } else {
             String _contentDialog = "";
-            if (current.itemExtra.isEmpty()) {
-                _contentDialog = getResources().getString(R.string.qemu_params_is_empty);
-            }
+//            if (current.itemExtra.isEmpty()) {
+//                _contentDialog = getResources().getString(R.string.qemu_params_is_empty);
+//            }
 
             if (isAllDriveEmpty() && !VMManager.isHaveADisk(current.itemExtra)) {
-                if (!_contentDialog.isEmpty()) {
-                    _contentDialog += "\n\n";
-                }
+//                if (!_contentDialog.isEmpty()) {
+//                    _contentDialog += "\n\n";
+//                }
                 _contentDialog += getResources().getString(R.string.you_have_not_added_any_storage_devices);
             }
 

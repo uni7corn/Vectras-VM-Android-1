@@ -26,6 +26,14 @@ public class SettingsData {
         set(context, "opengl", value);
     }
 
+    public static void x11Bubble(Context context, boolean value) {
+        set(context, "x11_bubble", value);
+    }
+
+    public static boolean x11Bubble(Context context) {
+        return get(context, "x11_bubble");
+    }
+
     // Core
 
     public static boolean get(Context context, String key) {

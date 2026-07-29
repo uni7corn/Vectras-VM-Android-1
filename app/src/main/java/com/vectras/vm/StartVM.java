@@ -131,6 +131,17 @@ public class StartVM {
             }
         }
 
+        String inputDevicesParams = "";
+        String mouse = Objects.requireNonNull(VMCreatorSelector.getMouse(activity, vmData.mouse).get("value")).toString();
+        if (!mouse.isEmpty()) {
+            inputDevicesParams += " -device " + mouse;
+        }
+        String keyboard = Objects.requireNonNull(VMCreatorSelector.getKeyboard(activity, vmData.keyboard).get("value")).toString();
+        if (!keyboard.isEmpty()) {
+            inputDevicesParams += " -device " + keyboard;
+        }
+        if (!inputDevicesParams.isEmpty() && !ParamManager.hasUsb(extraParams)) inputDevicesParams = " -usb" + inputDevicesParams;
+
         String graphicsParams = "";
         String graphics = Objects.requireNonNull(VMCreatorSelector.getGraphicsCard(activity, vmData.graphicCard).get("value")).toString();
         if (!graphics.isEmpty()) {
@@ -172,7 +183,13 @@ public class StartVM {
             bootParams = " -boot " + bootFromParams + (!bootFromParams.isEmpty() && !showBootMenuParams.isEmpty() ? "," : "") + showBootMenuParams + " ";
         }
 
-        extraParams = machineParams + cpuParams + memoryParams + bootParams + graphicsParams + networkParams + soundParams + " " + extraParams;
+        String accelParams = "";
+        String accel = Objects.requireNonNull(VMCreatorSelector.getAccel(activity, vmData.accel).get("value")).toString();
+        if (!accel.isEmpty()) {
+            accelParams = " -accel " + ((vmData.accel > 1 && !DeviceUtils.is64bit()) ? Objects.requireNonNull(VMCreatorSelector.getAccel(activity, 1).get("value")).toString() : accel);
+        }
+
+        extraParams = machineParams + inputDevicesParams + cpuParams + memoryParams + bootParams + graphicsParams + networkParams + soundParams + accelParams + " " + extraParams;
         return env(activity, extraParams, vmData.itemPath, false);
     }
 
