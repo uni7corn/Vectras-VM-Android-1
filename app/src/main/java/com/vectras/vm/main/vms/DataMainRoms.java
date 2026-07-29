@@ -67,6 +67,12 @@ public class DataMainRoms {
 
     public boolean sharedFolder;
 
+    // Input devices
+
+    public int mouse;
+
+    public int keyboard;
+
     // Graphics
 
     public int graphicCard;
@@ -90,6 +96,10 @@ public class DataMainRoms {
     public boolean isUseUefi;
 
     public boolean isUseDefaultBios = true;
+
+    // Acceleration
+
+    public int accel;
 
     // Advanced
 

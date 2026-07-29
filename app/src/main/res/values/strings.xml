@@ -23,7 +23,7 @@
     <string name="zoom_in">Zoom In</string>
     <string name="zoom_out">Zoom Out</string>
     <string name="help">Help</string>
-    <string name="keyboard">KEYBOARD</string>
+    <string name="keyboard">Keyboard</string>
     <string name="name">name</string>
     <string name="size">size:</string>
     <string name="vectras_website">Vectras website</string>
@@ -701,7 +701,18 @@
     <string name="graphics_note">Graphics card,…</string>
     <string name="opengl_setting_note">The display will support OpenGL when running a virtual machine. 3Dfx will not work when using this feature.</string>
     <string name="qemu_opengl_is_not_available_content">OpenGL is only available when using an X11 display and with OpenGL enabled. Go to settings to learn more.</string>
-
+    <string name="input_devices">Input devices</string>
+    <string name="input_devices_note">Mouse, keyboard,…</string>
+    <string name="mouse">Mouse</string>
+    <string name="usb_tablet">USB tablet</string>
+    <string name="types">Types</string>
+    <string name="acceleration">Acceleration</string>
+    <string name="acceleration_note">Acceleration type,…</string>
+    <string name="acceleration_type">Acceleration type</string>
+    <string name="tcg_single_thread">TCG (single-threaded)</string>
+    <string name="tcg_multi_thread">TCG (multi-threaded)</string>
+    <string name="bubble">Bubble</string>
+    <string name="bubble_setting_note">Use bubble to show hidden controls instead of using the back button.</string>
 
 
     <!--======================TERMUX STRINGS====================-->
@@ -943,8 +954,7 @@ E.g. <b>META</b> for <i>META key</i>, \n
     <string name="lorie_pref_storeSecondaryDisplayPreferencesSeparately">Store preferences for secondary displays separately</string>
     <string name="lorie_pref_storeSecondaryDisplayPreferencesSeparately_summary">Open this screen on display you want to configure</string>
 
-    <string name="lorie_pref_adjustHeightForEK">Adjust display height for extra keys bar</string>
-    <string name="lorie_pref_adjustHeightForEK_summary">May cause screen flickering during toggling EK bar.</string>
+    <string name="lorie_pref_adjustHeightForEK">Prevent extra keys bar from covering the display</string>
     <string name="lorie_pref_useTermuxEKBarBehaviour">Deactivate special keys on additional key bar after each keypress</string>
     <string name="lorie_pref_useTermuxEKBarBehaviour_summary">Use long-tap to lock special keys</string>
     <string name="lorie_pref_opacityEKBar">Opacity of extra keys bar, %</string>
@@ -964,6 +974,8 @@ E.g. <b>META</b> for <i>META key</i>, \n
     <string name="lorie_pref_summary_requiresIntercepting">Requires intercepting system shortcuts with Dex mode or with Accessibility service</string>
     <string name="lorie_pref_summary_requiresTrackpadAndNative">Requires "Touchscreen input mode" to be "Trackpad" and "Display resolution mode" to be not "native"</string>
 
+    <string name="usb" translatable="false">USB</string>
+    <string name="ps_2" translatable="false">PS/2</string>
 
     <string name="opengl" translatable="false">OpenGL</string>
 

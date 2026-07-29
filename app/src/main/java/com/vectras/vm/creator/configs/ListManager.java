@@ -5,6 +5,7 @@ import android.content.Context;
 import com.vectras.qemu.MainSettingsManager;
 import com.vectras.vm.R;
 import com.vectras.vm.utils.CpuHelper;
+import com.vectras.vm.utils.DeviceUtils;
 import com.vectras.vm.utils.UniversalPickerDialog;
 
 import java.util.ArrayList;
@@ -278,6 +279,29 @@ public class ListManager {
         UniversalPickerDialog.putToList(list, context.getString(R.string.virtio_vga), "virtio-vga");
         UniversalPickerDialog.putToList(list, context.getString(R.string.bochs), "bochs-display");
         UniversalPickerDialog.putToList(list, context.getString(R.string.ati), "ati-vga");
+        return list;
+    }
+
+    public static ArrayList<HashMap<String, Object>> mouseTypes(Context context) {
+        ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+        UniversalPickerDialog.putToList(list, context.getString(R.string.ps_2), "");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.usb), "usb-mouse");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.usb_tablet), "usb-tablet");
+        return list;
+    }
+
+    public static ArrayList<HashMap<String, Object>> keyboardTypes(Context context) {
+        ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+        UniversalPickerDialog.putToList(list, context.getString(R.string.ps_2), "");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.usb), "usb-kbd");
+        return list;
+    }
+
+    public static ArrayList<HashMap<String, Object>> accelTypes(Context context) {
+        ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+        UniversalPickerDialog.putToList(list, context.getString(R.string.none), "");
+        UniversalPickerDialog.putToList(list, context.getString(R.string.tcg_single_thread), "tcg,thread=single");
+        if (DeviceUtils.is64bit()) UniversalPickerDialog.putToList(list, context.getString(R.string.tcg_multi_thread), "tcg,thread=multi");
         return list;
     }
 }

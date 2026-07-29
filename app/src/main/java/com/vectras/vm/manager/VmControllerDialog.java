@@ -392,7 +392,7 @@ public class VmControllerDialog extends DialogFragment {
                 });
 
 
-                if (isAdded() && requireActivity() instanceof MainVNCActivity mainVNCActivity) {
+                if (isAdded() && requireActivity() instanceof MainVNCActivity mainVNCActivity && vncCanvas != null) {
                     binding.sliderBrightness.setValue(vncCanvas.getAlpha() * 100);
                     binding.sliderBrightness.addOnChangeListener((slider, value, fromUser) -> vncCanvas.setAlpha(value / 100));
 

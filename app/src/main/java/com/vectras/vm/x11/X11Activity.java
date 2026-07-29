@@ -112,7 +112,7 @@ public class X11Activity extends AppCompatActivity {
                     Log.e("X11Activity", "Something went wrong while we extracted connection details from binder.", e);
                 }
             } else if (ACTION_STOP.equals(intent.getAction())) {
-                finishAffinity();
+                finish();
             } else if (ACTION_PREFERENCES_CHANGED.equals(intent.getAction())) {
                 Log.d("X11Activity", "preference: " + intent.getStringExtra("key"));
                 if (!"additionalKbdVisible".equals(intent.getStringExtra("key")))
@@ -158,7 +158,7 @@ public class X11Activity extends AppCompatActivity {
         return instance;
     }
 
-    AddIn addIn;
+    public AddIn addIn;
 
     ActivityX11Binding binding;
 
@@ -259,6 +259,13 @@ public class X11Activity extends AppCompatActivity {
 
         addIn = new AddIn(this);
         addIn.initialize(binding);
+    }
+
+    @Override
+    protected void onNewIntent(@NonNull Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        onReceiveConnection(intent);
     }
 
     @Override

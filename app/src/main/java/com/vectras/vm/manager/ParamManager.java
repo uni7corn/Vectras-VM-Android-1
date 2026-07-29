@@ -18,4 +18,8 @@ public class ParamManager {
     public static boolean hasMemory(String param) {
         return Pattern.compile("(?<![\\w-])--?m\\s+(\\d+)([a-zA-Z]*)").matcher(param).find();
     }
+
+    public static boolean hasUsb(String param) {
+        return Pattern.compile("(?<=^|\\s)-usb(?=$|\\s)").matcher(param).find();
+    }
 }

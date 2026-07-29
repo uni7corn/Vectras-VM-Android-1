@@ -70,6 +70,22 @@ public class VMCreatorSelector {
         return ListManager.networkCards(context).get(position);
     }
 
+    public static void mouse(Activity activity, int position, UniversalPickerDialog.UniversalPickerDialogCallback callback) {
+        showDialog(activity, ListManager.mouseTypes(activity), position, callback, activity.getString(R.string.types));
+    }
+
+    public static HashMap<String, Object> getMouse(Context context, int position) {
+        return ListManager.mouseTypes(context).get(position);
+    }
+
+    public static void keyboard(Activity activity, int position, UniversalPickerDialog.UniversalPickerDialogCallback callback) {
+        showDialog(activity, ListManager.keyboardTypes(activity), position, callback, activity.getString(R.string.types));
+    }
+
+    public static HashMap<String, Object> getKeyboard(Context context, int position) {
+        return ListManager.keyboardTypes(context).get(position);
+    }
+
     public static void soundCard(Activity activity, int position, UniversalPickerDialog.UniversalPickerDialogCallback callback) {
         showDialog(activity, ListManager.soundCards(activity), position, callback, activity.getString(R.string.cards));
     }
@@ -84,6 +100,14 @@ public class VMCreatorSelector {
 
     public static void bootFrom(Activity activity, int position, UniversalPickerDialog.UniversalPickerDialogCallback callback) {
         showDialog(activity, ListManager.bootFrom(activity), position, callback, activity.getString(R.string.boot_from));
+    }
+
+    public static void accel(Activity activity, int position, UniversalPickerDialog.UniversalPickerDialogCallback callback) {
+        showDialog(activity, ListManager.accelTypes(activity), position, callback, activity.getString(R.string.types));
+    }
+
+    public static HashMap<String, Object> getAccel(Context context, int position) {
+        return ListManager.accelTypes(context).get(position);
     }
 
     public static void showDialog(Activity activity, ArrayList<HashMap<String, Object>> list, int position, UniversalPickerDialog.UniversalPickerDialogCallback callback, String title) {

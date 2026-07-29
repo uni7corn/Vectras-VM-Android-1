@@ -166,6 +166,9 @@ public class ExportRomActivity extends AppCompatActivity {
 
         vmConfigMap.put("battery", current.battery);
 
+        vmConfigMap.put("mouse", current.mouse);
+        vmConfigMap.put("keyboard", current.keyboard);
+
         boolean isUsingDiskInQemuExtraParams = VMManager.isHaveADisk(current.itemExtra);
 
         if (FileUtils.isFileExists(current.itemPath)) {
@@ -218,6 +221,8 @@ public class ExportRomActivity extends AppCompatActivity {
 
         vmConfigMap.put("isUseUefi", current.isUseUefi);
         vmConfigMap.put("isUseDefaultBios", current.isUseDefaultBios);
+
+        vmConfigMap.put("accel", current.accel);
 
         vmConfigMap.put("qemu", VmFileManager.pathToTextMark(this, current.vmID, current.itemExtra));
         vmConfigMap.put("arch", current.itemArch);
