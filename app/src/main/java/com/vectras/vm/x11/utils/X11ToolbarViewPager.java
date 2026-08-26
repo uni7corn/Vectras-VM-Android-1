@@ -1,10 +1,8 @@
 package com.vectras.vm.x11.utils;
 
 import android.annotation.SuppressLint;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.termux.shared.termux.extrakeys.ExtraKeysView;
+import com.vectras.vm.x11.extrakeys.ExtraKeysView;
 import com.vectras.vm.x11.X11Activity;
 import com.vectras.vm.R;
 

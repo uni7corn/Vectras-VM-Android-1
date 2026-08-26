@@ -3,19 +3,18 @@ apply plugin: 'maven-publish'
 
 android {
     namespace "com.termux.terminal"
-    compileSdkVersion 34
+    compileSdkVersion 37
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     defaultConfig {
         minSdkVersion 21
         //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 28
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -26,18 +25,29 @@ android {
 
     testOptions {
         unitTests.returnDefaultValues = true
+        targetSdk 28
+    }
+    lint {
+        targetSdk 28
     }
 
+
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     testLogging {
         events "started", "passed", "skipped", "failed"
     }
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation libs.junit
 }
 
 

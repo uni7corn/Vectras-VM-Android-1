@@ -21,15 +21,10 @@ package com.vectras.qemu;
 import android.androidVNC.COLORMODEL;
 import android.androidVNC.VncCanvasActivity;
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.widget.ImageView.ScaleType;
 
 import com.vectras.vm.AppConfig;
-import com.vectras.vm.SplashActivity;
 import com.vectras.vm.VectrasApp;
-
-import java.util.Hashtable;
-import java.util.LinkedHashMap;
 
 /**
  *
@@ -83,7 +78,7 @@ public class Config {
 
     //we need to define the configuration for the VNC client since we replaced some deprecated
     //  functions
-    public static Bitmap.Config bitmapConfig = Bitmap.Config.RGB_565;
+    public static Bitmap.Config bitmapConfig = Bitmap.Config.ARGB_8888;
 
     //XXX set scaling to linear it's a tad slower but it's worth it
     public static int SDLHintScale=1;
@@ -153,8 +148,25 @@ public class Config {
         return Config.getCacheDir() + "/" + vmID + "/qmpsocket";
     }
 
+    public static String getLocalQMPSocketPath(String vmID) {
+        return Config.getCacheDir() + "/" + vmID + "/qmpsocket";
+    }
+
+
     public static String getLocalVNCSocketPath() {
         return Config.getCacheDir()+ "/" + vmID + "/vncsocket";
+    }
+
+    public static String getLocalVNCSocketPath(String vmId) {
+        return Config.getCacheDir()+ "/" + vmId + "/vncsocket";
+    }
+
+    public static String getCacheVMPath() {
+        return Config.getCacheDir()+ "/" + vmID + "/";
+    }
+
+    public static String getCacheVMPath(String vmId) {
+        return Config.getCacheDir()+ "/" + vmId + "/";
     }
 
     public static enum MouseMode {
@@ -182,6 +194,7 @@ public class Config {
     public static final String defaultInputMode = VncCanvasActivity.TOUCH_ZOOM_MODE;
     public static String vmID = "";
     public static String currentVNCServervmID = "";
+    public static boolean forceRefeshVNCDisplay = false;
 
     public static void setDefault () {
         defaultVNCHost = "0.0.0.0";

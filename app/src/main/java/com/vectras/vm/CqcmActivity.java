@@ -14,7 +14,9 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.vectras.vm.home.HomeActivity;
+import com.vectras.vm.main.MainActivity;
+import com.vectras.vm.main.core.PendingCommand;
+import com.vectras.vm.manager.VmFileManager;
 import com.vectras.vm.utils.FileUtils;
 import com.vectras.vm.utils.JSONUtils;
 import com.vectras.vm.utils.PermissionUtils;
@@ -24,10 +26,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class CqcmActivity extends AppCompatActivity {
-
-    private Intent gotoActivity = new Intent();
-    private Intent openURL = new Intent();
-    private Button buttonallow;
+    private final String TAG = "CqcmActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,8 @@ public class CqcmActivity extends AppCompatActivity {
             UIUtils.edgeToEdge(this);
             setContentView(R.layout.activity_cqcm);
             UIUtils.setOnApplyWindowInsetsListener(findViewById(R.id.main));
-            buttonallow = findViewById(R.id.buttonallow);
+
+            Button buttonallow = findViewById(R.id.buttonallow);
             buttonallow.setOnClickListener(v -> {
                 if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -64,50 +64,35 @@ public class CqcmActivity extends AppCompatActivity {
 
     }
     private void startAdd() {
-        HashMap<String, Object> mapForCreateNewVM = new HashMap<>();
-        String _map;
-        String imgName = "";
-        String imgIcon = "";
-        String imgPath = "";
-        String imgArch = "";
-        String imgCdrom = "";
-        String imgExtra = "";
-        String vmID = VMManager.idGenerator();
-
         if (!FileUtils.isFileExists(AppConfig.romsdatajson)) {
             FileUtils.writeToFile(AppConfig.maindirpath, "roms-data.json", "[]");
         }
 
         if (JSONUtils.isValidFromFile(AppConfig.romsdatajson)) {
             if (getIntent().hasExtra("content")) {
-                if (Objects.requireNonNull(getIntent().getStringExtra("content")).endsWith("}]")) {
-                    _map = Objects.requireNonNull(getIntent().getStringExtra("content")).substring((int) 0, (int)(Objects.requireNonNull(getIntent().getStringExtra("content")).length() - 1));
+                if (getIntent().hasExtra("cqcmcontent")) {
+                    PendingCommand.vmId = getIntent().getStringExtra("vmId");
+                    PendingCommand.vmConfig = getIntent().getStringExtra("content");
+                    PendingCommand.paramsNotebookConfig = getIntent().getStringExtra("cqcmcontent");
+                    PendingCommand.forceCreate = getIntent().getBooleanExtra("forceCreateNew", false);
                 } else {
-                    _map = Objects.requireNonNull(getIntent().getStringExtra("content"));
-                }
-                if (JSONUtils.isValidFromString(_map)) {
-                    mapForCreateNewVM = new Gson().fromJson(_map, new TypeToken<HashMap<String, Object>>(){}.getType());
-                    if (mapForCreateNewVM.containsKey("imgName")) {
-                        imgName = Objects.requireNonNull(mapForCreateNewVM.get("imgName")).toString();
+                    HashMap<String, Object> mapForCreateNewVM;
+                    String _map;
+
+
+                    if (Objects.requireNonNull(getIntent().getStringExtra("content")).endsWith("}]")) {
+                        _map = Objects.requireNonNull(getIntent().getStringExtra("content")).substring(0, Objects.requireNonNull(getIntent().getStringExtra("content")).length() - 1);
+                    } else {
+                        _map = Objects.requireNonNull(getIntent().getStringExtra("content"));
                     }
-                    if (mapForCreateNewVM.containsKey("imgIcon")) {
-                        imgIcon = Objects.requireNonNull(mapForCreateNewVM.get("imgIcon")).toString();
+                    if (JSONUtils.isValidFromString(_map)) {
+                        mapForCreateNewVM = new Gson().fromJson(_map, new TypeToken<HashMap<String, Object>>() {
+                        }.getType());
+                        mapForCreateNewVM.put("vmID", VMManager.startRamdomVMID());
+                        VMManager.addVM(mapForCreateNewVM, -1);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "The data for the new virtual machine is corrupted and cannot be created.", Toast.LENGTH_LONG).show();
                     }
-                    if (mapForCreateNewVM.containsKey("imgPath")) {
-                        imgPath = Objects.requireNonNull(mapForCreateNewVM.get("imgPath")).toString();
-                    }
-                    if (mapForCreateNewVM.containsKey("imgArch")) {
-                        imgArch = Objects.requireNonNull(mapForCreateNewVM.get("imgArch")).toString();
-                    }
-                    if (mapForCreateNewVM.containsKey("imgCdrom")) {
-                        imgCdrom = Objects.requireNonNull(mapForCreateNewVM.get("imgCdrom")).toString();
-                    }
-                    if (mapForCreateNewVM.containsKey("imgExtra")) {
-                        imgExtra = Objects.requireNonNull(mapForCreateNewVM.get("imgExtra")).toString();
-                    }
-                    VMManager.createNewVM(imgName, imgIcon, imgPath, imgArch, imgCdrom, imgExtra, vmID, VMManager.startRandomPort());
-                } else {
-                    Toast.makeText(getApplicationContext(), "The data for the new virtual machine is corrupted and cannot be created.", Toast.LENGTH_LONG).show();
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "There is no data about the new virtual machine to create.", Toast.LENGTH_LONG).show();
@@ -115,35 +100,30 @@ public class CqcmActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "The virtual machine list data is corrupted and new virtual machines cannot be added right now.", Toast.LENGTH_LONG).show();
         }
-        if(!HomeActivity.isActivate) {
-            Log.i("CqcmActivity", "Vectras VM is not opening.");
-            gotoActivity.setClass(getApplicationContext(), SplashActivity.class);
-            startActivity(gotoActivity);
-            Log.i("CqcmActivity", "Opened SplashActivity");
+
+        if (!MainActivity.isActivate) {
+            startActivity(new Intent(this, SplashActivity.class));
         } else {
-            Log.i("CqcmActivity", "Vectras VM is opening.");
-            openURL.setAction(Intent.ACTION_VIEW);
-            openURL.setData(Uri.parse("android-app://com.vectras.vm"));
-            startActivity(openURL);
-            Log.i("CqcmActivity", "Opened Vectras VM using URL.");
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.setClass(this, MainActivity.class);
+            startActivity(intent);
         }
         finish();
     }
 
     private void runCommand(String _command) {
-        AppConfig.pendingCommand = _command;
+        Log.i(TAG, "runCommand: " + _command);
 
-        if(!HomeActivity.isActivate) {
-            Log.i("CqcmActivity", "Vectras VM is not opening.");
-            gotoActivity.setClass(getApplicationContext(), SplashActivity.class);
-            startActivity(gotoActivity);
-            Log.i("CqcmActivity", "Opened SplashActivity");
+        PendingCommand.command = _command;
+
+        if (!MainActivity.isActivate) {
+            startActivity(new Intent(this, SplashActivity.class));
         } else {
-            Log.i("CqcmActivity", "Vectras VM is opening.");
-            openURL.setAction(Intent.ACTION_VIEW);
-            openURL.setData(Uri.parse("android-app://com.vectras.vm"));
-            startActivity(openURL);
-            Log.i("CqcmActivity", "Opened Vectras VM using URL.");
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.setClass(this, MainActivity.class);
+            startActivity(intent);
         }
         finish();
     }

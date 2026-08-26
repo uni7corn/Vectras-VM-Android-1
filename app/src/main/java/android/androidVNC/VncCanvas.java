@@ -37,6 +37,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -45,17 +46,19 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.antlersoft.android.bc.BCFactory;
 import com.vectras.qemu.Config;
-import com.vectras.qemu.MainVNCActivity;
 import com.vectras.vm.R;
+import com.vectras.vm.utils.DeviceUtils;
 import com.vectras.vm.utils.UIUtils;
-import com.vectras.vterm.Terminal;
 
 import java.io.IOException;
+import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.Inflater;
 
 import androidx.appcompat.widget.AppCompatImageView;
@@ -151,6 +154,10 @@ public class VncCanvas extends AppCompatImageView {
 		connection = bean;
 		this.pendingColorModel = COLORMODEL.valueOf(bean.getColorModel());
 
+		if (Build.VERSION.SDK_INT >= 28) {
+			this.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+		}
+
         setOnGenericMotionListener(new VNCGenericMotionListener_API12());
         setOnTouchListener(new VNCOnTouchListener());
 
@@ -173,14 +180,15 @@ public class VncCanvas extends AppCompatImageView {
 		});
 
         // Show the ProgressDialog
-		pd.show();
-		final Display display = pd.getWindow().getWindowManager().getDefaultDisplay();
+		// Did not give show to not flash.
+		//pd.show();
+		final Display display = Objects.requireNonNull(pd.getWindow()).getWindowManager().getDefaultDisplay();
 		Thread t = new Thread() {
 
 			public void run() {
 				try {
-					int width = 0;
-					int height = 0;
+					int width;
+					int height;
 					Point size = new Point();
 					display.getSize(size);
 					width = size.x;
@@ -188,18 +196,14 @@ public class VncCanvas extends AppCompatImageView {
 					
 					connectAndAuthenticate(connection.getUserName(), connection.getPassword());
 					doProtocolInitialisation(width, height);
-					handler.post(new Runnable() {
-						public void run() {
-							// pd.setMessage("Downloading first frame.\nPlease
-							// wait...");
-						}
-					});
+					handler.post(() -> {
+                        // pd.setMessage("Downloading first frame.\nPlease
+                        // wait...");
+                    });
 					processNormalProtocol(getContext(), pd, setModes);
 				} catch (Throwable e) {
 					if (maintainConnection) {
-						Log.e(TAG, e.toString());
-                        if(Config.debug)
-						    e.printStackTrace();
+						Log.e(TAG, "initializeVncCanvas: ", e);
 						// Ensure we dismiss the progress dialog
 						// before we fatal error finish
 						if (pd.isShowing()) {
@@ -210,8 +214,7 @@ public class VncCanvas extends AppCompatImageView {
 							// figure out how to gracefully notify the user
 							// Instantiating an alert dialog here doesn't work
 							// because we are out of memory. :(
-						} else if (e instanceof ArrayIndexOutOfBoundsException || e instanceof java.net.ConnectException
-								|| e instanceof java.io.IOException) {
+						} else if (e instanceof ArrayIndexOutOfBoundsException || e instanceof IOException) {
 							// Retry
 							if (retries < MAX_RETRIES) {
 								retries++;
@@ -219,21 +222,19 @@ public class VncCanvas extends AppCompatImageView {
 							}
 						} else {
 							String error = "VNC connection failed!";
-							if (e.getMessage() != null && (e.getMessage().indexOf("authentication") > -1)) {
+							if (e.getMessage() != null && (e.getMessage().contains("authentication"))) {
 								error = "VNC authentication failed!";
 							}
 							final String error_ = error + "<br>" + e.getLocalizedMessage();
-							handler.post(new Runnable() {
-								public void run() {
-									Utils.showFatalErrorMessage(getContext(), error_);
-								}
-							});
+							handler.post(() -> Utils.showFatalErrorMessage(getContext(), error_));
 						}
 					}
 				}
 			}
 		};
 		t.start();
+
+		setupScaleMode();
 	}
 
 	public void reload() {
@@ -241,7 +242,8 @@ public class VncCanvas extends AppCompatImageView {
 		Activity activity = ((Activity) getContext());
 		Intent data = new Intent();
 		activity.setResult(Config.VNC_RESET_RESULT_CODE, data);
-		activity.finish();
+// Do not terminate Activity when no signal.
+//		activity.finish();
 
 	}
 
@@ -261,7 +263,7 @@ public class VncCanvas extends AppCompatImageView {
 		Log.i(TAG, "Using RFB protocol version " + rfb.clientMajor + "." + rfb.clientMinor);
 
 		int bitPref = 0;
-		if (connection.getUserName().length() > 0) {
+		if (!connection.getUserName().isEmpty()) {
 			bitPref |= 1;
 		}
 		Log.d("debug", "bitPref=" + bitPref);
@@ -302,22 +304,8 @@ public class VncCanvas extends AppCompatImageView {
 		Log.i(TAG, "Desktop name is " + rfb.desktopName);
 		Log.i(TAG, "Desktop size is " + rfb.framebufferWidth + " x " + rfb.framebufferHeight);
 
-		boolean useFull = false;
-		int capacity = BCFactory.getInstance().getBCActivityManager()
-				.getMemoryClass(Utils.getActivityManager(getContext()));
-		if (connection.getForceFull() == BitmapImplHint.AUTO) {
-			if (rfb.framebufferWidth * rfb.framebufferHeight * FullBufferBitmapData.CAPACITY_MULTIPLIER <= capacity
-					* 1024 * 1024) {
-				useFull = true;
-			}
-		} else {
-			useFull = (connection.getForceFull() == BitmapImplHint.FULL);
-		}
-		if (!useFull) {
-			bitmapData = new LargeBitmapData(rfb, this, dx, dy, capacity);
-		} else {
-			bitmapData = new FullBufferBitmapData(rfb, this, capacity);
-		}
+		initBitmapData(dx, dy);
+
 		mouseX = rfb.framebufferWidth / 2;
 		mouseY = rfb.framebufferHeight / 2;
 
@@ -330,6 +318,29 @@ public class VncCanvas extends AppCompatImageView {
 		colorPalette = pendingColorModel.palette();
 		colorModel = pendingColorModel;
 		pendingColorModel = null;
+	}
+
+	void initBitmapData(int dx, int dy) {
+		int capacity = BCFactory.getInstance().getBCActivityManager()
+				.getMemoryClass(Utils.getActivityManager(getContext()));
+
+		boolean useFull = false;
+		if (connection.getForceFull() == BitmapImplHint.AUTO) {
+			if (rfb.framebufferWidth * rfb.framebufferHeight * FullBufferBitmapData.CAPACITY_MULTIPLIER
+					<= capacity * 1024 * 1024) {
+				useFull = true;
+			}
+		} else {
+			useFull = (connection.getForceFull() == BitmapImplHint.FULL);
+		}
+
+		if (bitmapData != null) bitmapData.dispose();
+
+		if (!useFull) {
+			bitmapData = new LargeBitmapData(rfb, this, dx, dy, capacity);
+		} else {
+			bitmapData = new FullBufferBitmapData(rfb, this, capacity);
+		}
 	}
 
 	public void setColorModel(COLORMODEL cm) {
@@ -394,7 +405,12 @@ public class VncCanvas extends AppCompatImageView {
 							rfb.setFramebufferSize(rw, rh);
 							// - updateFramebufferSize();
 							Log.v(TAG, "rfb.EncodingNewFBSize");
-							reload();
+
+							Point size = new Point();
+							VncCanvasActivity.display.getSize(size);
+							initBitmapData(size.x, size.y);
+							setupScaleMode();
+							handler.post(this::reload);
 							break;
 						}
 
@@ -454,15 +470,21 @@ public class VncCanvas extends AppCompatImageView {
 						}
 					}
 
-					boolean fullUpdateNeeded = false;
-
-					if (pendingColorModel != null) {
-						setPixelFormat();
-						fullUpdateNeeded = true;
-					}
-
 					setEncodings(true);
-					bitmapData.writeFullUpdateRequest(!fullUpdateNeeded);
+
+					if (isNeedWriteFullUpdateRequest) {
+						bitmapData.writeFullUpdateRequest(false);
+						isNeedWriteFullUpdateRequest = false;
+					} else {
+						boolean fullUpdateNeeded = false;
+
+						if (pendingColorModel != null) {
+							setPixelFormat();
+							fullUpdateNeeded = true;
+						}
+
+						bitmapData.writeFullUpdateRequest(!fullUpdateNeeded);
+					}
 
 					break;
 
@@ -470,25 +492,21 @@ public class VncCanvas extends AppCompatImageView {
 					throw new Exception("Can't handle SetColourMapEntries message");
 
 				case RfbProto.Bell:
-					handler.post(new Runnable() {
-						public void run() {
-                            UIUtils.toastShort(context, "VNC Beep");
-						}
-					});
+					handler.post(() -> UIUtils.toastShort(context, "VNC Beep"));
 					break;
 
 				case RfbProto.ServerCutText:
 					String s = rfb.readServerCutText();
-					if (s != null && s.length() > 0) {
-						// TODO implement cut & paste
+					if (s != null && !s.isEmpty()) {
+                        Log.e(TAG, "processNormalProtocol: " + s);
 					}
 					break;
 
 				case RfbProto.TextChat:
 					// UltraVNC extension
 					String msg = rfb.readTextChatMsg();
-					if (msg != null && msg.length() > 0) {
-						// TODO implement chat interface
+					if (msg != null && !msg.isEmpty()) {
+                        Log.e(TAG, "processNormalProtocol: " + msg);
 					}
 					break;
 
@@ -501,6 +519,7 @@ public class VncCanvas extends AppCompatImageView {
 		} finally {
 			Log.v(TAG, "Closing VNC Connection");
 			rfb.close();
+			disconnected();
 		}
 	}
 
@@ -527,6 +546,11 @@ public class VncCanvas extends AppCompatImageView {
 
 	public void onDestroy() {
 		Log.v(TAG, "Cleaning up resources");
+
+		if (rfb != null) {
+			rfb.close();
+		}
+
 		if (bitmapData != null) {
 			bitmapData.dispose();
 		}
@@ -685,8 +709,8 @@ public class VncCanvas extends AppCompatImageView {
 			sY = getImageHeight() + height * .6 - getVisibleHeight() - absoluteYPosition;
 		}
 
-		absoluteXPosition += sX;
-		absoluteYPosition += sY;
+		absoluteXPosition += (int) sX;
+		absoluteYPosition += (int) sY;
 		if (sX != 0.0 || sY != 0.0) {
 			scrollToAbsolute();
 			return true;
@@ -748,7 +772,8 @@ public class VncCanvas extends AppCompatImageView {
 				for (i = 0; i < w; i++) {
 					final int idx = i * 4;
 					pixels[offset + i] = // 0xFF << 24 |
-							(handleRawRectBuffer[idx + 2] & 0xff) << 16 | (handleRawRectBuffer[idx + 1] & 0xff) << 8
+							0xFF000000
+									|(handleRawRectBuffer[idx + 2] & 0xff) << 16 | (handleRawRectBuffer[idx + 1] & 0xff) << 8
 									| (handleRawRectBuffer[idx] & 0xff);
 				}
 			}
@@ -765,7 +790,7 @@ public class VncCanvas extends AppCompatImageView {
 		}
 	}
 
-	private Runnable reDraw = new Runnable() {
+	private final Runnable reDraw = new Runnable() {
 		public void run() {
 			if (showDesktopInfo) {
 				// Show a Toast with the desktop info on first frame draw.
@@ -805,7 +830,7 @@ public class VncCanvas extends AppCompatImageView {
 		msg += "\n" + rfb.framebufferWidth + "x" + rfb.framebufferHeight;
 		String enc = getEncoding();
 		// Encoding might not be set when we display this message
-		if (enc != null && !enc.equals("")) {
+		if (!enc.isEmpty()) {
 			msg += ", " + getEncoding() + " encoding, " + colorModel.toString();
 		} else {
 			msg += ", " + colorModel.toString();
@@ -834,10 +859,10 @@ public class VncCanvas extends AppCompatImageView {
 	}
 
 	// Useful shortcuts for modifier masks.
-	final static int CTRL_MASK = KeyEvent.META_SYM_ON;
-	final static int SHIFT_MASK = KeyEvent.META_SHIFT_ON;
-	final static int META_MASK = 0;
-	final static int ALT_MASK = KeyEvent.META_ALT_ON;
+	public final static int CTRL_MASK = KeyEvent.META_SYM_ON;
+	public final static int SHIFT_MASK = KeyEvent.META_SHIFT_ON;
+	public final static int META_MASK = 0;
+	public final static int ALT_MASK = KeyEvent.META_ALT_ON;
 	private static final int MOUSE_BUTTON_NONE = 0;
 	static final int MOUSE_BUTTON_LEFT = 1;
 	static final int MOUSE_BUTTON_MIDDLE = 2;
@@ -944,7 +969,8 @@ public class VncCanvas extends AppCompatImageView {
                         pointerMask = 0;
                     }
                 }
-                bitmapData.invalidateMousePosition();
+
+                if (bitmapData != null) bitmapData.invalidateMousePosition();
                 mouseX = x;
                 mouseY = y;
                 if (mouseX < 0) {
@@ -957,7 +983,7 @@ public class VncCanvas extends AppCompatImageView {
                 } else if (mouseY >= rfb.framebufferHeight) {
                     mouseY = rfb.framebufferHeight - 1;
                 }
-                bitmapData.invalidateMousePosition();
+                if (bitmapData != null) bitmapData.invalidateMousePosition();
                 try {
                     rfb.writePointerEvent(mouseX, mouseY, modifiers, pointerMask);
                     if (action == MotionEvent.ACTION_SCROLL) {
@@ -965,9 +991,51 @@ public class VncCanvas extends AppCompatImageView {
                         pointerMask = 0;
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "processPointerEvent: ", e);
                 }
                 panToMouse();
+
+				if (getScaleX() > scalingX) {
+					if (getScaleType() == STRETCH_TO_FIT_MODE) {
+						float scaleX = getScaleX();
+						float scaleY = getScaleY();
+
+						float centerX = getWidth() / 2f;
+						float centerY = getHeight() / 2f;
+
+						float tx = centerX - (mouseX * (scaleX / (scaleX / scalingX)));
+						float ty = centerY - (mouseY * (scaleY / (scaleY / scalingY)));
+
+						setTranslationX(tx);
+						setTranslationY(ty);
+					} else {
+						setPivotX(0);
+						setPivotY(0);
+
+						float scaleX = getScaleX();
+						float scaleY = getScaleY();
+						float centerX = getWidth() / 2f;
+						float centerY = getHeight() / 2f;
+
+						float imageWidth = getImageWidth();
+						float imageHeight = getImageHeight();
+
+						float fitScale = Math.min((float) getWidth() / imageWidth, (float) getHeight() / imageHeight);
+
+						float offsetX = (getWidth() - (imageWidth * fitScale)) / 2f;
+						float offsetY = (getHeight() - (imageHeight * fitScale)) / 2f;
+
+						float mouseOnScreenX = (mouseX * fitScale + offsetX);
+						float mouseOnScreenY = (mouseY * fitScale + offsetY);
+
+						setTranslationX(centerX - mouseOnScreenX * scaleX);
+						setTranslationY(centerY - mouseOnScreenY * scaleY);
+					}
+				} else {
+					setTranslationX(0);
+					setTranslationY(0);
+				}
+
                 return true;
             }
 
@@ -975,53 +1043,31 @@ public class VncCanvas extends AppCompatImageView {
 	}
 
 	private int isSpecialKey(int key) {
-		switch (key) {
-		case '!':
-			return '1';
-		case '@':
-			return '2';
-		case '#':
-			return '3';
-		case '$':
-			return '4';
-		case '%':
-			return '5';
-		case '^':
-			return '6';
-		case '&':
-			return '7';
-		case '*':
-			return '8';
-		case '(':
-			return '9';
-		case ')':
-			return '0';
-		case '_':
-			return '-';
-		case '+':
-			return '=';
-		case '~':
-			return '`';
-		case '{':
-			return '[';
-		case '}':
-			return ']';
-		case '|':
-			return '\\';
-		case '\"':
-			return '\'';
-		case ':':
-			return ';';
-		case '<':
-			return ',';
-		case '>':
-			return '.';
-		case '?':
-			return '/';
-		default:
-			return -1;
-
-		}         	}
+        return switch (key) {
+            case '!' -> '1';
+            case '@' -> '2';
+            case '#' -> '3';
+            case '$' -> '4';
+            case '%' -> '5';
+            case '^' -> '6';
+            case '&' -> '7';
+            case '*' -> '8';
+            case '(' -> '9';
+            case ')' -> '0';
+            case '_' -> '-';
+            case '+' -> '=';
+            case '~' -> '`';
+            case '{' -> '[';
+            case '}' -> ']';
+            case '|' -> '\\';
+            case '\"' -> '\'';
+            case ':' -> ';';
+            case '<' -> ',';
+            case '>' -> '.';
+            case '?' -> '/';
+            default -> -1;
+        };
+    }
 
 	/**
 	 * Moves the scroll while the volume key is held down
@@ -1045,7 +1091,8 @@ public class VncCanvas extends AppCompatImageView {
 				rfb.writePointerEvent(mouseX, mouseY, 0, 0);
 
 				handler.postDelayed(this, delay);
-			} catch (IOException ioe) {
+			} catch (IOException e) {
+                Log.e(TAG, "MouseScrollRunnable: ", e);
 			}
 		}
 	}
@@ -1075,7 +1122,7 @@ public class VncCanvas extends AppCompatImageView {
 			try {
 				rfb.writePointerEvent(mouseX, mouseY, evt.getMetaState(), pointerMask);
 			} catch (IOException ioe) {
-				// TODO: do something with exception
+                Log.e(TAG, "processLocalKeyEvent: ", ioe);
 			}
 			return true;
 		}
@@ -1083,7 +1130,7 @@ public class VncCanvas extends AppCompatImageView {
 			boolean down = (evt.getAction() == KeyEvent.ACTION_DOWN);
 			int key;
 			int metaState = evt.getMetaState();
-			metaState = 0;
+			//metaState = 0;
 			// Log.v("Key Pressed", keyCode + ", metaState = " + metaState);
 
 			switch (keyCode) {
@@ -1107,7 +1154,7 @@ public class VncCanvas extends AppCompatImageView {
 				key = 0xff08;
 				break;
 			case KeyEvent.KEYCODE_FORWARD_DEL:
-				key = MetaKeyBean.keysByKeyCode.get(KeyEvent.KEYCODE_DEL).keySym;
+				key = Objects.requireNonNull(MetaKeyBean.keysByKeyCode.get(KeyEvent.KEYCODE_DEL)).keySym;
 				break;
 			case KeyEvent.KEYCODE_ALT_LEFT:
 			case KeyEvent.KEYCODE_ALT_RIGHT:
@@ -1160,6 +1207,11 @@ public class VncCanvas extends AppCompatImageView {
 				break;
 			}
 
+			if ((evt.getMetaState() & KeyEvent.META_META_ON) == KeyEvent.META_META_ON) {
+				// Log.v("meta", "setting meta mask");
+				metaState = metaState | VncCanvas.META_MASK;
+			}
+
 			if ((evt.getMetaState() & KeyEvent.META_CTRL_ON) == KeyEvent.META_CTRL_ON) {
 				// Log.v("meta", "setting ctrl mask");
 				metaState = metaState | VncCanvas.CTRL_MASK;
@@ -1185,10 +1237,10 @@ public class VncCanvas extends AppCompatImageView {
 					lastKeyDown = key;
 				}
 
-				rfb.writeKeyEvent(key, metaState, down);
+				rfb.writeKeyEvent(key, metaStateCollector > 0 ? metaStateCollector : metaState, down);
 				this.ALT_PRESSED = false;
 			} catch (Exception e) {
-				e.printStackTrace();
+                Log.e(TAG, "processLocalKeyEvent: ", e);
 			}
 			return true;
 		}
@@ -1197,14 +1249,22 @@ public class VncCanvas extends AppCompatImageView {
 
 	public void closeConnection() {
 		maintainConnection = false;
+		if (rfb != null) {
+			rfb.close();
+		}
 	}
+
+	public int metaStateCollector = 0;
 
 	public void sendMetaKey1(int key, int flags) {
 		try {
 			rfb.writeKeyEvent(key, flags, true);
 			rfb.writeKeyEvent(key, flags, false);
+
+			VncCanvasActivity activity = (VncCanvasActivity) VncCanvas.this.getContext();
+			activity.onKeyChanged(key, false, flags);
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+            Log.e(TAG, "sendMetaKey1: ", ioe);
 		}
 
 	}
@@ -1212,8 +1272,11 @@ public class VncCanvas extends AppCompatImageView {
 	public void sendMetaKey1Down(int key, int flags) {
 		try {
 			rfb.writeKeyEvent(key, flags, true);
+
+			VncCanvasActivity activity = (VncCanvasActivity) VncCanvas.this.getContext();
+			activity.onKeyChanged(key, true, flags);
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+            Log.e(TAG, "sendMetaKey1Down: ", ioe);
 		}
 
 	}
@@ -1221,8 +1284,11 @@ public class VncCanvas extends AppCompatImageView {
 	public void sendMetaKey1Up(int key, int flags) {
 		try {
 			rfb.writeKeyEvent(key, flags, false);
+
+			VncCanvasActivity activity = (VncCanvasActivity) VncCanvas.this.getContext();
+			activity.onKeyChanged(key, false, flags);
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+            Log.e(TAG, "sendMetaKey1Up: ", ioe);
 		}
 
 	}
@@ -1231,7 +1297,7 @@ public class VncCanvas extends AppCompatImageView {
 		try {
 			rfb.writeAkey(_key);
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+            Log.e(TAG, "sendAKey: ", ioe);
 		}
 
 	}
@@ -1240,7 +1306,7 @@ public class VncCanvas extends AppCompatImageView {
 		try {
 			rfb.writeCtrlAltDel();
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+            Log.e(TAG, "sendCtrlAltDel: ", ioe);
 		}
 
 	}
@@ -1249,7 +1315,7 @@ public class VncCanvas extends AppCompatImageView {
 		try {
 			rfb.writeCtrlC();
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+            Log.e(TAG, "sendCtrlC: ", ioe);
 		}
 
 	}
@@ -1258,7 +1324,7 @@ public class VncCanvas extends AppCompatImageView {
 		try {
 			rfb.writeCtrlX();
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+            Log.e(TAG, "sendCtrlX: ", ioe);
 		}
 
 	}
@@ -1267,7 +1333,7 @@ public class VncCanvas extends AppCompatImageView {
 		try {
 			rfb.writeCtrlV();
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+            Log.e(TAG, "sendCtrlV: ", ioe);
 		}
 
 	}
@@ -1276,31 +1342,46 @@ public class VncCanvas extends AppCompatImageView {
 		try {
 			rfb.writeCtrlA();
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+            Log.e(TAG, "sendCtrlA: ", ioe);
 		}
 
 	}
+
+	private static final int LEFT_SHIFT_KEY_CODE = 0xFFE1;
 
 	public void sendText(String s) {
 		int l = s.length();
 		for (int i = 0; i < l; i++) {
 			char c = s.charAt(i);
-			int meta = 0;
 			int keysym = c;
 			if (Character.isISOControl(c)) {
 				if (c == '\n') {
-					keysym = MetaKeyBean.keysByKeyCode.get(KeyEvent.KEYCODE_ENTER).keySym;
+					keysym = Objects.requireNonNull(MetaKeyBean.keysByKeyCode.get(KeyEvent.KEYCODE_ENTER)).keySym;
 				} else {
 					continue;
 				}
 			}
+
+			boolean isNeedShift = Character.isUpperCase(c) || isSpecialKey(c) > -1;
+
 			try {
-				rfb.writeKeyEvent(keysym, meta, true);
-				rfb.writeKeyEvent(keysym, meta, false);
+				if (isNeedShift) {
+					rfb.writeKeyEvent(LEFT_SHIFT_KEY_CODE, 0, true);
+				}
+
+				rfb.writeKeyEvent(keysym, 0, true);
+				rfb.writeKeyEvent(keysym, 0, false);
+
+				if (isNeedShift) {
+					rfb.writeKeyEvent(LEFT_SHIFT_KEY_CODE, 0, false);
+				}
 			} catch (IOException ioe) {
-				// TODO: log this
+                Log.e(TAG, "sendText: ",ioe);
 			}
 		}
+
+		VncCanvasActivity activity = (VncCanvasActivity) VncCanvas.this.getContext();
+		activity.onKeyChanged(-1, false, -1);
 	}
 
 	void sendMetaKey(MetaKeyBean meta) {
@@ -1309,14 +1390,14 @@ public class VncCanvas extends AppCompatImageView {
 				rfb.writePointerEvent(mouseX, mouseY, meta.getMetaFlags(), meta.getMouseButtons());
 				rfb.writePointerEvent(mouseX, mouseY, meta.getMetaFlags(), 0);
 			} catch (IOException ioe) {
-				ioe.printStackTrace();
+                Log.e(TAG, "sendMetaKey: ",ioe);
 			}
 		} else {
 			try {
 				rfb.writeKeyEvent(meta.getKeySym(), meta.getMetaFlags(), true);
 				rfb.writeKeyEvent(meta.getKeySym(), meta.getMetaFlags(), false);
 			} catch (IOException ioe) {
-				ioe.printStackTrace();
+                Log.e(TAG, "sendMetaKey: ",ioe);
 			}
 		}
 	}
@@ -1337,21 +1418,31 @@ public class VncCanvas extends AppCompatImageView {
 	}
 
 	public int getImageWidth() {
+		if (bitmapData == null) {
+			return 0;
+		}
 		return bitmapData.framebufferwidth;
 	}
 
 	public int getImageHeight() {
+		if (bitmapData == null) {
+			return 0;
+		}
 		return bitmapData.framebufferheight;
 	}
 
 	public int getCenteredXOffset() {
-		int xoffset = (bitmapData.framebufferwidth - getWidth()) / 2;
-		return xoffset;
+		if (bitmapData == null) {
+			return 0;
+		}
+        return (bitmapData.framebufferwidth - getWidth()) / 2;
 	}
 
 	public int getCenteredYOffset() {
-		int yoffset = (bitmapData.framebufferheight - getHeight()) / 2;
-		return yoffset;
+		if (bitmapData == null) {
+			return 0;
+		}
+        return (bitmapData.framebufferheight - getHeight()) / 2;
 	}
 
 	/**
@@ -1432,7 +1523,7 @@ public class VncCanvas extends AppCompatImageView {
 			try {
 				rfb.writeSetEncodings(encodings, nEncodings);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Log.e(TAG, "setEncodings: ", e);
 			}
 			encodingsSaved = encodings;
 			nEncodingsSaved = nEncodings;
@@ -1862,7 +1953,8 @@ public class VncCanvas extends AppCompatImageView {
 				offset = bitmapData.offset(x, dy);
 				for (i = 0; i < w; i++) {
 					final int idx = i * 4;
-					pixels[offset + i] = (handleZlibRectBuffer[idx + 2] & 0xFF) << 16
+					pixels[offset + i] = 0xFF000000
+							|(handleZlibRectBuffer[idx + 2] & 0xFF) << 16
 							| (handleZlibRectBuffer[idx + 1] & 0xFF) << 8 | (handleZlibRectBuffer[idx] & 0xFF);
 				}
 			}
@@ -1883,7 +1975,7 @@ public class VncCanvas extends AppCompatImageView {
 			int p1 = is.readU8();
 			int p2 = is.readU8();
 			int p3 = is.readU8();
-			pix = (p3 & 0xFF) << 16 | (p2 & 0xFF) << 8 | (p1 & 0xFF);
+			pix = 0xFF000000 | (p3 & 0xFF) << 16 | (p2 & 0xFF) << 8 | (p1 & 0xFF);
 		}
 		return pix;
 	}
@@ -1899,6 +1991,8 @@ public class VncCanvas extends AppCompatImageView {
 			for (int i = 0; i < count; i++) {
 				dst[i] = (int) readPixelsBuffer[i] & 0xFF;
 			}
+
+			totalBytesReceived.addAndGet(count);
 		} else {
 			final int l = count * 3;
 			if (l > readPixelsBuffer.length) {
@@ -1907,9 +2001,12 @@ public class VncCanvas extends AppCompatImageView {
 			is.readBytes(readPixelsBuffer, 0, l);
 			for (int i = 0; i < count; i++) {
 				final int idx = i * 3;
-				dst[i] = ((readPixelsBuffer[idx + 2] & 0xFF) << 16 | (readPixelsBuffer[idx + 1] & 0xFF) << 8
+				dst[i] = 0xFF000000
+						| ((readPixelsBuffer[idx + 2] & 0xFF) << 16 | (readPixelsBuffer[idx + 1] & 0xFF) << 8
 						| (readPixelsBuffer[idx] & 0xFF));
 			}
+
+			totalBytesReceived.addAndGet(l);
 		}
 	}
 
@@ -2041,12 +2138,66 @@ public class VncCanvas extends AppCompatImageView {
 		bitmapData.updateBitmap(x, y, w, h);
 	}
 
+	boolean isNeedWriteFullUpdateRequest = true;
+
 	public void connected() {
+		// Request initial framebuffer update
+		isNeedWriteFullUpdateRequest = true;
+
+//		startDeadCheck();
+
         VncCanvasActivity activity = (VncCanvasActivity) VncCanvas.this.getContext();
         activity.onConnected();
-
     }
 
+	public void disconnected() {
+		stopDeadCheck();
+
+		VncCanvasActivity activity = (VncCanvasActivity) VncCanvas.this.getContext();
+		activity.onDisconnected();
+	}
+
+	private final AtomicLong totalBytesReceived = new AtomicLong(0);
+	private long lastCheckedBytes = 0;
+	ScheduledExecutorService deadCheckScheduler;
+
+	boolean isNeedDeadCheck = DeviceUtils.isColorOS(getContext());
+
+	private void startDeadCheck() {
+		if (!isNeedDeadCheck) return;
+
+		totalBytesReceived.set(0);
+		lastCheckedBytes = totalBytesReceived.get();
+		deadCheckScheduler = Executors.newSingleThreadScheduledExecutor();
+
+		deadCheckScheduler.scheduleWithFixedDelay(() -> {
+			long currentBytes = totalBytesReceived.get();
+
+			if (currentBytes == lastCheckedBytes) {
+				isNeedWriteFullUpdateRequest = true;
+				Log.d(TAG, "No response was detected and a WriteFullUpdateRequest was sent.");
+			} else {
+				lastCheckedBytes = currentBytes;
+			}
+		}, 5000, 5000, TimeUnit.SECONDS);
+	}
+
+	private void stopDeadCheck() {
+		if (!isNeedDeadCheck) return;
+
+		if (deadCheckScheduler != null) {
+			deadCheckScheduler.shutdownNow();
+			deadCheckScheduler = null;
+		}
+	}
+
+    public float getFramebufferWidth() {
+        return bitmapData.framebufferwidth;
+    }
+
+    public float getFramebufferHeight() {
+        return bitmapData.framebufferheight;
+    }
 
     class VNCOnTouchListener implements View.OnTouchListener {
 
@@ -2159,4 +2310,59 @@ public class VncCanvas extends AppCompatImageView {
         }
 
     }
+
+	public float scalingX = 1;
+	public float scalingY = 1;
+
+	public void setupScaleMode() {
+		if (parentView != null) {
+			setupScaleMode(parentView);
+			return;
+		}
+
+		if (getScaleType() == ScaleType.FIT_XY) {
+			post(() -> {
+				if (getWidth() == 0 || getHeight() == 0 || getImageWidth() == 0 || getImageHeight() == 0) return;
+
+				scalingX = (float) getWidth() / getImageWidth();
+				scalingY = (float) getHeight() / getImageHeight();
+
+				setScaleX(scalingX);
+				setScaleY(scalingY);
+			});
+		} else if (getScaleType() == ScaleType.FIT_CENTER || getScaleType() == ScaleType.FIT_START) {
+			setScaleX(1);
+			setScaleY(1);
+		}
+	}
+
+	View parentView;
+
+	public void setupScaleMode(View parent) {
+		parentView = parent;
+
+		if (getScaleType() == ScaleType.FIT_XY) {
+			post(() -> {
+				if (parent.getWidth() == 0 || parent.getHeight() == 0 || getImageWidth() == 0 || getImageHeight() == 0) return;
+
+				scalingX = (float) parent.getWidth() / getImageWidth();
+				scalingY = (float) parent.getHeight() / getImageHeight();
+
+				setScaleX(scalingX);
+				setScaleY(scalingY);
+			});
+		} else if (getScaleType() == ScaleType.FIT_CENTER || getScaleType() == ScaleType.FIT_START) {
+			setScaleX(1);
+			setScaleY(1);
+		}
+	}
+
+	public final ScaleType FULL_SCREEN_MODE = ScaleType.FIT_CENTER;
+	public final ScaleType STRETCH_TO_FIT_MODE = ScaleType.FIT_XY;
+	public final ScaleType ONE_TO_ONE_MODE = ScaleType.CENTER;
+
+	public void setScaleMode(ScaleType mode) {
+		setScaleType(mode);
+		setupScaleMode();
+	}
 }

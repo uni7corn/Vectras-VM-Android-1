@@ -4,6 +4,8 @@
 package android.androidVNC;
 
 import com.vectras.qemu.Config;
+import com.vectras.qemu.VNCConfig;
+import com.vectras.vm.VectrasApp;
 
 import android.widget.ImageView.ScaleType;
 
@@ -16,12 +18,12 @@ public class ConnectionBean {
 	private String address = "localhost";
 	private String password = "";
 	private int port = 5901;
-	private String colorModel = COLORMODEL.C64.nameString();
+	private String colorModel = COLORMODEL.C24bit.nameString();
 	private String InputMode = VncCanvasActivity.TOUCH_ZOOM_MODE;
 	private String scaleMode = "";
 	private String nickname = "vectras";
 	private long forceFull = 0;
-	private boolean useLocalCursor = false;
+	public static boolean useLocalCursor = false;
 	private boolean followMouse = true;
 	private String userName;
 	private long id = 0;

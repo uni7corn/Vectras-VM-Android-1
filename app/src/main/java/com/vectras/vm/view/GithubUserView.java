@@ -1,21 +1,21 @@
 package com.vectras.vm.view;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Button;
+
+import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.vectras.vm.R;
 import com.vectras.vm.model.GithubUser;
 import com.vectras.vm.network.GithubApiService;
+import com.vectras.vm.utils.IntentUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,12 +24,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GithubUserView extends LinearLayout {
-
+    private final String TAG = "GithubUserView";
+    private LinearLayout mainView;
     private ImageView profileImage;
     private TextView userName;
     private TextView userDescription;
     private ImageButton githubProfile;
     private static final String BASE_URL = "https://api.github.com/";
+    private String thisUserNameGitHub = "";
 
     public GithubUserView(Context context) {
         super(context);
@@ -50,17 +52,13 @@ public class GithubUserView extends LinearLayout {
         LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.github_user_view, this, true);
 
+        mainView = findViewById(R.id.main);
         profileImage = findViewById(R.id.profile_image);
         userName = findViewById(R.id.user_name);
         userDescription = findViewById(R.id.user_description);
         githubProfile = findViewById(R.id.githubProfile);
 
-        githubProfile.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGithubProfile(context);
-            }
-        });
+        mainView.setOnClickListener(v -> openGithubProfile(context));
     }
 
     public void setUsername(String username) {
@@ -73,25 +71,37 @@ public class GithubUserView extends LinearLayout {
         Call<GithubUser> call = service.getUser(username);
         call.enqueue(new Callback<GithubUser>() {
             @Override
-            public void onResponse(Call<GithubUser> call, Response<GithubUser> response) {
+            public void onResponse(@NonNull Call<GithubUser> call, @NonNull Response<GithubUser> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     GithubUser user = response.body();
-                    userName.setText(user.getLogin());
-                    userDescription.setText(user.getBio());
-                    Glide.with(getContext()).load(user.getAvatarUrl()).into(profileImage);
+                    thisUserNameGitHub = user.getLogin();
+                    userName.setText(!user.getLogin().isEmpty() ? user.getLogin() : getContext().getString(R.string.unknow));
+                    userDescription.setText(!user.getBio().isEmpty() ? user.getBio() : getContext().getString(R.string.unknow));
+                    if (!user.getAvatarUrl().isEmpty()) {
+                        if (getContext() instanceof Activity activity) {
+                            if (!activity.isFinishing() && !activity.isDestroyed())
+                                Glide.with(getContext()).load(user.getAvatarUrl()).placeholder(R.drawable.account_circle_24px).error(R.drawable.account_circle_24px).into(profileImage);
+                        }
+                    } else {
+                        profileImage.setImageResource(R.drawable.account_circle_24px);
+                    }
+                } else {
+                    userName.setText(getContext().getString(R.string.unknow));
+                    userDescription.setText(getContext().getString(R.string.unknow));
+                    profileImage.setImageResource(R.drawable.account_circle_24px);
                 }
             }
 
             @Override
-            public void onFailure(Call<GithubUser> call, Throwable t) {
-                // Handle failure
+            public void onFailure(@NonNull Call<GithubUser> call, @NonNull Throwable t) {
+                userName.setText(getContext().getString(R.string.unknow));
+                userDescription.setText(getContext().getString(R.string.unknow));
+                profileImage.setImageResource(R.drawable.account_circle_24px);
             }
         });
     }
 
     private void openGithubProfile(Context context) {
-        String url = "https://github.com/" + userName.getText().toString();
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        context.startActivity(intent);
+        IntentUtils.openUrl(context, "https://github.com/" + thisUserNameGitHub, true);
     }
 }

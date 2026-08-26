@@ -5,9 +5,12 @@ import android.app.Activity;
 import androidx.activity.ComponentActivity;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -17,9 +20,11 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
@@ -30,7 +35,11 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.PointerIcon;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.ScrollView;
@@ -44,6 +53,7 @@ import com.vectras.vm.R;
 import com.vectras.vm.logger.VectrasStatus;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class UIUtils {
@@ -54,7 +64,7 @@ public class UIUtils {
 
         Scanner scanner = null;
         Spannable formattedString = new SpannableString(contents);
-        if(contents.length()==0)
+        if(contents.isEmpty())
             return formattedString;
 
         try {
@@ -86,7 +96,7 @@ public class UIUtils {
                     scanner.close();
                 } catch (Exception ex) {
                     if(Config.debug)
-                        ex.printStackTrace();
+                        Log.e(TAG, "formatAndroidLog: ", ex);
                 }
             }
 
@@ -142,27 +152,24 @@ public class UIUtils {
     }
 
     public static void toastShortTop(final Activity activity, final String errStr) {
-        UIUtils.toast(activity, errStr, Gravity.TOP | Gravity.CENTER, Toast.LENGTH_SHORT);
+        if (!activity.isFinishing() && !activity.isDestroyed()) UIUtils.toast(activity, errStr, Gravity.TOP | Gravity.CENTER, Toast.LENGTH_SHORT);
     }
 
     public static void toast(final Context context, final String errStr, final int gravity, final int length) {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                if(context instanceof Activity && ((Activity) context).isFinishing()) {
-                    return ;
-                }
-                Toast toast = Toast.makeText(context, errStr, length);
-                toast.setGravity(gravity, 0, 0);
-                toast.show();
-
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if(context instanceof Activity && ((Activity) context).isFinishing()) {
+                return ;
             }
+            Toast toast = Toast.makeText(context, errStr, length);
+            toast.setGravity(gravity, 0, 0);
+            toast.show();
+
         });
 
     }
 
     public static void toastShort(final Context context, final String errStr) {
-        toast(context, errStr, Gravity.CENTER | Gravity.CENTER, Toast.LENGTH_SHORT);
+        toast(context, errStr, Gravity.CENTER, Toast.LENGTH_SHORT);
 
     }
 
@@ -192,18 +199,17 @@ public class UIUtils {
         PackageInfo pInfo = null;
 
         try {
-            pInfo = activity.getPackageManager().getPackageInfo(activity.getClass().getPackage().getName(),
+            pInfo = activity.getPackageManager().getPackageInfo(Objects.requireNonNull(activity.getClass().getPackage()).getName(),
                     PackageManager.GET_META_DATA);
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "onChangeLog: ", e);
         }
-        com.vectras.qemu.utils.FileUtils fileutils = new com.vectras.qemu.utils.FileUtils();
+        FileUtils fileutils = new FileUtils();
         try {
             UIUtils.UIAlert(activity,"CHANGELOG", fileutils.LoadFile(activity, "CHANGELOG", false),
                     0, false, "OK", null, null, null, null, null);
         } catch (IOException e) {
-
-            e.printStackTrace();
+            Log.e(TAG, "onChangeLog: ", e);
         }
     }
 
@@ -246,7 +252,11 @@ public class UIUtils {
         AlertDialog alertDialog;
         alertDialog = new AlertDialog.Builder(activity, R.style.MainDialogTheme).create();
         alertDialog.setTitle(title);
-        alertDialog.setMessage(Html.fromHtml(body, Html.FROM_HTML_MODE_LEGACY));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            alertDialog.setMessage(Html.fromHtml(body, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            alertDialog.setMessage(body);
+        }
         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 return;
@@ -433,6 +443,14 @@ public class UIUtils {
         });
     }
 
+    public static void setOnApplyWindowInsetsListenerNoIme(View _view) {
+        ViewCompat.setOnApplyWindowInsetsListener(_view, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+    }
+
     public static void setOnApplyWindowInsetsListenerTop(View _view) {
         int originalPaddingLeft = _view.getPaddingLeft();
         int originalPaddingTop = _view.getPaddingTop();
@@ -487,7 +505,7 @@ public class UIUtils {
         });
     }
 
-    public static void setOnApplyWindowInsetsListenerHorizontalOnly(View _view) {
+    public static void setOnApplyWindowInsetsListenerHorizontal(View _view) {
         int originalPaddingLeft = _view.getPaddingLeft();
         int originalPaddingTop = _view.getPaddingTop();
         int originalPaddingRight = _view.getPaddingRight();
@@ -498,5 +516,92 @@ public class UIUtils {
             v.setPadding(systemBars.left + originalPaddingLeft, originalPaddingTop, systemBars.right + originalPaddingRight, originalPaddingBottom);
             return insets;
         });
+    }
+
+    public static void setOnApplyWindowInsetsListenerNavigationView(View _view) {
+        int originalPaddingLeft = _view.getPaddingLeft();
+        int originalPaddingTop = _view.getPaddingTop();
+        int originalPaddingRight = _view.getPaddingRight();
+        int originalPaddingBottom = _view.getPaddingBottom();
+
+
+        ViewCompat.setOnApplyWindowInsetsListener(_view, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.ime());
+            v.setPadding(systemBars.left + originalPaddingLeft  , originalPaddingTop, originalPaddingRight, originalPaddingBottom);
+
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            lp.bottomMargin = systemBars.bottom;
+            v.setLayoutParams(lp);
+            return insets;
+        });
+    }
+
+    public static boolean isUsingThemeNightMode() {
+        int nightMode = AppCompatDelegate.getDefaultNightMode();
+        return nightMode == AppCompatDelegate.MODE_NIGHT_YES;
+    }
+
+    public static boolean isColorLight(int color) {
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
+
+        double luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+        return luminance > 186;
+    }
+
+    public static void setDarkOrLight(int mode) {
+        if (mode == MainSettingsManager.THEME_LIGHT) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else if (mode == MainSettingsManager.THEME_DARK) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
+    }
+
+    public static void setLightStatusBar(boolean isEnable, Activity _activity) {
+        Window window = _activity.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        WindowCompat.getInsetsController(window, window.getDecorView())
+                .setAppearanceLightStatusBars(isEnable);
+    }
+
+    public static void fullScreen(Activity activity) {
+        WindowInsetsControllerCompat windowInsetsController =
+                WindowCompat.getInsetsController(activity.getWindow(), activity.getWindow().getDecorView());
+
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        windowInsetsController.setSystemBarsBehavior(
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        );
+    }
+
+    public static void setBackgroundItemInList(View view, int position, int listsize, boolean isBrighter) {
+        if (listsize == 1) {
+            view.setBackgroundResource(isBrighter ? R.drawable.object_shape_single_high : R.drawable.object_shape_single);
+        } else if (position == 0) {
+            view.setBackgroundResource(isBrighter ? R.drawable.object_shape_top_high : R.drawable.object_shape_top);
+        } else if (position == listsize - 1) {
+            view.setBackgroundResource(isBrighter ? R.drawable.object_shape_bottom_high : R.drawable.object_shape_bottom);
+        } else {
+            view.setBackgroundResource(isBrighter ? R.drawable.object_shape_middle_high : R.drawable.object_shape_middle);
+        }
+    }
+
+    public static void setMouseVisible(View view) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return;
+
+        view.setPointerIcon(PointerIcon.getSystemIcon(view.getContext(), PointerIcon.TYPE_ARROW));
+    }
+
+    public static void setMouseInvisible(View view) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return;
+
+        Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        PointerIcon invisiblePointerIcon = PointerIcon.create(bitmap, 0, 0);
+        view.setPointerIcon(invisiblePointerIcon);
     }
 }

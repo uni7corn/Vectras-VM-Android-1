@@ -1,7 +1,10 @@
 package com.vectras.vm.core;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import com.termux.app.TermuxService;
+import com.vectras.vm.AppConfig;
 import com.vectras.vm.logger.VectrasStatus;
 import java.io.BufferedReader;
 import java.io.FileWriter;
@@ -23,14 +26,19 @@ public class ShellExecutor {
     }
 
     public void exec(String command) {
-        String logPath = "/sdcard/Documents/shell-executor.log";
+        String logPath = AppConfig.maindirpath + "shell-executor.log";
         String shellPath = "/system/bin/sh";
 
         Runnable processRunnable = () -> {
             try (FileWriter logWriter = new FileWriter(logPath, true)) {
-                shellExecutorProcess = new ProcessBuilder(shellPath).start();
+                ProcessBuilder pb = new ProcessBuilder(shellPath);
+                pb.redirectErrorStream(true);
+
+                shellExecutorProcess = pb.start();
+
                 OutputStream outputStream = shellExecutorProcess.getOutputStream();
 
+                Log.d(TAG, "Running command: " + command);
                 logWriter.write("Running command: " + command + "\n");
                 outputStream.write((command + "\n").getBytes());
                 outputStream.flush();
@@ -41,7 +49,8 @@ public class ShellExecutor {
                     logWriter.write(line + "\n");
                     logWriter.flush();
                     Log.d(TAG, line);
-                    VectrasStatus.logInfo(TAG + " > " + line);
+                    String finalLine = line;
+                    new Handler(Looper.getMainLooper()).post(() -> VectrasStatus.logInfo(TAG + " > " + finalLine));
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Error starting ShellExecutor", e);

@@ -4,12 +4,11 @@ plugins {
 
 android {
     namespace 'com.termux.x11.stub'
-    buildToolsVersion "35.0.0"
-    compileSdkVersion 35
+    buildToolsVersion "36.1.0"
+    compileSdkVersion 36
     defaultConfig {
         minSdkVersion 24
         //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 28
     }
     buildFeatures {
         buildConfig false
@@ -23,8 +22,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    lint {
+        targetSdk 28
+    }
+    testOptions {
+        targetSdk 28
+    }
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.9.1'
+    implementation libs.androidx.annotation
 }

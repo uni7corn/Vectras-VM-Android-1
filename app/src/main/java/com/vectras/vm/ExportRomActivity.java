@@ -1,337 +1,389 @@
 package com.vectras.vm;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.vectras.qemu.MainSettingsManager;
+import com.vectras.vm.databinding.ActivityExportRomBinding;
+import com.vectras.vm.file.FilePickerDialog;
+import com.vectras.vm.main.vms.DataMainRoms;
+import com.vectras.vm.manager.VmFileManager;
+import com.vectras.vm.utils.DialogUtils;
 import com.vectras.vm.utils.FileUtils;
 import com.vectras.vm.utils.PackageUtils;
 import com.vectras.vm.utils.UIUtils;
 import com.vectras.vm.utils.ZipUtils;
 
-import org.zeroturnaround.zip.FileSource;
-import org.zeroturnaround.zip.ZipEntrySource;
-import org.zeroturnaround.zip.ZipUtil;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ExportRomActivity extends AppCompatActivity {
 
-    private Timer _timer = new Timer();
-    private TimerTask timerTask;
-    private LinearLayout linearone;
-    private LinearLayout linearload;
-    private LinearLayout lineardone;
-    private LinearLayout linearerror;
-    private TextView textviewfilename;
-    private TextView textviewerrorcontent;
-    private EditText editauthor;
-    private EditText editdesc;
-    public static int pendingPosition = 0;
-    public static HashMap<String, Object> mapForGetData = new HashMap<>();
-    public static ArrayList<HashMap<String, Object>> listmapForGetData = new ArrayList<>();
+    private final String TAG = "ExportRomActivity";
+    ActivityExportRomBinding binding;
     private SharedPreferences data;
-    public String getRomPath = "";
-    public String iconfile = "";
-    public String diskfile = "";
-    public String cdromfile = "";
-    private int folderSize = 0;
-    private int zipFileSize = 0;
-    private double zipprogress = 0;
-    private double zipprogresslast = 0;
-    private double folderSizeMB = 0;
-    private LinearProgressIndicator progressBar;
-    private TextView textviewsettingup;
-    private int compressionProgress = 0;
+    private boolean isExporting = false;
+    private ActivityResultLauncher<String> folderPicker;
+    private DataMainRoms current;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UIUtils.edgeToEdge(this);
-        setContentView(R.layout.activity_export_rom);
+        binding = ActivityExportRomBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         UIUtils.setOnApplyWindowInsetsListener(findViewById(R.id.main));
+        binding.appbar.post(() -> binding.appbar.setExpanded(false, false));
+        setSupportActionBar(binding.toolbar);
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
 
-        linearone = findViewById(R.id.linearall);
-        linearload = findViewById(R.id.linearload);
-        lineardone = findViewById(R.id.lineardone);
-        linearerror = findViewById(R.id.linearerror);
-        textviewfilename = findViewById(R.id.textviewfilename);
-        textviewerrorcontent = findViewById(R.id.textviewerrorcontent);
-        editauthor = findViewById(R.id.edittext1);
-        editdesc = findViewById(R.id.edittext2);
-        progressBar = findViewById(R.id.linearprogress);
-        textviewsettingup = findViewById(R.id.textviewsettingup);
+        binding.btnDone.setOnClickListener(v -> {
+            binding.edAuthor.setEnabled(false);
+            binding.edContent.setEnabled(false);
+            binding.edAuthor.setEnabled(true);
+            binding.edContent.setEnabled(true);
 
-        Button buttondone;
-        buttondone = findViewById(R.id.materialbutton1);
-        buttondone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editauthor.setEnabled(false);
-                editdesc.setEnabled(false);
-                editauthor.setEnabled(true);
-                editdesc.setEnabled(true);
-                startCreateCVBI();
+            if (MainSettingsManager.getBuiltInFilePicker(this)) {
+                FilePickerDialog filePickerDialog = new FilePickerDialog();
+                filePickerDialog.pick(this, FilePickerDialog.TYPE_FOLDER, (path -> new Thread(() -> {
+                    String exportFolder = path + "/";
+                    String outputPath;
+                    String outputFileName = current.itemName + ".cvbi";
+
+                    if (!FileUtils.isFileExists(exportFolder + current.itemName + ".cvbi")) {
+                        outputPath = exportFolder + outputFileName;
+                    } else {
+                        int prefix = 0;
+                        while (true) {
+                            if (!FileUtils.isFileExists(exportFolder + current.itemName + " (" + prefix + ").cvbi")) {
+                                outputFileName = current.itemName + " (" + prefix + ").cvbi";
+                                outputPath = exportFolder + outputFileName;
+                                break;
+                            } else {
+                                prefix++;
+                            }
+                        }
+                    }
+
+                    runOnUiThread(() -> startCreate(Uri.fromFile(new File(outputPath))));
+                }).start()));
+            } else {
+                folderPicker.launch(current.itemName + ".cvbi");
             }
         });
 
-        Button buttonexit;
-        buttonexit = findViewById(R.id.buttonexit);
-        buttonexit.setOnClickListener(new View.OnClickListener() {
+        data = getSharedPreferences("data", Activity.MODE_PRIVATE);
+
+        binding.edAuthor.setText(data.getString("author", ""));
+        binding.edContent.setText(data.getString("desc", ""));
+
+        current = VMManager.getVMConfig(getIntent().getIntExtra("POS", 0));
+
+        folderPicker = registerForActivityResult(
+                new ActivityResultContracts.CreateDocument("application/octet-stream"),
+                uri -> {
+                    if (uri != null) {
+                        startCreate(uri);
+                    }
+                });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
-            public void onClick(View v) {
-                finish();
+            public void handleOnBackPressed() {
+                onBack();
             }
         });
-
-        Button buttonexit2;
-        buttonexit2 = findViewById(R.id.buttonexit2);
-        buttonexit2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        data= getSharedPreferences("data", Activity.MODE_PRIVATE);
-
-        editauthor.setText(data.getString("author", ""));
-        editdesc.setText(data.getString("desc", ""));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        data.edit().putString("author", editauthor.getText().toString()).commit();
-        data.edit().putString("desc", editdesc.getText().toString()).commit();
+        data.edit().putString("author", Objects.requireNonNull(binding.edAuthor.getText()).toString()).apply();
+        data.edit().putString("desc", Objects.requireNonNull(binding.edContent.getText()).toString()).apply();
     }
 
-    private void UIControler(int _status, String _content) {
-        if (_status == 0) {
-            linearone.setVisibility(View.GONE);
-            linearload.setVisibility(View.VISIBLE);
-        } else if (_status == 1) {
-            linearone.setVisibility(View.GONE);
-            linearload.setVisibility(View.GONE);
-            lineardone.setVisibility(View.VISIBLE);
-            textviewfilename.setText(getResources().getString(R.string.saved_in) + " " +_content);
-        } else if (_status == 2) {
-            linearone.setVisibility(View.GONE);
-            linearload.setVisibility(View.GONE);
-            lineardone.setVisibility(View.GONE);
-            linearerror.setVisibility(View.VISIBLE);
-            textviewerrorcontent.setText(_content);
-        }
+    private void onBack() {
+        if (!isExporting) finish();
     }
 
-    private void startCreateCVBI() {
-        UIControler(0, "");
-
-        File vDir = new File(AppConfig.maindirpath + "cvbi");
+    @SuppressLint("SetTextI18n")
+    private void startCreate(Uri uri) {
+        /*String cvbiFolder = Objects.requireNonNull(getExternalCacheDir()).getAbsolutePath() + "/cvbi/";
+        File vDir = new File(cvbiFolder);
         if (!vDir.exists()) {
-            vDir.mkdirs();
-        }
-
-        listmapForGetData.clear();
-        mapForGetData.clear();
-
-        listmapForGetData = new Gson().fromJson(FileUtils.readAFile(AppConfig.romsdatajson), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
-
-        getRomPath = AppConfig.vmFolder + Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("vmID")).toString() + "/";
-
-        if (listmapForGetData.get(pendingPosition).containsKey("imgName")) {
-            mapForGetData.put("title", Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgName")).toString());
-        } else {
-            mapForGetData.put("title", "");
-        }
-        if (listmapForGetData.get(pendingPosition).containsKey("imgIcon")) {
-            iconfile = Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgIcon")).toString();
-            try {
-                mapForGetData.put("icon", Uri.parse(Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgIcon")).toString()).getLastPathSegment());
-            } catch (Exception _e){
-                mapForGetData.put("icon", Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgIcon")).toString());
+            if (!vDir.mkdirs()) {
+                DialogUtils.oneDialog(this,
+                        getString(R.string.oops),
+                        getString(R.string.could_not_create_dir_to_save_cvbi_content),
+                        getString(R.string.ok),
+                        true,
+                        R.drawable.error_96px,
+                        true,
+                        null,
+                        this::finish
+                );
             }
+        }*/
+
+        String getRomPath = VmFileManager.getPath(current.vmID);
+        HashMap<String, Object> vmConfigMap = new HashMap<>();
+
+        vmConfigMap.put("title", current.itemName);
+
+        if (FileUtils.isFileExists(current.itemIcon)) {
+            vmConfigMap.put("icon", new File(Objects.requireNonNull(Uri.parse(current.itemIcon).getPath())).getName());
         } else {
-            mapForGetData.put("icon", "");
-        }
-        if (listmapForGetData.get(pendingPosition).containsKey("imgPath")) {
-            if (Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgPath")).toString().isEmpty()) {
-                diskfile = VMManager.quickScanDiskFileInFolder(getRomPath);
-            } else {
-                diskfile = Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgPath")).toString();
-            }
-            mapForGetData.put("drive", Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgPath")).toString().replaceAll(getRomPath, ""));
-        } else {
-            diskfile = VMManager.quickScanDiskFileInFolder(getRomPath);
-            mapForGetData.put("drive", "");
-        }
-        if (listmapForGetData.get(pendingPosition).containsKey("imgCdrom")) {
-            if (Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgCdrom")).toString().isEmpty()) {
-                cdromfile = VMManager.quickScanISOFileInFolder(getRomPath);
-            } else {
-                cdromfile = Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgCdrom")).toString();
-            }
-            mapForGetData.put("cdrom", Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgCdrom")).toString().replaceAll(getRomPath, ""));
-        } else {
-            cdromfile = VMManager.quickScanISOFileInFolder(getRomPath);
-            mapForGetData.put("cdrom", "");
-        }
-        if (listmapForGetData.get(pendingPosition).containsKey("imgExtra")) {
-            mapForGetData.put("qemu", Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgExtra")).toString().replaceAll(getRomPath, "OhnoIjustrealizeditsmidnightandIstillhavetodothis"));
-        } else {
-            mapForGetData.put("qemu", "");
-        }
-        if (listmapForGetData.get(pendingPosition).containsKey("imgArch")) {
-            mapForGetData.put("arch", Objects.requireNonNull(listmapForGetData.get(pendingPosition).get("imgArch")).toString());
-        } else {
-            mapForGetData.put("arch", "");
-        }
-        if (editauthor.getText().toString().isEmpty()) {
-            mapForGetData.put("author", "Unknow");
-        } else {
-            mapForGetData.put("author", editauthor.getText().toString());
-        }
-        if (editdesc.getText().toString().isEmpty()) {
-            mapForGetData.put("desc", "Empty.");
-        } else {
-            mapForGetData.put("desc", editdesc.getText().toString());
+            vmConfigMap.put("icon", current.itemIcon);
         }
 
-        mapForGetData.put("versioncode", PackageUtils.getThisVersionCode(getApplicationContext()));
+        vmConfigMap.put("machine", current.machine);
 
-        FileUtils.writeToFile(new File(String.valueOf(getApplicationContext().getExternalFilesDir("data"))).getPath(), "rom-data.json", new Gson().toJson(mapForGetData));
+        vmConfigMap.put("cpu", current.cpu);
+        vmConfigMap.put("cores", current.cores);
+        vmConfigMap.put("threads", current.threads);
+        vmConfigMap.put("nvirt", current.nvirt);
 
-        //folderSize = FileUtils.getFolderSize(getRomPath);
-        //folderSizeMB = (folderSize / (1024 * 10.24)) / 2;
-        folderSize = FileUtils.getFileSize(diskfile);
-        folderSize += FileUtils.getFileSize(cdromfile);
-        folderSize += FileUtils.getFileSize(iconfile);
-        ZipUtils.reset();
+        vmConfigMap.put("memory", current.memory);
 
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        zipFileSize = FileUtils.getFileSize(FileUtils.getExternalFilesDirectory(getApplicationContext()).getPath() + "/cvbi/" + Objects.requireNonNull(mapForGetData.get("title")).toString() + ".cvbi");
-                        compressionProgress = ZipUtils.getCompressionProgress(folderSize, zipFileSize);
-                        if (compressionProgress > 0) {
-                            if (compressionProgress > 98) {
-                                progressBar.setIndeterminate(true);
-                            } else {
-                                progressBar.setProgressCompat(compressionProgress, true);
-                            }
-                            textviewsettingup.setText(getResources().getString(R.string.about) + " " + String.valueOf(ZipUtils.getRemainingCompressionTime(folderSize, zipFileSize)) + " " + getResources().getString(R.string.seconds_left));
+        vmConfigMap.put("battery", current.battery);
+
+        vmConfigMap.put("mouse", current.mouse);
+        vmConfigMap.put("keyboard", current.keyboard);
+
+        boolean isUsingDiskInQemuExtraParams = VMManager.isHaveADisk(current.itemExtra);
+
+        if (FileUtils.isFileExists(current.itemPath)) {
+            vmConfigMap.put("drive", new File(Objects.requireNonNull(Uri.parse(current.itemPath).getPath())).getName());
+        } else {
+            vmConfigMap.put("drive", isUsingDiskInQemuExtraParams ? "" : VMManager.quickScanDiskFileInFolder(getRomPath));
+        }
+
+        if (FileUtils.isFileExists(current.hd1)) {
+            vmConfigMap.put("hd1", new File(Objects.requireNonNull(Uri.parse(current.hd1).getPath())).getName());
+        }
+
+        if (FileUtils.isFileExists(current.imgCdrom)) {
+            vmConfigMap.put("cdrom", new File(Objects.requireNonNull(Uri.parse(current.imgCdrom).getPath())).getName());
+        } else {
+            vmConfigMap.put("cdrom", isUsingDiskInQemuExtraParams || FileUtils.isFileExists(Objects.requireNonNull(vmConfigMap.get("drive")).toString()) ? "" : VMManager.quickScanISOFileInFolder(getRomPath));
+        }
+
+        if (FileUtils.isFileExists(current.cdrom1)) {
+            vmConfigMap.put("cdrom1", new File(Objects.requireNonNull(Uri.parse(current.cdrom1).getPath())).getName());
+        } else {
+            vmConfigMap.put("cdrom1", isUsingDiskInQemuExtraParams || FileUtils.isFileExists(Objects.requireNonNull(vmConfigMap.get("drive")).toString()) ? "" : VMManager.quickScanISOFileInFolder(getRomPath));
+        }
+
+        if (FileUtils.isFileExists(current.fda)) {
+            vmConfigMap.put("fda", new File(Objects.requireNonNull(Uri.parse(current.fda).getPath())).getName());
+        } else {
+            vmConfigMap.put("fda", "");
+        }
+
+        if (FileUtils.isFileExists(current.fdb)) {
+            vmConfigMap.put("fdb", new File(Objects.requireNonNull(Uri.parse(current.fdb).getPath())).getName());
+        } else {
+            vmConfigMap.put("fdb", "");
+        }
+
+        vmConfigMap.put("sharedFolder", current.sharedFolder);
+
+        vmConfigMap.put("graphicCard", current.graphicCard);
+
+        vmConfigMap.put("networkCard", current.networkCard);
+
+        vmConfigMap.put("wifi", current.wifi);
+
+        vmConfigMap.put("soundCard", current.soundCard);
+
+        vmConfigMap.put("bootFrom", current.bootFrom);
+        vmConfigMap.put("isShowBootMenu", current.isShowBootMenu);
+        vmConfigMap.put("isUseLocalTime", current.isUseLocalTime);
+
+        vmConfigMap.put("isUseUefi", current.isUseUefi);
+        vmConfigMap.put("isUseDefaultBios", current.isUseDefaultBios);
+
+        vmConfigMap.put("accel", current.accel);
+
+        vmConfigMap.put("qemu", VmFileManager.pathToTextMark(this, current.vmID, current.itemExtra));
+        vmConfigMap.put("arch", current.itemArch);
+
+        if (Objects.requireNonNull(binding.edAuthor.getText()).toString().isEmpty()) {
+            vmConfigMap.put("author", "Unknow");
+        } else {
+            vmConfigMap.put("author", binding.edAuthor.getText().toString());
+        }
+        if (Objects.requireNonNull(binding.edContent.getText()).toString().isEmpty()) {
+            vmConfigMap.put("desc", "Empty.");
+        } else {
+            vmConfigMap.put("desc", binding.edContent.getText().toString());
+        }
+
+        vmConfigMap.put("versioncode", PackageUtils.getThisVersionCode(getApplicationContext()));
+
+        String tempFolder = VmFileManager.getTempPath(this, current.vmID + "/export");
+
+        FileUtils.writeToFile(tempFolder, "rom-data.json", new Gson().toJson(vmConfigMap));
+
+        String[] filePaths = new String[0];
+
+        ArrayList<String> _filelist = new ArrayList<>();
+        FileUtils.getAListOfAllFilesAndFoldersInADirectory(VmFileManager.getPath(current.vmID), _filelist);
+        if (!_filelist.isEmpty()) {
+            ArrayList<String> pathList = new ArrayList<>();
+
+            for (int _repeat = 0; _repeat < _filelist.size(); _repeat++) {
+                if (!_filelist.get(_repeat).endsWith("vmID.txt") &&
+                        !_filelist.get(_repeat).endsWith("vmID.old.txt")) {
+
+                    if (_filelist.get(_repeat).endsWith("rom-data.json")) {
+                        pathList.add(tempFolder + "rom-data.json");
+                    } else if (_filelist.get(_repeat).endsWith(VmFileManager.SNAPSHOT_SH_FILE_NAME)) {
+                        if (VmFileManager.isSnapshotBinExists(current.vmID)) {
+                            String snapshotParams = FileUtils.readAFile(_filelist.get(_repeat));
+                            snapshotParams = StartVM.removeQmpParams(snapshotParams);
+                            snapshotParams = StartVM.removeDisplayParams(snapshotParams);
+                            FileUtils.writeToFile(tempFolder, VmFileManager.SNAPSHOT_SH_FILE_NAME, VmFileManager.pathToTextMark(this, current.vmID, snapshotParams));
+                            pathList.add(tempFolder + VmFileManager.SNAPSHOT_SH_FILE_NAME);
                         }
-                    }
-                });
-            }
-        };
-        _timer.schedule(timerTask, 0, 1000);
-
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    if ((!iconfile.isEmpty()) && (!diskfile.isEmpty()) && (!cdromfile.isEmpty())) {
-                        ZipEntrySource[] addedEntries = new ZipEntrySource[]{
-                                new FileSource("/" + new File(diskfile).getName(), new File(diskfile)),
-                                new FileSource("/" + new File(iconfile).getName(), new File(iconfile)),
-                                new FileSource("/" + new File(cdromfile).getName(), new File(cdromfile)),
-                                new FileSource("/" + new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json").getName(), new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json"))
-                        };
-                        ZipUtil.pack(addedEntries, new File(FileUtils.getExternalFilesDirectory(getApplicationContext()).getPath() + "/cvbi/" + Objects.requireNonNull(mapForGetData.get("title")).toString() + ".cvbi"));
-                    } else if ((!iconfile.isEmpty()) && (!diskfile.isEmpty())) {
-                        ZipEntrySource[] addedEntries = new ZipEntrySource[]{
-                                new FileSource("/" + new File(diskfile).getName(), new File(diskfile)),
-                                new FileSource("/" + new File(iconfile).getName(), new File(iconfile)),
-                                new FileSource("/" + new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json").getName(), new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json"))
-                        };
-                        ZipUtil.pack(addedEntries, new File(FileUtils.getExternalFilesDirectory(getApplicationContext()).getPath() + "/cvbi/" + Objects.requireNonNull(mapForGetData.get("title")).toString() + ".cvbi"));
-                    } else if ((!iconfile.isEmpty()) && (!cdromfile.isEmpty())) {
-                        ZipEntrySource[] addedEntries = new ZipEntrySource[]{
-                                new FileSource("/" + new File(iconfile).getName(), new File(iconfile)),
-                                new FileSource("/" + new File(cdromfile).getName(), new File(cdromfile)),
-                                new FileSource("/" + new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json").getName(), new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json"))
-                        };
-                        ZipUtil.pack(addedEntries, new File(FileUtils.getExternalFilesDirectory(getApplicationContext()).getPath() + "/cvbi/" + Objects.requireNonNull(mapForGetData.get("title")).toString() + ".cvbi"));
-                    } else if ((!diskfile.isEmpty()) && (!cdromfile.isEmpty())) {
-                        ZipEntrySource[] addedEntries = new ZipEntrySource[]{
-                                new FileSource("/" + new File(diskfile).getName(), new File(diskfile)),
-                                new FileSource("/" + new File(cdromfile).getName(), new File(cdromfile)),
-                                new FileSource("/" + new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json").getName(), new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json"))
-                        };
-                        ZipUtil.pack(addedEntries, new File(FileUtils.getExternalFilesDirectory(getApplicationContext()).getPath() + "/cvbi/" + Objects.requireNonNull(mapForGetData.get("title")).toString() + ".cvbi"));
-                    } else if (!iconfile.isEmpty()) {
-                        ZipEntrySource[] addedEntries = new ZipEntrySource[]{
-                                new FileSource("/" + new File(iconfile).getName(), new File(iconfile)),
-                                new FileSource("/" + new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json").getName(), new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json"))
-                        };
-                        ZipUtil.pack(addedEntries, new File(FileUtils.getExternalFilesDirectory(getApplicationContext()).getPath() + "/cvbi/" + Objects.requireNonNull(mapForGetData.get("title")).toString() + ".cvbi"));
-                    } else if (!diskfile.isEmpty()) {
-                        ZipEntrySource[] addedEntries = new ZipEntrySource[]{
-                                new FileSource("/" + new File(diskfile).getName(), new File(diskfile)),
-                                new FileSource("/" + new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json").getName(), new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json"))
-                        };
-                        ZipUtil.pack(addedEntries, new File(FileUtils.getExternalFilesDirectory(getApplicationContext()).getPath() + "/cvbi/" + Objects.requireNonNull(mapForGetData.get("title")).toString() + ".cvbi"));
-                    } else if (!cdromfile.isEmpty()) {
-                        ZipEntrySource[] addedEntries = new ZipEntrySource[]{
-                                new FileSource("/" + new File(cdromfile).getName(), new File(cdromfile)),
-                                new FileSource("/" + new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json").getName(), new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json"))
-                        };
-                        ZipUtil.pack(addedEntries, new File(FileUtils.getExternalFilesDirectory(getApplicationContext()).getPath() + "/cvbi/" + Objects.requireNonNull(mapForGetData.get("title")).toString() + ".cvbi"));
+                    } else if (_filelist.get(_repeat).endsWith(VmFileManager.CREATE_COMMAND_CONFIG_FILE_NAME)) {
+                        FileUtils.writeToFile(tempFolder, VmFileManager.CREATE_COMMAND_CONFIG_FILE_NAME, FileUtils.readAFile(_filelist.get(_repeat)).replace(getRomPath, VmFileManager.TEXT_MARK_VM_PATH));
+                        pathList.add(tempFolder + VmFileManager.CREATE_COMMAND_CONFIG_FILE_NAME);
+                    } else if (_filelist.get(_repeat).endsWith(VmFileManager.SCREENSHOT_PNG_FILE_NAME) || _filelist.get(_repeat).endsWith(VmFileManager.AUDIO_STREAM_FILE_NAME)) {
+                        //ignore
                     } else {
-                        ZipEntrySource[] addedEntries = new ZipEntrySource[]{
-                                new FileSource("/" + new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json").getName(), new File(getApplicationContext().getExternalFilesDir("data") + "/rom-data.json"))
-                        };
-                        ZipUtil.pack(addedEntries, new File(FileUtils.getExternalFilesDirectory(getApplicationContext()).getPath() + "/cvbi/" + Objects.requireNonNull(mapForGetData.get("title")).toString() + ".cvbi"));
+                        pathList.add(_filelist.get(_repeat));
                     }
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            UIControler(1, FileUtils.getExternalFilesDirectory(getApplicationContext()).getPath() + "/cvbi/" + Objects.requireNonNull(mapForGetData.get("title")).toString() + ".cvbi");
-                            if (timerTask != null) {
-                                timerTask.cancel();
-                            }
-                        }
-                    });
-                } catch (Exception e) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            UIControler(2, e.toString());
-                        }
-                    });
                 }
             }
-        };
-        t.start();
-        return;
+
+            filePaths = pathList.toArray(new String[0]);
+        }
+
+        View progressView = LayoutInflater.from(this).inflate(R.layout.dialog_progress_style, null);
+        TextView progressText = progressView.findViewById(R.id.progress_text);
+        progressText.setText(getString(R.string.exporting) + "\n" + getString(R.string.please_stay_here));
+        ProgressBar progressBar = progressView.findViewById(R.id.progress_bar);
+        AlertDialog progressDialog = new MaterialAlertDialogBuilder(this, R.style.CenteredDialogTheme)
+                .setView(progressView)
+                .setCancelable(false)
+                .create();
+
+        progressDialog.show();
+
+        String[] finalFilePaths = filePaths;
+        new Thread(() -> {
+            isExporting = true;
+
+            /*String outputPath;
+            String outputFileName = current.itemName + ".cvbi";
+            if (!FileUtils.isFileExists(cvbiFolder + current.itemName + ".cvbi")) {
+                outputPath = cvbiFolder + outputFileName;
+            } else {
+                int prefix = 0;
+                while (true) {
+                    if (!FileUtils.isFileExists(cvbiFolder + current.itemName + "_" + prefix + ".cvbi")) {
+                        outputFileName = current.itemName + "_" + prefix + ".cvbi";
+                        outputPath = cvbiFolder + outputFileName;
+                        break;
+                    } else {
+                        prefix++;
+                    }
+                }
+            }*/
+
+            String outputPath = FileUtils.getPath(this, uri);
+
+            if (outputPath != null) {
+                if (outputPath.startsWith(VmFileManager.quickGetPath(current.vmID))) {
+                    if (!new File(outputPath).isDirectory()) FileUtils.delete(outputPath);
+                    runOnUiThread(() -> {
+                        DialogUtils.oopsDialog(this, getString(R.string.cannot_save_here_please_choose_another_location));
+                        DialogUtils.safeDismiss(this, progressDialog);
+                    });
+                    return;
+                }
+            } else {
+                outputPath = "";
+            }
+
+            final boolean[] result = {ZipUtils.compress(
+                    this,
+                    finalFilePaths,
+                    uri,
+                    progressText,
+                    progressBar
+            )};
+            String finalOutputPath = outputPath;
+            runOnUiThread(() -> {
+                isExporting = false;
+                DialogUtils.safeDismiss(this, progressDialog);
+
+                try {
+                    //FileUtils.delete(new File(outputPath));
+                    VmFileManager.removeTemp(this, current.vmID);
+                } catch (Exception e) {
+                    Log.e(TAG, "startCreate: ", e);
+                }
+
+                String title;
+                String content;
+                if (result[0]) {
+                    title = getString(R.string.done);
+                    content = finalOutputPath.isEmpty() ? getString(R.string.rom_successfully_exported) : getString(R.string.saved_in) + ": " + finalOutputPath + ".";
+                } else {
+                    title = getString(R.string.oops);
+                    content = getString(R.string.something_went_wrong) + ":\n\n" + ZipUtils.lastErrorContent;
+                }
+
+                File file = new File(finalOutputPath);
+                boolean isShowInFolder = !finalOutputPath.isEmpty() && result[0] && file.getParent() != null && FileUtils.isFileExists(file.getParent());
+
+                DialogUtils.twoDialog(this,
+                        title,
+                        content,
+                        getString(isShowInFolder ? R.string.show_in_folder : R.string.ok),
+                        getString(isShowInFolder ? R.string.close : R.string.exit),
+                        true,
+                        result[0] ? R.drawable.check_24px : R.drawable.error_96px,
+                        true,
+                        () -> {
+                            if (isShowInFolder) {
+                                if (MainSettingsManager.getBuiltInFilePicker(this)) {
+                                    FilePickerDialog filePickerDialog = new FilePickerDialog();
+                                    filePickerDialog.setLockHome(true);
+                                    filePickerDialog.browse(this, file.getParent());
+                                } else {
+                                    FileUtils.openFolder(this, file.getParent());
+                                }
+                            }
+                        },
+                        () -> {
+                            if (!result[0]) {
+                                finish();
+                            }
+                        },
+                        null);
+            });
+        }).start();
     }
 }

@@ -2,7 +2,6 @@ package com.termux.app;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -25,7 +24,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.system.ErrnoException;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -43,12 +41,12 @@ import android.view.WindowManager;
 import android.view.autofill.AutofillManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vectras.vm.AppConfig;
 import com.vectras.vm.R;
 import com.termux.terminal.EmulatorDebug;
 import com.termux.terminal.TerminalColors;
@@ -141,7 +139,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     final SoundPool mBellSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(
         new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).build()).build();
-    int mBellSoundId;
+//    int mBellSoundId;
 
     private final BroadcastReceiver mBroadcastReceiever = new BroadcastReceiver() {
         @Override
@@ -165,8 +163,8 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
     void checkForFontAndColors() {
         try {
-            @SuppressLint("SdCardPath") File fontFile = new File("/data/data/com.vectras.vm/files/home/.termux/font.ttf");
-            @SuppressLint("SdCardPath") File colorsFile = new File("/data/data/com.vectras.vm/files/home/.termux/colors.properties");
+            @SuppressLint("SdCardPath") File fontFile = new File(AppConfig.internalDataDirPath + "home/.termux/font.ttf");
+            @SuppressLint("SdCardPath") File colorsFile = new File(AppConfig.internalDataDirPath + "home/.termux/colors.properties");
 
             final Properties props = new Properties();
             if (colorsFile.isFile()) {
@@ -347,7 +345,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
         checkForFontAndColors();
 
-        mBellSoundId = mBellSoundPool.load(this, R.raw.bell, 1);
+//        mBellSoundId = mBellSoundPool.load(this, R.raw.bell, 1);
 
         sendOpenedBroadcast();
 
@@ -458,7 +456,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
                 switch (mSettings.mBellBehaviour) {
                     case TermuxPreferences.BELL_BEEP:
-                        mBellSoundPool.play(mBellSoundId, 1.f, 1.f, 1, 0, 1.f);
+//                        mBellSoundPool.play(mBellSoundId, 1.f, 1.f, 1, 0, 1.f);
                         break;
                     case TermuxPreferences.BELL_VIBRATE:
                         BellUtil.getInstance(TermuxActivity.this).doBell();

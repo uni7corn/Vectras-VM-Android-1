@@ -8,36 +8,63 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.anbui.elephant.retrofit2utils.Retrofit2Utils;
 import com.vectras.qemu.MainSettingsManager;
 import com.vectras.vm.AppConfig;
 import com.vectras.vm.R;
-import com.vectras.vm.RequestNetwork;
-import com.vectras.vm.RequestNetworkController;
 import com.vectras.vm.databinding.ActivityUpdaterBinding;
+import com.vectras.vm.manager.VmFileManager;
 import com.vectras.vm.utils.DialogUtils;
+import com.vectras.vm.utils.FileUtils;
+import com.vectras.vm.utils.IntentUtils;
 import com.vectras.vm.utils.PackageUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 
 public class UpdaterActivity extends AppCompatActivity {
+
+    private final String TAG ="UpdaterActivity";
 
     ActivityUpdaterBinding binding;
     String downloadUrl = "";
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        } else if (id == R.id.options) {
+            startActivity(new Intent(this, UpdateSettingsActivity.class));
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.updater_menu, menu);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_vncactivity);
+        setContentView(R.layout.activity_external_vnc_settings);
         binding = ActivityUpdaterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
@@ -80,37 +107,35 @@ public class UpdaterActivity extends AppCompatActivity {
         int versionCode = PackageUtils.getThisVersionCode(getApplicationContext());
         String versionName = PackageUtils.getThisVersionName(getApplicationContext());
 
-        RequestNetwork requestNetwork = new RequestNetwork(this);
-        RequestNetwork.RequestListener requestNetworkListener = new RequestNetwork.RequestListener() {
-            @Override
-            public void onResponse(String tag, String response, HashMap<String, Object> responseHeaders) {
+        Retrofit2Utils.get(AppConfig.vectrasRaw + "UpdateConfig.json", ((isSuccess, body, status, error) -> {
+            if (isSuccess) {
                 binding.lpiProgressbar.setVisibility(View.GONE);
                 binding.lnBottombar.setVisibility(View.VISIBLE);
 
-                if (!response.isEmpty()) {
+                if (!body.isEmpty()) {
                     try {
-                        final JSONObject obj = new JSONObject(response);
-                        String versionNameonUpdate;
+                        final JSONObject obj = new JSONObject(body);
+//                        String versionNameonUpdate;
                         int versionCodeonUpdate;
                         String whatsnew;
                         String size;
                         String url;
 
                         if (MainSettingsManager.getcheckforupdatesfromthebetachannel(UpdaterActivity.this)) {
-                            versionNameonUpdate = obj.getString("versionNameBeta");
+//                            versionNameonUpdate = obj.getString("versionNameBeta");
                             versionCodeonUpdate = obj.getInt("versionCodeBeta");
                             whatsnew = obj.getString("MessageBeta");
                             size = obj.getString("sizeBeta");
                             url = obj.getString("urlBeta");
                         } else {
-                            versionNameonUpdate = obj.getString("versionName");
+//                            versionNameonUpdate = obj.getString("versionName");
                             versionCodeonUpdate = obj.getInt("versionCode");
                             whatsnew = obj.getString("Message");
                             size = obj.getString("size");
                             url = obj.getString("url");
                         }
 
-                        if (versionCode < versionCodeonUpdate || !versionNameonUpdate.equals(versionName)) {
+                        if (versionCode < versionCodeonUpdate) {
                             binding.collapsingToolbarLayout.setTitle(getText(R.string.new_update_available));
                             binding.collapsingToolbarLayout.setSubtitle(getString(R.string.whats_new));
                             binding.mcvWhatsnew.setVisibility(View.VISIBLE);
@@ -144,19 +169,17 @@ public class UpdaterActivity extends AppCompatActivity {
                                     null);
                         }
                     } catch (JSONException e) {
+                        Log.d(TAG, "JSONException: ", e);
                         whenUpToDate();
                     }
                 } else {
+                    Log.d(TAG, "Empty body.");
                     whenUpToDate();
                 }
-            }
-
-            @Override
-            public void onErrorResponse(String tag, String message) {
+            } else {
+                Log.d(TAG, "Failed.");
                 whenUpToDate();
             }
-        };
-
-        requestNetwork.startRequestNetwork(RequestNetworkController.GET,AppConfig.updateJson,"checkupdate",requestNetworkListener);
+        }));
     }
 }

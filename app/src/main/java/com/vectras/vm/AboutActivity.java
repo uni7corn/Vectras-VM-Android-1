@@ -1,27 +1,16 @@
 package com.vectras.vm;
 
-import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.vectras.vm.adapters.GithubUserAdapter;
-import com.vectras.vm.utils.SimpleAnimations;
+import com.vectras.vm.utils.CommandUtils;
 import com.vectras.vm.utils.UIUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -31,40 +20,34 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.vectras.vm.R;
-import com.vectras.vterm.Terminal;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener{
-
+    ExecutorService executor = Executors.newSingleThreadExecutor();
     Button btn_osl, btn_clog;
     ImageButton btn_discord, btn_youtube, btn_github, btn_telegram, btn_instagram, btn_facebook;
 
     String appInfo;
 
     public String TAG = "AboutActivity";
-    private InterstitialAd mInterstitialAd;
+//    private InterstitialAd mInterstitialAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UIUtils.edgeToEdge(this);
         setContentView(R.layout.activity_about);
 //        UIUtils.setOnApplyWindowInsetsListener(findViewById(R.id.main));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setTitle(getResources().getString(R.string.about));
         //btn
@@ -86,56 +69,22 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         btn_osl.setOnClickListener(this);
         btn_clog.setOnClickListener(this);
 
-        //AdView mAdView = findViewById(R.id.adView);
-        //AdRequest adRequest = new AdRequest.Builder().build();
-        //mAdView.loadAd(adRequest);
-
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("message/rfc822");
-                i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"anbuigo2004@gmail.com"});
-                i.putExtra(Intent.EXTRA_SUBJECT, "Vectras User: " + Build.BRAND);
-                i.putExtra(Intent.EXTRA_TEXT   , "Device Model: \n" + Build.MODEL + "\n");
-                try {
-                    startActivity(Intent.createChooser(i, "Send mail..."));
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Snackbar.make(view, "There are no email clients installed.", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-
+        fab.setOnClickListener(view -> {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"anbuigo2004@gmail.com"});
+            i.putExtra(Intent.EXTRA_SUBJECT, "Vectras User: " + Build.BRAND);
+            i.putExtra(Intent.EXTRA_TEXT   , "Device Model: \n" + Build.MODEL + "\n");
+            try {
+                startActivity(Intent.createChooser(i, "Send mail..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Snackbar.make(view, "There are no email clients installed.", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
+
         });
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
-        });
-        /*InterstitialAd.load(this,"ca-app-pub-3568137780412047/4892595373", adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        // The mInterstitialAd reference will be null until
-                        // an ad is loaded.
-                        mInterstitialAd = interstitialAd;
-                        Log.i(TAG, "onAdLoaded");
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error
-                        Log.d(TAG, loadAdError.toString());
-                        mInterstitialAd = null;
-                    }
-                });*/
-        if (mInterstitialAd != null) {
-            mInterstitialAd.show(AboutActivity.this);
-        } else {
-            Log.d("TAG", "The interstitial ad wasn't ready yet.");
-        }
-        
         RecyclerView recyclerView = findViewById(R.id.github_users_recycler_view);
         String[] usernames = {"vectras-team", "xoureldeen", "ahmedbarakat2007", "anbui2004"};
 
@@ -145,26 +94,15 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
 
         TextView qemuVersion = findViewById(R.id.qemuVersion);
-
-        String command = "qemu-system-x86_64 --version";
-        new Terminal(this).extractQemuVersion(command, false, this, (output, errors) -> {
-            if (errors.isEmpty()) {
-                String versionStr = "Unknown";
-                if (output.equals("8.2.1"))
-                    versionStr = output + " - 3dfx";
-                Log.d(TAG, "QEMU Version: " + versionStr);
-                qemuVersion.setText(versionStr);
-            } else {
-                Log.e(TAG, "Errors: " + errors);
-            }
+        executor.execute(() -> {
+            String qemuVersionName = CommandUtils.getQemuVersionName(this);
+            runOnUiThread(() -> {
+                if (!qemuVersionName.isEmpty()) qemuVersion.setText(qemuVersionName); else getString(R.string.unknow);
+            });
         });
 
-//        SimpleAnimations.scale(findViewById(R.id.card_yagiz), 250);
-//        SimpleAnimations.translationUpToDown(findViewById(R.id.card_yagiz), 250);
-//        SimpleAnimations.scale(findViewById(R.id.card_social), 500);
-//        SimpleAnimations.translationUpToDown(findViewById(R.id.card_social), 500);
-//        SimpleAnimations.scale(findViewById(R.id.developers), 750);
-//        SimpleAnimations.translationUpToDown(findViewById(R.id.developers), 750);
+        findViewById(R.id.btn_open_source_licenses).setOnClickListener(v -> startActivity(new Intent(this, OssLicensesMenuActivity.class)));
+
     }
 
     @Override
@@ -222,12 +160,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                         .setMessage(getString(R.string.app_version))
                         .setCancelable(true)
                         .setIcon(R.mipmap.ic_launcher)
-                        .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                        .setNegativeButton("OK", (dialog, which) -> dialog.dismiss());
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
             } else if (id == OSL) {
@@ -237,12 +170,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                         .setMessage(appInfo)
                         .setCancelable(true)
                         .setIcon(R.drawable.round_info_24)
-                        .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                        .setNegativeButton("OK", (dialog, which) -> dialog.dismiss());
                 AlertDialog alertDialogosl = alertDialogOSL.create();
                 alertDialogosl.show();
             }

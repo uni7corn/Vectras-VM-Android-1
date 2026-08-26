@@ -3,13 +3,24 @@ package com.vectras.vm.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.StrictMode;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Enumeration;
+import java.util.Objects;
 
 public class NetworkUtils {
     public static boolean isPortOpen(String host, int port, int timeout) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        
+        if (port > 65535) return false;
+
         Socket socket = new Socket();
         try {
             socket.connect(new InetSocketAddress(host, port), timeout);
@@ -45,5 +56,22 @@ public class NetworkUtils {
             }
         }
         return false;
+    }
+
+    public static String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && Objects.requireNonNull(inetAddress.getHostAddress()).contains(".")) {
+                        return inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

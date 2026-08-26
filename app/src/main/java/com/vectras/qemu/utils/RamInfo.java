@@ -8,10 +8,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.vectras.qemu.MainSettingsManager;
+import com.vectras.vm.utils.TextUtils;
 
 public class RamInfo {
-    public static Activity activity;
-
     public static int safeLongToInt(long l) {
         if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {
             throw new IllegalArgumentException(l + " cannot be cast to int without changing its value.");
@@ -29,8 +28,20 @@ public class RamInfo {
         int freeRamInt = safeLongToInt(freeMem);
         int totalRamInt = safeLongToInt(totalMem);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        if (prefs.getBoolean("customMemory", false)) {
-            return Integer.parseInt(prefs.getString("memory", String.valueOf(256)));
+
+        try {
+            String temp = prefs.getString("memory", "256");
+        } catch (ClassCastException e) {
+            prefs.edit().putString("memory", String.valueOf(prefs.getInt("memory", 256))).apply();
+        }
+
+        if (prefs.getBoolean("customMemory", false) && TextUtils.isNumberOnly(prefs.getString("memory", "256"))) {
+            if (Long.parseLong(prefs.getString("memory", "256")) > totalMem) {
+                prefs.edit().putString("memory", String.valueOf(totalRamInt / 2)).apply();
+                return totalRamInt / 2;
+            }
+
+            return Integer.parseInt(prefs.getString("memory", "256"));
         } else {
             return freeRamInt - 100;
         }

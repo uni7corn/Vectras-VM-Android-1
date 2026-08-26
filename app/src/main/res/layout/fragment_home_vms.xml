@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:transitionGroup="true"
-    tools:context=".home.vms.VmsFragment">
+    tools:context=".main.vms.VmsFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/wrl_romlist"
@@ -16,7 +16,7 @@
             android:id="@+id/rv_romlist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="80dp"
+            android:paddingBottom="16dp"
             android:clipToPadding="false"
             tools:listitem="@layout/container_main_roms" />
 
@@ -42,7 +42,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/package_2_96px" />
+                    android:src="@drawable/upcoming_96px" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

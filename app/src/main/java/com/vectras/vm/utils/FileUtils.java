@@ -3,6 +3,7 @@ package com.vectras.vm.utils;
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -20,6 +21,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,8 +35,12 @@ import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.vectras.vm.R;
+import com.vectras.vm.file.FilePickerDialog;
+import com.vectras.vm.manager.VmFileManager;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -45,635 +53,420 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * 
+ *
  * @author dev
  */
 public class FileUtils {
-	@NonNull
-	public static File getExternalFilesDirectory(Context context) {
-		return new File(Environment.getExternalStorageDirectory(), "Documents/VectrasVM");
-	}
-
-	public static void chmod(File file, int mode) {
-		try {
-			Os.chmod(file.getAbsolutePath(), mode);
-		}
-		catch (ErrnoException e) {}
-	}
-
-	private static Uri contentUri = null;
-
-	@SuppressLint("NewApi")
-	public static String getPath(Context context, final Uri uri) {
-		// check here to KITKAT or new version
-		final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-		String selection = null;
-		String[] selectionArgs = null;
-		// DocumentProvider
-		if (isKitKat ) {
-			// ExternalStorageProvider
-
-			if (isExternalStorageDocument(uri)) {
-				final String docId = DocumentsContract.getDocumentId(uri);
-				final String[] split = docId.split(":");
-				final String type = split[0];
-
-				String fullPath = getPathFromExtSD(split);
-				if (fullPath != "") {
-					return fullPath;
-				} else {
-					return null;
-				}
-			}
-
-
-			// DownloadsProvider
-
-			if (isDownloadsDocument(uri)) {
-
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-					final String id;
-					Cursor cursor = null;
-					try {
-						cursor = context.getContentResolver().query(uri, new String[]{MediaStore.MediaColumns.DISPLAY_NAME}, null, null, null);
-						if (cursor != null && cursor.moveToFirst()) {
-							String fileName = cursor.getString(0);
-							String path = Environment.getExternalStorageDirectory().toString() + "/Download/" + fileName;
-							if (!TextUtils.isEmpty(path)) {
-								return path;
-							}
-						}
-					}
-					finally {
-						if (cursor != null)
-							cursor.close();
-					}
-					id = DocumentsContract.getDocumentId(uri);
-					if (!TextUtils.isEmpty(id)) {
-						if (id.startsWith("raw:")) {
-							return id.replaceFirst("raw:", "");
-						}
-						String[] contentUriPrefixesToTry = new String[]{
-								"content://downloads/public_downloads",
-								"content://downloads/my_downloads"
-						};
-						for (String contentUriPrefix : contentUriPrefixesToTry) {
-							try {
-								final Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.valueOf(id));
-
-
-								return getDataColumn(context, contentUri, null, null);
-							} catch (NumberFormatException e) {
-								//In Android 8 and Android P the id is not a number
-								return uri.getPath().replaceFirst("^/document/raw:", "").replaceFirst("^raw:", "");
-							}
-						}
-
-
-					}
-				}
-				else {
-					final String id = DocumentsContract.getDocumentId(uri);
-
-					if (id.startsWith("raw:")) {
-						return id.replaceFirst("raw:", "");
-					}
-					try {
-						contentUri = ContentUris.withAppendedId(
-								Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-					}
-					catch (NumberFormatException e) {
-						e.printStackTrace();
-					}
-					if (contentUri != null) {
-
-						return getDataColumn(context, contentUri, null, null);
-					}
-				}
-			}
-
-
-			// MediaProvider
-			if (isMediaDocument(uri)) {
-				final String docId = DocumentsContract.getDocumentId(uri);
-				final String[] split = docId.split(":");
-				final String type = split[0];
-
-				Uri contentUri = null;
-
-				if ("image".equals(type)) {
-					contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-				} else if ("video".equals(type)) {
-					contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-				} else if ("audio".equals(type)) {
-					contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-				}
-				selection = "_id=?";
-				selectionArgs = new String[]{split[1]};
-
-
-				return getDataColumn(context, contentUri, selection,
-						selectionArgs);
-			}
-
-			if (isGoogleDriveUri(uri)) {
-				return getDriveFilePath(context, uri);
-			}
-
-			if(isWhatsAppFile(uri)){
-				return getFilePathForWhatsApp(context, uri);
-			}
-
-
-			if ("content".equalsIgnoreCase(uri.getScheme())) {
-
-				if (isGooglePhotosUri(uri)) {
-					return uri.getLastPathSegment();
-				}
-				if (isGoogleDriveUri(uri)) {
-					return getDriveFilePath(context, uri);
-				}
-				if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-				{
-
-					// return getFilePathFromURI(context,uri);
-					return copyFileToInternalStorage(context, uri,"userfiles");
-					// return getRealPathFromURI(context,uri);
-				}
-				else
-				{
-					return getDataColumn(context, uri, null, null);
-				}
-
-			}
-			if ("file".equalsIgnoreCase(uri.getScheme())) {
-				return uri.getPath();
-			}
-		}
-		else {
-
-			if(isWhatsAppFile(uri)){
-				return getFilePathForWhatsApp(context, uri);
-			}
-
-			if ("content".equalsIgnoreCase(uri.getScheme())) {
-				String[] projection = {
-						MediaStore.Images.Media.DATA
-				};
-				Cursor cursor = null;
-				try {
-					cursor = context.getContentResolver()
-							.query(uri, projection, selection, selectionArgs, null);
-					int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-					if (cursor.moveToFirst()) {
-						return cursor.getString(column_index);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return null;
-	}
-
-	private static boolean fileExists(String filePath) {
-		File file = new File(filePath);
-
-		return file.exists();
-	}
-
-	private static String getPathFromExtSD(String[] pathData) {
-		final String type = pathData[0];
-		final String relativePath = "/" + pathData[1];
-		String fullPath = "";
-
-		// on my Sony devices (4.4.4 & 5.1.1), `type` is a dynamic string
-		// something like "71F8-2C0A", some kind of unique id per storage
-		// don't know any API that can get the root path of that storage based on its id.
-		//
-		// so no "primary" type, but let the check here for other devices
-		if ("primary".equalsIgnoreCase(type)) {
-			fullPath = Environment.getExternalStorageDirectory() + relativePath;
-			if (fileExists(fullPath)) {
-				return fullPath;
-			}
-		}
-
-		// Environment.isExternalStorageRemovable() is `true` for external and internal storage
-		// so we cannot relay on it.
-		//
-		// instead, for each possible path, check if file exists
-		// we'll start with secondary storage as this could be our (physically) removable sd card
-		fullPath = System.getenv("SECONDARY_STORAGE") + relativePath;
-		if (fileExists(fullPath)) {
-			return fullPath;
-		}
-
-		fullPath = System.getenv("EXTERNAL_STORAGE") + relativePath;
-		if (fileExists(fullPath)) {
-			return fullPath;
-		}
-
-		return fullPath;
-	}
-
-	private static String getDriveFilePath(Context context, Uri uri) {
-		Uri returnUri = uri;
-		Cursor returnCursor = context.getContentResolver().query(returnUri, null, null, null, null);
-		/*
-		 * Get the column indexes of the data in the Cursor,
-		 *     * move to the first row in the Cursor, get the data,
-		 *     * and display it.
-		 * */
-		int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-		int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-		returnCursor.moveToFirst();
-		String name = (returnCursor.getString(nameIndex));
-		String size = (Long.toString(returnCursor.getLong(sizeIndex)));
-		File file = new File(context.getCacheDir(), name);
-		try {
-			InputStream inputStream = context.getContentResolver().openInputStream(uri);
-			FileOutputStream outputStream = new FileOutputStream(file);
-			int read = 0;
-			int maxBufferSize = 1 * 1024 * 1024;
-			int bytesAvailable = inputStream.available();
-
-			//int bufferSize = 1024;
-			int bufferSize = Math.min(bytesAvailable, maxBufferSize);
-
-			final byte[] buffers = new byte[bufferSize];
-			while ((read = inputStream.read(buffers)) != -1) {
-				outputStream.write(buffers, 0, read);
-			}
-			Log.e("File Size", "Size " + file.length());
-			inputStream.close();
-			outputStream.close();
-			Log.e("File Path", "Path " + file.getPath());
-			Log.e("File Size", "Size " + file.length());
-		} catch (Exception e) {
-			Log.e("Exception", e.getMessage());
-		}
-		return file.getPath();
-	}
-
-	/***
-	 * Used for Android Q+
-	 * @param uri
-	 * @param newDirName if you want to create a directory, you can set this variable
-	 * @return
-	 */
-	private static String copyFileToInternalStorage(Context context, Uri uri, String newDirName) {
-		Uri returnUri = uri;
-
-		Cursor returnCursor = context.getContentResolver().query(returnUri, new String[]{
-				OpenableColumns.DISPLAY_NAME,OpenableColumns.SIZE
-		}, null, null, null);
-
-
-		/*
-		 * Get the column indexes of the data in the Cursor,
-		 *     * move to the first row in the Cursor, get the data,
-		 *     * and display it.
-		 * */
-		int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-		int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-		returnCursor.moveToFirst();
-		String name = (returnCursor.getString(nameIndex));
-		String size = (Long.toString(returnCursor.getLong(sizeIndex)));
-
-		File output;
-		if(!newDirName.equals("")) {
-			File dir = new File(context.getFilesDir() + "/" + newDirName);
-			if (!dir.exists()) {
-				dir.mkdir();
-			}
-			output = new File(context.getFilesDir() + "/" + newDirName + "/" + name);
-		}
-		else{
-			output = new File(context.getFilesDir() + "/" + name);
-		}
-		try {
-			InputStream inputStream = context.getContentResolver().openInputStream(uri);
-			FileOutputStream outputStream = new FileOutputStream(output);
-			int read = 0;
-			int bufferSize = 1024;
-			final byte[] buffers = new byte[bufferSize];
-			while ((read = inputStream.read(buffers)) != -1) {
-				outputStream.write(buffers, 0, read);
-			}
-
-			inputStream.close();
-			outputStream.close();
-
-		}
-		catch (Exception e) {
-
-			Log.e("Exception", e.getMessage());
-		}
-
-		return output.getPath();
-	}
-
-	private static String getFilePathForWhatsApp(Context context, Uri uri){
-		return  copyFileToInternalStorage(context, uri,"whatsapp");
-	}
-
-	private static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
-		if (uri == null) return null;
-
-		Cursor cursor = null;
-		final String column = "_data";
-		final String[] projection = {column};
-
-		try {
-			cursor = context.getContentResolver().query(uri, projection,
-					selection, selectionArgs, null);
-
-			if (cursor != null && cursor.moveToFirst()) {
-				final int index = cursor.getColumnIndexOrThrow(column);
-				return cursor.getString(index);
-			}
-		}
-		finally {
-			if (cursor != null)
-				cursor.close();
-		}
-
-		return null;
-	}
-
-	private static boolean isExternalStorageDocument(Uri uri) {
-		return "com.android.externalstorage.documents".equals(uri.getAuthority());
-	}
-
-	private static boolean isDownloadsDocument(Uri uri) {
-		return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-	}
-
-	private static boolean isMediaDocument(Uri uri) {
-		return "com.android.providers.media.documents".equals(uri.getAuthority());
-	}
-
-	private static boolean isGooglePhotosUri(Uri uri) {
-		return "com.google.android.apps.photos.content".equals(uri.getAuthority());
-	}
-
-	public static boolean isWhatsAppFile(Uri uri){
-		return "com.whatsapp.provider.media".equals(uri.getAuthority());
-	}
-
-	private static boolean isGoogleDriveUri(Uri uri) {
-		return "com.google.android.apps.docs.storage".equals(uri.getAuthority()) || "com.google.android.apps.docs.storage.legacy".equals(uri.getAuthority());
-	}
-
-
-	public String LoadFile(Activity activity, String fileName, boolean loadFromRawFolder) throws IOException {
-		// Create a InputStream to read the file into
-		InputStream iS;
-		if (loadFromRawFolder) {
-			// get the resource id from the file name
-			int rID = activity.getResources().getIdentifier(getClass().getPackage().getName() + ":raw/" + fileName,
-					null, null);
-			// get the file as a stream
-			iS = activity.getResources().openRawResource(rID);
-		} else {
-			// get the file as a stream
-			iS = activity.getResources().getAssets().open(fileName);
-		}
-
-		ByteArrayOutputStream oS = new ByteArrayOutputStream();
-		byte[] buffer = new byte[iS.available()];
-		int bytesRead = 0;
-		while ((bytesRead = iS.read(buffer)) > 0) {
-			oS.write(buffer);
-		}
-		oS.close();
-		iS.close();
-
-		// return the output stream as a String
-		return oS.toString();
-	}
-
-	public static void saveFileContents(String dBFile, String machinesToExport) {
-		// TODO Auto-generated method stub
-		byteArrayToFile(machinesToExport.getBytes(), new File(dBFile));
-	}
-
-	public static void byteArrayToFile(byte[] byteData, File filePath) {
-
-		try {
-			FileOutputStream fos = new FileOutputStream(filePath);
-			fos.write(byteData);
-			fos.close();
-
-		} catch (FileNotFoundException ex) {
-			System.out.println("FileNotFoundException : " + ex);
-		} catch (IOException ioe) {
-			System.out.println("IOException : " + ioe);
-		}
-
-	}
-
-	public static String getDataDir(Context context) {
-
-		String dataDir = context.getApplicationInfo().dataDir;
-		PackageManager m = context.getPackageManager();
-		String packageName = context.getPackageName();
-		Log.v("VMExecutor", "Found packageName: " + packageName);
-
-		if (dataDir == null) {
-			dataDir = "/data/data/" + packageName;
-		}
-		return dataDir;
-	}
-
-	public static boolean fileValid(Context context, String path) {
-
-		if (path == null || path.equals(""))
-			return true;
-		if (path.startsWith("content://") || path.startsWith("/content/")) {
-			int fd = get_fd(context, path);
-			if (fd <= 0)
-				return false;
-		} else {
-			File file = new File(path);
-			return file.exists();
-		}
-		return true;
-	}
-
-	public static HashMap<Integer, ParcelFileDescriptor> fds = new HashMap<Integer, ParcelFileDescriptor>();
-
-	public static int get_fd(final Context context, String path) {
-		int fd = 0;
-		if (path == null)
-			return 0;
-
-		if (path.startsWith("/content") || path.startsWith("content://")) {
-			path = path.replaceFirst("/content", "content:");
-
-			try {
-				ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(Uri.parse(path), "rw");
-				fd = pfd.getFd();
-				fds.put(fd, pfd);
-			} catch (final FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				new Handler(Looper.getMainLooper()).post(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(context, "Error: " + e, Toast.LENGTH_SHORT).show();
-					}
-				});
-			}
-		} else {
-			try {
-				File file = new File(path);
-				if (!file.exists())
-					file.createNewFile();
-				ParcelFileDescriptor pfd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_WRITE_ONLY);
-				fd = pfd.getFd();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
-		return fd;
-	}
-
-	public static int close_fd(int fd) {
-
-		if (FileUtils.fds.containsKey(fd)) {
-			ParcelFileDescriptor pfd = FileUtils.fds.get(fd);
-			try {
-				pfd.close();
-				FileUtils.fds.remove(fd);
-				return 0; // success for Native side
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		}
-		return -1;
-	}
-
-	public static void writeToFile(String data, File file, Context context) {
-		try {
-			FileOutputStream fileOutStream = new FileOutputStream(file);
-			OutputStreamWriter outputWriter = new OutputStreamWriter(fileOutStream);
-			outputWriter.write(data);
-			outputWriter.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static String readFromFile(Context context, File file) {
-		String contents = null;
-		try {
-			int length = (int) file.length();
-
-			byte[] bytes = new byte[length];
-
-			FileInputStream in = new FileInputStream(file);
-			try {
-				in.read(bytes);
-			} finally {
-				in.close();
-			}
-
-			contents = new String(bytes);
-		} catch (Exception e) {
-			UIUtils.toastLong(context, e.toString());
-			return "error";
-		}
-		return contents;
-	}
-
-	public static boolean moveFile(String oldfilename, String newFolderPath, String newFilename) {
-		File folder = new File(newFolderPath);
-		if (!folder.exists())
-		folder.mkdirs();
-
-		File oldfile = new File(oldfilename);
-		File newFile = new File(newFolderPath, newFilename);
-
-		if (!newFile.exists())
-		try {
-			newFile.createNewFile();
-			} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return oldfile.renameTo(newFile);
-	}
-
-	public static boolean isFileExists(String filePath) {
-		File file = new File(filePath.replaceAll("\n", ""));
-		return file.exists();
-	}
-
-	public static void moveAFile(String _from, String _to) {
-		File oldFile = new File(_from);
-		File newFile = new File(_to);
-
-		boolean success = oldFile.renameTo(newFile);
-		if (success) {
-			Log.d("File", "Done!");
-		} else {
-			Log.e("File", "Failed!");
-		}
-	}
-
-	public static void copyAFile(String _sourceFile, String _destFile) {
-		File vDir = new File(_destFile.substring((int)0, (int)(_destFile.lastIndexOf("/"))));
-		if (!vDir.exists()) {
-			vDir.mkdirs();
-		}
-		try {
-			File source = new File(_sourceFile);
-			File dest = new File(_destFile);
-
-			if (!source.exists())
-			{
-				throw new IOException("Source file not found");
-			}
-
-			FileInputStream inStream = new FileInputStream(source);
-			FileOutputStream outStream = new FileOutputStream(dest);
-
-			byte[] buffer = new byte[1024];
-			int length;
-			while ((length = inStream.read(buffer))
-					> 0) {
-				outStream.write(buffer, 0, length);
-			}
-
-			inStream.close();
-			outStream.close();
-		} catch (IOException e) {
-
-		}
-
-	}
-
-	public static void copyFileFromUri(Context context, Uri sourceUri, String destFile) throws IOException {
-
-		File file = new File(destFile);
-		if (!Objects.requireNonNull(file.getParentFile()).exists()) {
-			file.getParentFile().mkdirs();
-		}
+    public static final String TAG = "FileUtils";
+
+    @NonNull
+    public static File getExternalFilesDirectory(Context context) {
+        return new File(Environment.getExternalStorageDirectory(), "Documents/VectrasVM");
+    }
+
+    public static void chmod(File file, int mode) {
+        try {
+            Os.chmod(file.getAbsolutePath(), mode);
+        } catch (ErrnoException ignored) {
+        }
+    }
+
+    public static String getDirectoryPath(Context context, Uri uri) {
+        try {
+            if (uri.getHost() != null && uri.getHost().equals("com.android.externalstorage.documents")) {
+                String docId = DocumentsContract.getTreeDocumentId(uri);
+                String[] split = docId.split(":");
+                String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    String path = Environment.getExternalStorageDirectory() + "/" + split[1];
+                    if (isFileExists(path)) return path;
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        return getPath(context, uri);
+    }
+
+    @SuppressLint("NewApi")
+    public static String getPath(Context context, final Uri uri) {
+        if ((uri.toString().startsWith("content://ru.zdevs.zarchiver") ||
+                uri.toString().startsWith("content://bin.mt.plus") ||
+                uri.toString().startsWith("content://com.android.fileexplorer.myprovider") ||
+                uri.toString().startsWith("content://com.estrongs.files") ||
+                uri.toString().startsWith("content://me.zhanghai.android")) &&
+                uri.getPath() != null) {
+            String path = uri.getPath();
+
+            if (uri.toString().startsWith("content://com.android.fileexplorer.myprovider/external_files")) {
+                path = new File(Environment.getExternalStorageDirectory(), path.substring("/external_files".length())).getAbsolutePath();
+            } else if (uri.toString().startsWith("content://me.zhanghai.android.files.file_provider/file")) {
+                path = new File(Uri.decode(path).substring("file://".length())).getAbsolutePath();
+            }
+
+            if (isFileExists(path)) return path;
+        }
+
+
+        // check here to KITKAT or new version
+        final boolean isKitKat = true;
+        String selection = null;
+        String[] selectionArgs = null;
+        // DocumentProvider
+        // ExternalStorageProvider
+
+        if (isExternalStorageDocument(uri)) {
+            final String docId = DocumentsContract.getDocumentId(uri);
+            final String[] split = docId.split(":");
+            final String type = split[0];
+
+            String fullPath = getPathFromExtSD(split);
+            if (!fullPath.isEmpty()) {
+                return fullPath;
+            } else {
+                return null;
+            }
+        }
+
+
+        // DownloadsProvider
+
+        if (isDownloadsDocument(uri)) {
+            final String id;
+            try (Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.MediaColumns.DISPLAY_NAME}, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    String fileName = cursor.getString(0);
+                    String path = Environment.getExternalStorageDirectory().toString() + "/Download/" + fileName;
+                    if (!TextUtils.isEmpty(path)) {
+                        return path;
+                    }
+                }
+            }
+            id = DocumentsContract.getDocumentId(uri);
+            if (!TextUtils.isEmpty(id)) {
+                if (id.startsWith("raw:")) {
+                    return id.replaceFirst("raw:", "");
+                }
+                String[] contentUriPrefixesToTry = new String[]{
+                        "content://downloads/public_downloads",
+                        "content://downloads/my_downloads"
+                };
+                for (String contentUriPrefix : contentUriPrefixesToTry) {
+                    try {
+                        final Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.parseLong(id));
+
+
+                        return getDataColumn(context, contentUri, null, null);
+                    } catch (NumberFormatException e) {
+                        //In Android 8 and Android P the id is not a number
+                        return Objects.requireNonNull(uri.getPath()).replaceFirst("^/document/raw:", "").replaceFirst("^raw:", "");
+                    }
+                }
+            }
+        }
+
+
+        // MediaProvider
+        if (isMediaDocument(uri)) {
+            final String docId = DocumentsContract.getDocumentId(uri);
+            final String[] split = docId.split(":");
+            final String type = split[0];
+
+            Uri contentUri = null;
+
+            if ("image".equals(type)) {
+                contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            } else if ("video".equals(type)) {
+                contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+            } else if ("audio".equals(type)) {
+                contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+            }
+            selection = "_id=?";
+            selectionArgs = new String[]{split[1]};
+
+
+            return getDataColumn(context, contentUri, selection,
+                    selectionArgs);
+        }
+
+        if (isGoogleDriveUri(uri)) {
+            return getDriveFilePath(context, uri);
+        }
+
+        if (isWhatsAppFile(uri)) {
+            return getFilePathForWhatsApp(context, uri);
+        }
+
+
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+            if (isGooglePhotosUri(uri)) {
+                return uri.getLastPathSegment();
+            }
+            if (isGoogleDriveUri(uri)) {
+                return getDriveFilePath(context, uri);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                // return getFilePathFromURI(context,uri);
+                return copyFileToInternalStorage(context, uri, "userfiles");
+                // return getRealPathFromURI(context,uri);
+            } else {
+                return getDataColumn(context, uri, null, null);
+            }
+
+        }
+        if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    private static boolean fileExists(String filePath) {
+        File file = new File(filePath);
+
+        return file.exists();
+    }
+
+    private static String getPathFromExtSD(String[] pathData) {
+        final String type = pathData[0];
+        final String relativePath = "/" + pathData[1];
+        String fullPath = "";
+
+        // on my Sony devices (4.4.4 & 5.1.1), `type` is a dynamic string
+        // something like "71F8-2C0A", some kind of unique id per storage
+        // don't know any API that can get the root path of that storage based on its id.
+        //
+        // so no "primary" type, but let the check here for other devices
+        if ("primary".equalsIgnoreCase(type)) {
+            fullPath = Environment.getExternalStorageDirectory() + relativePath;
+            if (fileExists(fullPath)) {
+                return fullPath;
+            }
+        }
+
+        // Environment.isExternalStorageRemovable() is `true` for external and internal storage
+        // so we cannot relay on it.
+        //
+        // instead, for each possible path, check if file exists
+        // we'll start with secondary storage as this could be our (physically) removable sd card
+        fullPath = System.getenv("SECONDARY_STORAGE") + relativePath;
+        if (fileExists(fullPath)) {
+            return fullPath;
+        }
+
+        fullPath = System.getenv("EXTERNAL_STORAGE") + relativePath;
+
+        return fullPath;
+    }
+
+    private static String getDriveFilePath(Context context, Uri uri) {
+        Cursor returnCursor = context.getContentResolver().query(uri, null, null, null, null);
+        /*
+         * Get the column indexes of the data in the Cursor,
+         *     * move to the first row in the Cursor, get the data,
+         *     * and display it.
+         * */
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+        returnCursor.moveToFirst();
+        String name = (returnCursor.getString(nameIndex));
+        String size = (Long.toString(returnCursor.getLong(sizeIndex)));
+        File file = new File(context.getCacheDir(), name);
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            FileOutputStream outputStream = new FileOutputStream(file);
+            int read = 0;
+            int maxBufferSize = 1024 * 1024;
+            assert inputStream != null;
+            int bytesAvailable = inputStream.available();
+
+            //int bufferSize = 1024;
+            int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+
+            final byte[] buffers = new byte[bufferSize];
+            while ((read = inputStream.read(buffers)) != -1) {
+                outputStream.write(buffers, 0, read);
+            }
+            Log.e("File Size", "Size " + file.length());
+            inputStream.close();
+            outputStream.close();
+            Log.e("File Path", "Path " + file.getPath());
+            Log.e("File Size", "Size " + file.length());
+        } catch (Exception e) {
+            Log.e("Exception", Objects.requireNonNull(e.getMessage()));
+        }
+        return file.getPath();
+    }
+
+    /***
+     * Used for Android Q+
+     * @param uri
+     * @param newDirName if you want to create a directory, you can set this variable
+     * @return
+     */
+    private static String copyFileToInternalStorage(Context context, Uri uri, String newDirName) {
+        Cursor returnCursor = context.getContentResolver().query(uri, new String[]{
+                OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE
+        }, null, null, null);
+
+
+        /*
+         * Get the column indexes of the data in the Cursor,
+         *     * move to the first row in the Cursor, get the data,
+         *     * and display it.
+         * */
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+        returnCursor.moveToFirst();
+        String name = (returnCursor.getString(nameIndex));
+        String size = (Long.toString(returnCursor.getLong(sizeIndex)));
+
+        File output;
+        if (!newDirName.equals("")) {
+            File dir = new File(context.getFilesDir() + "/" + newDirName);
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            output = new File(context.getFilesDir() + "/" + newDirName + "/" + name);
+        } else {
+            output = new File(context.getFilesDir() + "/" + name);
+        }
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            FileOutputStream outputStream = new FileOutputStream(output);
+            int read;
+
+            byte[] buffer;
+            if (DeviceUtils.totalMemoryCapacity(context) < 4L * 1024 * 1024 * 1024)
+                buffer = new byte[64 * 1024];
+            else
+                buffer = new byte[128 * 1024];
+
+            while ((read = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, read);
+            }
+
+            inputStream.close();
+            outputStream.close();
+
+        } catch (Exception e) {
+
+            Log.e("Exception", Objects.requireNonNull(e.getMessage()));
+        }
+
+        return output.getPath();
+    }
+
+    private static String getFilePathForWhatsApp(Context context, Uri uri) {
+        return copyFileToInternalStorage(context, uri, "whatsapp");
+    }
+
+    private static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+        if (uri == null) return null;
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {column};
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection,
+                    selection, selectionArgs, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+
+        return null;
+    }
+
+    private static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    private static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    private static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    private static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    public static boolean isWhatsAppFile(Uri uri) {
+        return "com.whatsapp.provider.media".equals(uri.getAuthority());
+    }
+
+    private static boolean isGoogleDriveUri(Uri uri) {
+        return "com.google.android.apps.docs.storage".equals(uri.getAuthority()) || "com.google.android.apps.docs.storage.legacy".equals(uri.getAuthority());
+    }
+
+    public static void writeToFile(String data, File file, Context context) {
+        try {
+            FileOutputStream fileOutStream = new FileOutputStream(file);
+            OutputStreamWriter outputWriter = new OutputStreamWriter(fileOutStream);
+            outputWriter.write(data);
+            outputWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String readFromFile(Context context, File file) {
+        String contents;
+        try {
+            int length = (int) file.length();
+
+            byte[] bytes = new byte[length];
+
+            FileInputStream in = new FileInputStream(file);
+            try {
+                in.read(bytes);
+            } finally {
+                in.close();
+            }
+
+            contents = new String(bytes);
+        } catch (Exception e) {
+            UIUtils.toastLong(context, e.toString());
+            return "error";
+        }
+        return contents;
+    }
+
+    public static boolean isFileExists(String filePath) {
+        File file = new File(filePath.replaceAll("\n", ""));
+        return file.exists();
+    }
+
+    public static void copyFileFromUri(Context context, Uri sourceUri, String destFile) throws IOException {
+
+        File file = new File(destFile);
+        if (!Objects.requireNonNull(file.getParentFile()).exists()) {
+            if (!file.getParentFile().mkdirs())
+                throw new IOException("Failed to create directory: " + file.getParentFile().getAbsolutePath());
+        }
 
         try (InputStream inputStream = context.getContentResolver().openInputStream(sourceUri); OutputStream outputStream = new FileOutputStream(destFile)) {
-			byte[] buffer = new byte[32 * 1024];
-			if (DeviceUtils.totalMemoryCapacity(context) < 3L * 1024 * 1024 * 1024) {
-				buffer = new byte[4 * 1024];
-			} else if (DeviceUtils.totalMemoryCapacity(context) < 5L * 1024 * 1024 * 1024) {
-				buffer = new byte[8 * 1024];
-			} else if (DeviceUtils.totalMemoryCapacity(context) < 7L * 1024 * 1024 * 1024) {
-				buffer = new byte[16 * 1024];
-			}
+            byte[] buffer = new byte[32 * 1024];
+            if (DeviceUtils.totalMemoryCapacity(context) < 3L * 1024 * 1024 * 1024) {
+                buffer = new byte[4 * 1024];
+            } else if (DeviceUtils.totalMemoryCapacity(context) < 5L * 1024 * 1024 * 1024) {
+                buffer = new byte[8 * 1024];
+            } else if (DeviceUtils.totalMemoryCapacity(context) < 7L * 1024 * 1024 * 1024) {
+                buffer = new byte[16 * 1024];
+            }
             int bytesRead;
             while (true) {
                 assert inputStream != null;
@@ -683,189 +476,495 @@ public class FileUtils {
 
             outputStream.flush();
         }
-	}
+    }
 
-	public static String getFileNameFromUri(Context context, Uri uri) {
-		String result = null;
+    public static void copyFileToUri(
+            Context context,
+            String sourcePath,
+            Uri uri
+    ) throws Exception {
 
-		Cursor cursor = context.getContentResolver().query(
-				uri,
-				null,
-				null,
-				null,
-				null
-		);
+        InputStream in = new FileInputStream(sourcePath);
+        OutputStream out = context.getContentResolver().openOutputStream(uri);
+        byte[] buffer = new byte[32 * 1024];
+        if (DeviceUtils.totalMemoryCapacity(context) < 3L * 1024 * 1024 * 1024) {
+            buffer = new byte[4 * 1024];
+        } else if (DeviceUtils.totalMemoryCapacity(context) < 5L * 1024 * 1024 * 1024) {
+            buffer = new byte[8 * 1024];
+        } else if (DeviceUtils.totalMemoryCapacity(context) < 7L * 1024 * 1024 * 1024) {
+            buffer = new byte[16 * 1024];
+        }
+        int len;
+        while ((len = in.read(buffer)) != -1) {
+            out.write(buffer, 0, len);
+        }
+    }
 
-		try {
-			if (cursor != null && cursor.moveToFirst()) {
-				int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-				result = cursor.getString(nameIndex);
-			}
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
 
-		if (result == null) {
-			result = uri.getLastPathSegment();
-		}
+    public static String getFileNameFromUri(Context context, Uri uri) {
+        String result = null;
+        Cursor cursor = null;
 
-		return result;
-	}
+        try {
+            cursor = context.getContentResolver().query(
+                    uri,
+                    null,
+                    null,
+                    null,
+                    null
+            );
 
-	public static void deleteDirectory(String _pathToDelete) {
-		File _dir = new File(_pathToDelete);
-		if (_dir.isDirectory()) {
-			String[] children = _dir.list();
+            if (cursor != null && cursor.moveToFirst()) {
+                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                result = cursor.getString(nameIndex);
+            }
 
-			if (children == null) {
-				Log.e("ERROR", "Deletion failed. " + _dir);
-				return;
-			}
+            if (cursor != null) {
+                cursor.close();
+            }
+        } catch (SecurityException | IllegalArgumentException ignored) {
 
-			for (int i = 0; i < children.length; i++) {
-				File temp = new File(_dir, children[i]);
-				deleteDirectory(String.valueOf(temp));
-			}
-		}
-		boolean success = _dir.delete();
-		if (!success) {
-			Log.e("ERROR", "Deletion failed. " + _dir);
-		}
-	}
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
 
-	public static String readAFile(String filePath) {
-		StringBuilder content = new StringBuilder();
-		try (FileInputStream inputStream = new FileInputStream(filePath);
-			 BufferedReader reader = new BufferedReader(new
-					 InputStreamReader(inputStream))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				content.append(line).append("\n");
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return content.toString();
+        if (result == null) {
+            String path = uri.getLastPathSegment();
+            if (path != null) {
+                int cut = path.lastIndexOf('/');
+                result = cut != -1 ? path.substring(cut + 1) : path;
+            }
+        }
 
-	}
+        return result;
+    }
 
-	public static void writeToFile(String folderPath, String fileName, String content) {
-		File vDir = new File(folderPath);
-		if (!vDir.exists()) {
-			vDir.mkdirs();
-		}
-		File file = new File(folderPath, fileName);
-		FileOutputStream outputStream = null;
-		try {
-			outputStream = new FileOutputStream(file);
-			outputStream.write(content.getBytes());
-			outputStream.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public static boolean createDirectory(String path) {
+        File dir = new File(path);
+        if (!dir.exists()) {
+            return dir.mkdirs();
+        }
+        return true;
+    }
 
-	public static void getAListOfAllFilesAndFoldersInADirectory(String path, ArrayList<String> list) {
-		File dir = new File(path);
-		if (!dir.exists() || dir.isFile()) return;
+    public static boolean rename(String path, String newName) {
+        if (!isFileExists(path) || newName.isEmpty()) return false;
+        String parent = new File(path).getParent();
+        if (parent == null) return false;
+        return move(path, parent + "/" + newName);
+    }
 
-		File[] listFiles = dir.listFiles();
-		if (listFiles == null || listFiles.length <= 0) return;
+    public static boolean moveToFolder(String src, String dst) {
+        createDirectory(dst);
+        return move(src, dst + "/" + new File(src).getName());
+    }
 
-		if (list == null) return;
-		list.clear();
-		for (File file : listFiles) {
-			list.add(file.getAbsolutePath());
-		}
-	}
+    public static boolean move(String oldPath, String newPath) {
+        if (!new File(oldPath).exists() || newPath.isEmpty()) return false;
+        createDirectory(new File(newPath).getParent());
+        File src = new File(oldPath);
+        File dst = new File(newPath);
+        if (dst.getParentFile() == null || !dst.getParentFile().exists()) return false;
+        Log.d(TAG, "move: " + oldPath + " to " + newPath);
+        if (!src.renameTo(dst)) {
+            try {
+                Log.d(TAG, "move: Moving with copy and delete.");
+                copy(new File(oldPath), new File(newPath));
+                return delete(new File(oldPath));
+            } catch (Exception e) {
+                Log.e(TAG, "move: ", e);
+            }
+        }
+        return true;
+    }
 
-	public static int getFileSize(String _path) {
-		try {
-			File file = new File(_path);
-			if (!file.exists()) {
-				return 0;
-			}
-			return (int) file.length();
-		} catch (Exception _e) {
-			return 0;
-		}
-	}
+    public static void copy(File src, File dst) throws IOException {
+        if (!src.exists()) return;
+        if (src.isDirectory()) {
+            if (!dst.exists()) dst.mkdirs();
+            File[] files = src.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    copy(f, new File(dst, f.getName()));
+                }
+            }
+        } else {
+            if (dst.getParentFile() != null && !dst.getParentFile().exists()) {
+                createDirectory(dst.getParent());
+            }
 
-	public static int getFolderSize(String _path) {
-		try {
-			File file;
-			file = new File(_path);
-			if (file == null || !file.exists()) {
-				return 0;
-			}
-			if (!file.isDirectory()) {
-				return (int) file.length();
-			}
-			final List<File> dirs = new LinkedList<>();
-			dirs.add(file);
-			long result = 0;
-			while (!dirs.isEmpty()) {
-				final File dir = dirs.remove(0);
-				if (!dir.exists()) {
-					continue;
-				}
-				final File[] listFiles = dir.listFiles();
-				if (listFiles == null || listFiles.length == 0) {
-					continue;
-				}
-				for (final File child : listFiles) {
-					result += child.length();
-					if (child.isDirectory()) {
-						dirs.add(child);
-					}
-				}
-			}
-			return (int) result;
-		} catch (Exception _e) {
-			return 0;
-		}
-	}
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Files.copy(src.toPath(), dst.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                FileInputStream inStream = new FileInputStream(src);
+                FileOutputStream outStream = new FileOutputStream(dst);
 
-	public static String getFilePathFromUri(Context context, Uri uri) {
-		String filePath = null;
-		if ("content".equalsIgnoreCase(uri.getScheme())) {
-			String[] projection = {MediaStore.Files.FileColumns.DATA};
-			Cursor cursor = null;
-			try {
-				cursor = context.getContentResolver().query(uri, projection, null, null, null);
-				if (cursor != null && cursor.moveToFirst()) {
-					int index = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
-					filePath = cursor.getString(index);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (cursor != null)
-					cursor.close();
-			}
-		} else if ("file".equalsIgnoreCase(uri.getScheme())) {
-			filePath = uri.getPath();
-		}
-		return filePath;
-	}
+                byte[] buffer = new byte[8192];
+                int length;
+                while ((length = inStream.read(buffer))
+                        > 0) {
+                    outStream.write(buffer, 0, length);
+                }
 
-	public static boolean isValidFilePath(Activity activity, String filePath, boolean isShowDialog) {
-		if (filePath == null || filePath.isEmpty()) {
-			if (isShowDialog) {
-				DialogUtils.oneDialog(activity,
-						activity.getString(R.string.problem_has_been_detected),
-						activity.getString(R.string.invalid_file_path_content),
-						activity.getString(R.string.ok),
-						true,
-						R.drawable.folder_24px,
-						true,
-						null,
-						null);
-			}
-			return false;
-		}
-		return true;
-	}
+                inStream.close();
+                outStream.close();
+            }
+        }
+    }
+
+    public static boolean copyFile(String filePath, String destFolderPath) {
+        File file = new File(filePath);
+
+        if (!file.exists()) return false;
+
+        try {
+            copy(file, new File(destFolderPath, file.getName()));
+            return true;
+        } catch (Exception ignored) {
+
+        }
+
+        return false;
+    }
+
+    public static boolean copyFile(String filePath, String destFolderPath, String newName) {
+        File file = new File(filePath);
+
+        if (!file.exists()) return false;
+
+        try {
+            copy(file, new File(destFolderPath, newName));
+            return true;
+        } catch (Exception ignored) {
+
+        }
+
+        return false;
+    }
+
+    public static boolean delete(String path) {
+        try {
+            return delete(new File(path));
+        } catch (Exception ignored) {
+
+        }
+
+        return false;
+    }
+
+    public static boolean delete(File file) {
+        if (!file.exists()) return true;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Files.isSymbolicLink(file.toPath())) {
+                try {
+                    return Files.deleteIfExists(file.toPath());
+                } catch (IOException e) {
+                    return false;
+                }
+            }
+        }
+
+        if (file.isDirectory()) {
+            String[] children = file.list();
+
+            if (children == null) {
+                Log.e(TAG, "delete: Try deleteFolderHard " + file);
+                return deleteFolderHard(file);
+            }
+
+            for (int i = 0; i < children.length; i++) {
+                File temp = new File(file, children[i]);
+                delete(temp);
+            }
+        }
+        boolean success = file.delete();
+        if (!success) {
+            Log.e(TAG, "delete: Try deleteFolderHard " + file);
+            success = deleteFolderHard(file);
+        }
+
+        return success;
+    }
+
+    public static boolean deleteFolderHard(File file) {
+        try {
+            String command = "rm -rf " + file.getAbsolutePath();
+            Process process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean canRead(String filePath) {
+        File file = new File(filePath);
+        return file.canRead();
+    }
+
+    public static String readAFile(String filePath) {
+        if (!FileUtils.isFileExists(filePath)) return "";
+
+        StringBuilder content = new StringBuilder();
+        try (FileInputStream inputStream = new FileInputStream(filePath);
+             BufferedReader reader = new BufferedReader(new
+                     InputStreamReader(inputStream))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+        } catch (Exception e) {
+            return "";
+        }
+        return content.toString();
+    }
+
+    public static boolean writeToFile(String folderPath, String fileName, String content) {
+        File vDir = new File(folderPath);
+        if (!vDir.exists()) {
+            if (!vDir.mkdirs()) return false;
+        }
+        File file = new File(folderPath, fileName);
+        FileOutputStream outputStream;
+        try {
+            outputStream = new FileOutputStream(file);
+            outputStream.write(content.getBytes());
+            outputStream.close();
+        } catch (IOException e) {
+            Log.e(TAG, "writeToFile: ", e);
+            return false;
+        }
+        return true;
+    }
+
+    public static void getAListOfAllFilesAndFoldersInADirectory(String path, ArrayList<String> list) {
+        File dir = new File(path);
+        if (!dir.exists() || dir.isFile()) return;
+
+        File[] listFiles = dir.listFiles();
+        if (listFiles == null || listFiles.length <= 0) return;
+
+        if (list == null) return;
+        list.clear();
+        for (File file : listFiles) {
+            list.add(file.getAbsolutePath());
+        }
+    }
+
+    public static boolean isEmpty(String path) {
+        File file = new File(path);
+
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            return files != null && files.length == 0;
+        }
+
+        return file.length() == 0;
+    }
+
+    public static int getFileSize(String _path) {
+        try {
+            File file = new File(_path);
+            if (!file.exists()) {
+                return 0;
+            }
+            return (int) file.length();
+        } catch (Exception _e) {
+            return 0;
+        }
+    }
+
+    public static long getFolderSize(String _path) {
+        try {
+            File file = new File(_path);
+            if (!file.exists()) {
+                return 0;
+            }
+            if (!file.isDirectory()) {
+                return (int) file.length();
+            }
+            final List<File> dirs = new LinkedList<>();
+            dirs.add(file);
+            long result = 0;
+            while (!dirs.isEmpty()) {
+                final File dir = dirs.remove(0);
+                if (!dir.exists()) {
+                    continue;
+                }
+                final File[] listFiles = dir.listFiles();
+                if (listFiles == null || listFiles.length == 0) {
+                    continue;
+                }
+                for (final File child : listFiles) {
+                    result += child.length();
+                    if (child.isDirectory()) {
+                        dirs.add(child);
+                    }
+                }
+            }
+            return result;
+        } catch (Exception _e) {
+            return 0;
+        }
+    }
+
+    public static String getFilePathFromUri(Context context, Uri uri) {
+        String filePath = null;
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {MediaStore.Files.FileColumns.DATA};
+            try (Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
+                    filePath = cursor.getString(index);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "getFilePathFromUri: ", e);
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            filePath = uri.getPath();
+        }
+        return filePath;
+    }
+
+    public static boolean isValidFilePath(Activity activity, String filePath, boolean isShowDialog) {
+        if (filePath == null || filePath.isEmpty()) {
+            if (isShowDialog) {
+                DialogUtils.oneDialog(activity,
+                        activity.getString(R.string.problem_has_been_detected),
+                        activity.getString(R.string.invalid_file_path_content),
+                        activity.getString(R.string.ok),
+                        true,
+                        R.drawable.folder_24px,
+                        true,
+                        null,
+                        null);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public static void openFolder(Context context, String folderPath) {
+        File folder = new File(folderPath);
+
+        if (!folder.exists() || !folder.isDirectory() || folderPath.equals(Environment.getExternalStorageDirectory().toString())) {
+            DialogUtils.oneDialog(
+                    context,
+                    context.getString(R.string.oops),
+                    context.getString(R.string.directory_does_not_exist),
+                    context.getString(R.string.ok),
+                    true,
+                    R.drawable.error_96px,
+                    true,
+                    null,
+                    null
+            );
+            Log.e(TAG, "openFolder: Folder not found!");
+            return;
+        }
+
+        Uri uri;
+
+        try {
+            uri = FileProvider.getUriForFile(
+                    context,
+                    context.getPackageName() + ".provider",
+                    folder
+            );
+        } catch (IllegalArgumentException e) {
+            DialogUtils.oneDialog(
+                    context,
+                    context.getString(R.string.oops),
+                    context.getString(R.string.this_folder_cannot_be_opened),
+                    context.getString(R.string.ok),
+                    true,
+                    R.drawable.error_96px,
+                    true,
+                    null,
+                    null
+            );
+            Log.e(TAG, "openFolder: Folder not found!");
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, "resource/folder");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        try {
+            context.startActivity(intent);
+        } catch (Exception e) {
+            if (context instanceof Activity activity) {
+                FilePickerDialog filePickerDialog = new FilePickerDialog();
+                filePickerDialog.setLockHome(true);
+                filePickerDialog.browse(activity, folderPath);
+            } else {
+                DialogUtils.oneDialog(
+                        context,
+                        context.getString(R.string.oops),
+                        context.getString(R.string.there_is_no_app_to_perform_this_action),
+                        context.getString(R.string.ok),
+                        true,
+                        R.drawable.error_96px,
+                        true,
+                        null,
+                        null
+                );
+            }
+
+            Log.e(TAG, "openFolder: " + e.getMessage());
+        }
+    }
+
+    public static boolean symlink(String targetPath, String linkPath) {
+        File target = new File(targetPath);
+        File linkFile = new File(linkPath);
+
+        if (target.exists()) {
+            if (linkFile.exists() && !linkFile.delete()) return false;
+            try {
+                Os.symlink(target.getAbsolutePath(), linkFile.getAbsolutePath());
+                Log.d(TAG, "Symlink: " + linkFile.getAbsolutePath() + " → " + target.getAbsolutePath());
+            } catch (ErrnoException e) {
+                Log.e(TAG, "Symlink failed: " + e.getMessage());
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static String getMd5(String filePath) {
+        try (InputStream inputStream = new FileInputStream(filePath)) {
+            byte[] buffer = new byte[1024];
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            int numRead = 0;
+            while (numRead != -1) {
+                numRead = inputStream.read(buffer);
+                if (numRead > 0)
+                    digest.update(buffer, 0, numRead);
+            }
+            byte[] md5Bytes = digest.digest();
+            return convertHashToString(md5Bytes);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static String convertHashToString(byte[] md5Bytes) {
+        String returnVal = "";
+        for (byte md5Byte : md5Bytes) {
+            returnVal += Integer.toString((md5Byte & 0xff) + 0x100, 16).substring(1);
+        }
+        return returnVal.toLowerCase();
+    }
 }

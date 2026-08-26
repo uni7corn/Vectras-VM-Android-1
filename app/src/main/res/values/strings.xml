@@ -3,125 +3,55 @@
     <string name="app_name">Vectras VM</string>
 
     <!--======================VECTRAS STRINGS====================-->
-    <string name="app_version" translatable="false">v2.9.5.7-3dfx</string>
     <string name="qemu_version" translatable="false">Stable</string>
-    <string name="str_home">Home</string>
-    <string name="str_logger">Logger</string>
-    <string name="fab_info">Start Emulation</string>
     <!-- logger -->
     <string name="startvm">VM STARTED!</string>
     <string name="stopvm">VM STOPPED!</string>
     <string name="noproccesses">NO PROCCESSES!</string>
     <string name="unknownstate">UNKNOWN STATE!</string>
 
+    <string name="qemu_console_head" translatable="false">compat_monitor1 console\nQemu monitor - type \'help\' for more information\n(qemu)</string>
+
     <string name="desktopInstructions">To use External Mouse:\n\tDisable Mouse Acceleration inside the Guest OS.\n\t\tFor DSL use command: xset m 1\n"\t\tFor Other OSes disable \"Enhance pointer Precision\" or choose Mouse \"usb-tablet\" from Vectras main options.\n\tPlug in or Pair your USB/Bluetooth Mouse and press OK\n\tMove your mouse pointer to all desktop sides to calibrate.\n"</string>
 
-    <string name="navigation_drawer_open">drawer open</string>
-    <string name="navigation_drawer_close">drawer close</string>
+    <string name="navigation_drawer_open">Drawer open</string>
+    <string name="navigation_drawer_close">Drawer close</string>
     <string name="address_caption">Address</string>
-    <string name="alt_check" translatable="false">Alt</string>
     <string name="reset">Reset</string>
     <string name="shutdown">Shut down</string>
-    <string name="ctrl_c" translatable="false">Ctrl-c</string>
     <string name="devices">Devices</string>
-    <string name="external_mouse">External Mouse</string>
-    <string name="monitor">QEMU Monitor</string>
-    <string name="stretch_to_screen">Stretch to Screen</string>
-    <string name="full_screen">Fullscreen</string>
-    <string name="toggle_full_screen">Toggle Fullscreen</string>
     <string name="zoom_in">Zoom In</string>
     <string name="zoom_out">Zoom Out</string>
-    <string name="right_click">Mouse Right Click</string>
     <string name="help">Help</string>
-    <string name="drives">Drives</string>
-    <string name="volume">Volume</string>
-    <string name="hide_toolbar">Hide Toolbar</string>
-    <string name="view_log">View Log</string>
-    <string name="mode">Mode</string>
-    <string name="keyboard">KEYBOARD</string>
+    <string name="keyboard">Keyboard</string>
     <string name="name">name</string>
     <string name="size">size:</string>
-    <string name="availablity">availability:</string>
-    <string name="hide">Hide</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_up">Sign up</string>
-    <string name="action_sign_with_google">Sign in with google</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
-    <string name="profile">Profile</string>
-    <string name="apps_amp_games"><![CDATA[Apps & Games]]></string>
-    <string name="vectras_website">Vectras Website</string>
+    <string name="vectras_website">Vectras website</string>
     <string name="about">About</string>
-    <string name="emulation_information">Emulation Information</string>
-    <string name="full_name">Full Name</string>
-    <string name="terms_amp_conditions"><![CDATA[Terms&Conditions]]></string>
-    <string name="i_accept_terms_amp_conditions"><![CDATA[I Accept Terms&Conditions]]></string>
     <string name="settings">Settings</string>
-    <string name="go_ahead">Go ahead</string>
-    <string name="download">Download</string>
-    <string name="view_profile"><u><![CDATA[View Profile>>]]></u></string>
     <string name="username">USERNAME</string>
     <string name="save">SAVE</string>
     <string name="memory_usage">Memory Usage</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="linux" translatable="false">Linux</string>
-    <string name="windows" translatable="false">Windows</string>
-    <string name="apple" translatable="false">Apple</string>
     <string name="external_vnc">External VNC</string>
-    <string name="hosted_successfully">HOSTED SUCCESSFULLY!</string>
-    <string name="ip" translatable="false">IP: 127.0.0.1:9</string>
-    <string name="install_rom">Install Rom</string>
-    <string name="reconnect">Reconnect</string>
     <string name="display">Display</string>
-    <string name="calibrate_mouse">Calibrate Mouse</string>
-    <string name="hide_controller">HIDE CONTROLLER</string>
     <string name="remove">Remove</string>
-    <string name="view_logs">View Logs</string>
-    <string name="title_activity_set_arch">SetArchActivity</string>
+    <string name="view_logs">View logs</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
     <string name="input_mode_hardware_mouse">Hardware Mouse Mode</string>
-    <string name="previous_entry">Previous entry</string>
-    <string name="next_entry">Next entry</string>
-    <string name="choose_qemu_architicture">Choose qemu architicture:</string>
-    <string name="choose_qemu_architecture">Choose qemu architecture:</string>
-    <string name="import_custom_rom_cvbi">IMPORT CUSTOM ROM \".CVBI\"</string>
-    <string name="rom_name">ROM NAME</string>
-    <string name="rom_drive_qcow2_img_etc">ROM DRIVE (qcow2, img, etc…)</string>
-    <string name="qemu_params">QEMU PARAMS</string>
-    <string name="rom_icon">ROM ICON</string>
+    <string name="rom_name">VM name</string>
+    <string name="rom_drive_qcow2_img_etc">Drive (qcow2, img, etc…)</string>
+    <string name="qemu_params">QEMU params</string>
     <string name="add">ADD</string>
     <string name="import_iso">Import ISO</string>
     <string name="importRom">Import ROM</string>
-    <string name="privacy_amp_policy"><![CDATA[Privacy & Policy]]></string>
-    <string name="permission_title">Permission Required!</string>
-    <string name="permission_notification_text">Due to android policy, notification permissions are needed, to send vm notifications!</string>
     <string name="mouse_mode">Mouse mode</string>
     <string name="export">Export</string>
-    <string name="email_verification_sent">Email Verification Sent.</string>
     <string name="sign_out">Sign out</string>
-    <string name="android" translatable="false">Android</string>
-    <string name="other" translatable="false">Other</string>
-    <string name="guest">Guest</string>
-    <string name="hdd1_qcow_img_etc">HDD1 (qcow, img, etc…)</string>
-    <string name="default_configuration" translatable="false">-vga std -net nic,model=ne2k_pci -net user</string>
-    <string name="data_explorer">Data Explorer</string>
-    <string name="forgot_password">forgot password?</string>
-    <string name="buy_me_a_coffee">Buy me a coffee</string>
     <string name="hdd1" translatable="false">HDD1</string>
     <string name="hdd2" translatable="false">HDD2</string>
 
-    <string name="echo_nameserver_8_8_8_8" translatable="false">echo \'nameserver 8.8.8.8\' </string>
-    <string name="etc_resolv_conf" translatable="false"> /etc/resolv.conf</string>
     <string name="create_a_machine">Create a Machine</string>
 
     <string name="arrow_down">Down Arrow</string>
@@ -129,24 +59,17 @@
     <string name="arrow_right">Right Arrow</string>
     <string name="arrow_up">Up Arrow</string>
     <string name="auto">Auto</string>
-    <string name="button_send_text">Send Text</string>
-    <string name="button_send_without_saving">Send Text/Don\'t Save It</string>
     <string name="center_mouse">Mouse @</string>
     <string name="close">Close</string>
     <string name="color_format_caption">Color Format</string>
     <string name="color_mode">Color Mode</string>
     <string name="connect_button">Connect</string>
     <string name="connection_caption">Connection</string>
-    <string name="control_check" translatable="false">Ctrl</string>
-    <string name="copy_list_button">Copy List</string>
     <string name="ctrl_alt_del" translatable="false">Ctrl-Alt-Del</string>
     <string name="delete_connection">Delete Connection</string>
-    <string name="delete_key">Delete Selected Key</string>
-    <string name="delete_key_list">Delete Key List</string>
     <string name="disconnect">Disconnect</string>
     <string name="export_settings">Export</string>
     <string name="export_settings_path">Export to file</string>
-    <string name="enter_text_title">Enter Text to Send</string>
     <string name="enter_text">Send text</string>
     <string name="fit_to_screen">Fit to Screen</string>
     <string name="force_full_check">Force full-screen bitmap</string>
@@ -154,9 +77,6 @@
     <string name="import_settings">Import</string>
     <string name="import_settings_file_url">Import from file or URL</string>
     <string name="info">Info</string>
-    <string name="intro_text">If you need help, please check the &lt;a href="http://code.google.com/p/android-vnc-viewer/wiki/Documentation"&gt;manual&lt;/a&gt; (press phone\'s Menu button to access manual and other menu items), or the &lt;a href="http://code.google.com/p/android-vnc-viewer/wiki/faq"&gt;FAQ&lt;/a&gt;.&lt;br&gt;</string>
-    <string name="intro_title">Welcome</string>
-    <string name="intro_version_text">&lt;br&gt;—Sent text is remembered across sessions (optionally)&lt;br&gt;—Import/Export settings to file&lt;br&gt;—Button with zoom controls to bring up keyboard&lt;br&gt;—Can force tiling mode (very large screens)</string>
     <string name="input_mode">Input Mode</string>
     <string name="input_mode_fit_to_screen">No Pan; Trackball Mouse</string>
     <string name="input_mode_mouse">Mouse Pointer Control Mode</string>
@@ -166,14 +86,8 @@
     <string name="input_mode_touch_pan_zoom_mouse">Touch Mouse Pan and Zoom</string>
     <string name="input_mode_touchpad">Touchpad</string>
     <string name="keep_password_button">Keep</string>
-    <string name="intro_dont_show">Don\'t show again</string>
-    <string name="keys_caption">Keys</string>
-    <string name="list_caption">List</string>
-    <string name="list_name_caption">List Name</string>
     <string name="local_mouse_check">Local mouse pointer</string>
-    <string name="meta_key_title">Send Special Keys</string>
     <string name="mouse_follow_pan">Mouse follow pan</string>
-    <string name="new_list_button">New List</string>
     <string name="nickname_caption">Nickname</string>
     <string name="off">Off</string>
     <string name="on">On</string>
@@ -195,30 +109,16 @@
     <string name="patreon">Patreon</string>
 
     <!-- Send selected metakey -->
-    <string name="send_button">Send</string>
     <string name="send_key_again">Send Key Again</string>
-    <string name="shift_check" translatable="false">Shift</string>
-    <string name="shortcut_label">VNC Connection</string>
-    <string name="showkbd_label">Keyboard</string>
     <string name="special_keys">Send Keys</string>
     <string name="username_caption">Username</string>
     <string name="username_hint">For Windows Authentication</string>
-    <string name="permdesc_open_vnc_conn">Launch custom VNC connections</string>
     <string name="terminal">Terminal</string>
 
-    <string name="msg_directory_absolute_path">%1$s Directory Absolute Path: \"%2$s\"</string>
-
     <string name="install">Install</string>
-    <string name="select_tar">SELECT (.TAR.GZ)</string>
-    <string name="not_selected_yet">not selected yet.</string>
     <string name="modify">Modify</string>
 
-    <string name="input">input</string>
-    <string name="tiny_vterm">Tiny vterm</string>
     <string name="try_again">Try again</string>
-    <string name="logs">Logs</string>
-    <string name="options">Options</string>
-    <string name="create_virtual_harddisk">Create virtual harddisk</string>
     <string name="size_in_gb">SIZE IN GB</string>
     <string name="create_qcow2">CREATE QCOW2</string>
     <string name="image_name">IMAGE NAME</string>
@@ -233,73 +133,36 @@
     <string name="free_palistine">FREE PALISTINE</string>
     <string name="store">Store</string>
     <string name="no_internet_connection">no internet connection</string>
-    <string name="check_your_internet_connection">check your internet connection</string>
+    <string name="check_your_internet_connection">Check your internet connection.</string>
     <string name="downloading_file">Downloading file..</string>
     <string name="lenght_of_file">"Lenght of file: "</string>
     <string name="downloaded_to_path">"Downloaded to path: "</string>
     <string name="downloaded_successfully">Downloaded Successfully!</string>
-    <string name="app_settings">APP SETTINGS</string>
-    <string name="main_app_settings">main app settings.</string>
     <string name="user_interface">User interface</string>
-    <string name="themes_and_ui">themes and ui.</string>
-    <string name="emulation_settings">emulation settings.</string>
     <string name="vnc" translatable="false">VNC</string>
-    <string name="vnc_ui_environment">vnc ui environment.</string>
-    <string name="vm_arch">VM ARCH</string>
-    <string name="cpu_model">CPU MODEL</string>
     <string name="custom_memory">Custom memory</string>
-    <string name="memory_mb">MEMORY (MB)</string>
     <string name="sound_card">SOUND CARD</string>
-    <string name="tb_size_kb">TB SIZE (KB)</string>
-    <string name="avx">AVX</string>
-    <string name="mttcg">MTTCG</string>
-    <string name="kvm_acceleration">kvm acceleration</string>
-    <string name="kvm" translatable="false">KVM</string>
-    <string name="cpu_cores">CPU CORES</string>
-    <string name="harddisk_type">HARDDISK TYPE</string>
     <string name="boot_from">Boot from</string>
     <string name="shared_folder">Shared folder</string>
     <string name="custom_params">Custom params</string>
-    <string name="vm_ui_environment">VM UI ENVIRONMENT</string>
     <string name="x11_resolution">X11 Resolution</string>
-    <string name="mouse">MOUSE</string>
-    <string name="check_for_software_updates_on_startup">CHECK FOR SOFTWARE UPDATES ON STARTUP</string>
-    <string name="check_for_software_updates">CHECK FOR SOFTWARE UPDATES</string>
     <string name="night_mode">Night mode</string>
     <string name="description">Description</string>
-    <string name="qemu_website">QEMU website</string>
     <string name="powerpc_qemu" translatable="false">PowerPC</string>
     <string name="arm64_qemu" translatable="false">ARM64</string>
-    <string name="x86_64_qemu_recommended">x86_64 (Recommended)</string>
     <string name="x86_64">x86_64</string>
     <string name="i386_qemu" translatable="false">i386</string>
-    <string name="export_rom">Export Rom</string>
-    <string name="are_you_sure">Are you sure?</string>
     <string name="description_html_supported">Description (HTML supported)</string>
     <string name="compressing_cvbi">Compressing CVBI</string>
-    <string name="please_wait_dialog">Please wait…</string>
-    <string name="error">ERROR!</string>
     <string name="done">Done</string>
     <string name="are_removed_successfully">" are removed successfully!"</string>
-    <string name="teams" translatable="false">Vectras VM team and Nguyen Bao An Bui</string>
-    <string name="repository">Repository</string>
-    <string name="telegram_channel">Telegram Channel</string>
-    <string name="youtube">Youtube</string>
-    <string name="instagram">Instagram</string>
-    <string name="facebook">Facebook</string>
     <string name="change_log">Change Log</string>
     <string name="language">Language</string>
-    <string name="set">SET</string>
-    <string name="change_app_locale">CHANGE APP LOCALE</string>
-    <string name="are_you_sure_you_want_to_shutdown_vm">Are you sure you want to shutdown vm? To leave this but keep everything running, tap and hold the Shut down button.</string>
-    <string name="cpu" translatable="false">CPU</string>
     <string name="save_changes">SAVE CHANGES</string>
     <string name="qemu_create_cmd">QEMU CREATE CMD</string>
     <string name="getit">Get</string>
-    <string name="adddrivenote">Make sure you have selected the ROM or CDROM to boot the OS from. You may not need to select it if you have added them to QEMU PARAMS.</string>
     <string name="killqemu">Kill QEMU</string>
     <string name="installing">Installing…</string>
-    <string name="vncdisplay">VNC display</string>
     <string name="setup_sound">Setup sound for Termux</string>
     <string name="setup_sound_guide_content">This enables virtual machines running on the Vectras VM to play audio using Termux. If you have not set up Termux yet, select Start setup, the command will be automatically copied to the clipboard, you need paste that command and run it in Termux to complete the setup. Next times, make sure Termux is running to play sound.</string>
     <string name="copied">Copied.</string>
@@ -307,12 +170,9 @@
     <string name="termux_is_not_installed">Termux is not installed</string>
     <string name="you_need_to_install_termux">You need to install Termux before setting up.</string>
     <string name="wating_for_you">Waiting for you…</string>
-    <string name="suggested_use_of_create_command">We recommend that you use the Create command to make creating a virtual machine simpler and easier.</string>
     <string name="oops">Oops!</string>
-    <string name="cpu_does_not_have_the_necessary_instructions">CPU on your device does not have the necessary instructions for Vectras VM to work.</string>
     <string name="warning">Warning!</string>
     <string name="cpu_not_support_64">The Android OS or CPU on your device does not support 64 bit, which means the VM will have poor performance and be unstable when running.</string>
-    <string name="an_error_occurred_with_the_vm_list_data">An error occurred with the virtual machine list data. Do you want to delete all?</string>
     <string name="delete_all">Delete all</string>
     <string name="need_fix_json_before_create">The virtual machine list data is corrupted and needs to be repaired. Do you want to start repairing now?</string>
     <string name="problem_has_been_detected">Problem has been detected</string>
@@ -320,22 +180,17 @@
     <string name="continuetext">Continue</string>
     <string name="need_set_name">You need to give this virtual machine a new name.</string>
     <string name="can_not_use_mttcg">The virtual machine cannot run because CPU or Android OS on your phone does not support 64bit to use Multi-threaded TCG. Do you want to continue running the virtual machine with Single-threaded TCG?</string>
-    <string name="VM_is_already_running">This VM is already running.</string>
     <string name="delete_all_vm_content">All virtual machines will be erased including all your ROMs. Do you want to continue?</string>
     <string name="delete_all_vm">Delete all VM</string>
     <string name="create">Create</string>
     <string name="nothing_here">Nothing here</string>
-    <string name="create_vm_now">Do you want to create a new virtual machine now?</string>
     <string name="nothing_here_home">Tap the Create button at the bottom to start creating a new virtual machine. Or…</string>
     <string name="allow_access_to_storage">Allow access to storage</string>
     <string name="you_need_to_allow_access_to_the_storage_to_continue">You need to allow access to the storage to continue.</string>
     <string name="allow">Allow</string>
-    <string name="cannot_create_VM_at_this_time">Cannot create VM at this time.</string>
-    <string name="no_data">No data.</string>
     <string name="roms_store">Rom store</string>
     <string name="available">Available</string>
     <string name="unavailable">Unavailable</string>
-    <string name="installed">Installed</string>
     <string name="kill_all">Kill all</string>
     <string name="do_you_want_to_kill_all_qemu_processes">Do you want to kill all Qemu processes?</string>
     <string name="all_running_vms_will_be_forcibly_shut_down">All running VMs will be forcibly shut down.</string>
@@ -348,25 +203,22 @@
     <string name="unable_to_connect_to_server">Unable to connect to server.</string>
     <string name="join_our_community">Join our community</string>
     <string name="a_serious_problem_has_occurred">A serious problem has occurred! This problem is caused by the CPU or Android operating system on your device. You can join our community to learn more.</string>
-    <string name="keep_files_question_mark">Keep files?</string>
-    <string name="do_you_want_to_keep_this_ROM_file_and_CD_ROM_file">Do you want to keep this ROM file and CD ROM file?</string>
-    <string name="keep">Keep</string>
-    <string name="remove_all">Remove all</string>
     <string name="format_not_supported_please_select_file_with_format_cvbi">Format not supported, please select file with format cvbi.</string>
     <string name="error_CR_CVBI1">A problem has occurred and cannot continue because the cbvi file was not found. Error code: CR_CVBI1.</string>
     <string name="error_CR_CVBI2">An error has occurred. Extraction was successful but the cvbi file does not contain information about this ROM so some default settings will be used. Error code: CR_CVBI2.</string>
     <string name="from">From</string>
     <string name="error_CR_CVBI3">An error has occurred and cannot continue. The extraction was successful but the cvbi file does not contain information for this ROM and does not contain any ROM files. Error code: CR_CVBI3.</string>
-    <string name="kept_some_files">Some files were retained because some other virtual machine needed them.</string>
+    <string name="error_CR_CVBI4">An error has occurred. The ROM information is corrupted and some default settings have been applied. Error code: CR_CVBI4.</string>
     <string name="clean_up">Clean up</string>
     <string name="clean_up_content">ROMs, files and folders that are no longer in use will be deleted.</string>
     <string name="go_to_rom_store">Go to ROM store</string>
-    <string name="want_to_learn_more_about_qemu">Want to learn more about QEMU?</string>
     <string name="file_format_is_not_supported">Things may not work because the file format is not supported. Do you want to continue?</string>
-    <string name="you_cannot_use_IDE_hard_drive_type_with_ARM64">You cannot use IDE hard drive type with ARM64. If you continue, the default hard drive type will be used.</string>
+    <string name="file_format_is_not_supported_hard_drive">Things may not work because the file format is not supported. Commonly supported formats include qcow2, img, vhd, vhdx, vdi, qcow, vmdk and vpc. Do you want to continue?</string>
+    <string name="file_format_is_not_supported_optical_drive">Things may not work because the file format is not supported. Commonly supported formats include iso, img, cdr, and toast. Do you want to continue?</string>
+    <string name="file_format_is_not_supported_floppy_drive">Things may not work because the file format is not supported. Commonly supported formats include img, flp and ima. Do you want to continue?</string>
     <string name="error_PROOT_IS_MISSING_0">The system is not working, necessary files are missing. This problem may be caused by incorrect setup. Do you want to try the setup again? Error code: PROOT_IS_MISSING_0.</string>
     <string name="error_DRIVE_INDEX_0_EXISTS">An error occurred and the virtual machine cannot start. There are two or more drives that cannot be plugged into the same slot. Please check your virtual machine settings and make sure all drives are not plugged into the same slot. Error code: DRIVE_INDEX_0_EXISTS.</string>
-    <string name="error_X11_NOT_AVAILABLE">An error occurred and the virtual machine cannot start. X11 is not working. We recommend you switch to VNC. Do you want to switch to VNC? Error code: X11_NOT_AVAILABLE.</string>
+    <string name="error_X11_NOT_AVAILABLE">An error occurred and the virtual machine is not running. The X11 display is temporarily unavailable, please exit the Vectras VM and come back to try again. You can try switching to VNC which is more stable. Error code: X11_NOT_AVAILABLE.</string>
     <string name="switched_to_VNC">Switched to VNC. You can try running the virtual machine again now.</string>
     <string name="restore">Restore</string>
     <string name="restore_content">Deleted virtual machines will be restored if you previously chose to keep all files.</string>
@@ -378,7 +230,6 @@
     <string name="this_rom_is_missing_too_much_information">This ROM is missing too much information and it may not work, this error is caused by the person who created it incorrectly.</string>
     <string name="this_rom_may_not_be_compatible">This ROM may not be compatible as it is for an older version.</string>
     <string name="please_select">Please select</string>
-    <string name="select">Select</string>
     <string name="use_default_bios_uefi">Use default BIOS/UEFI</string>
     <string name="use_local_time">Use local time</string>
     <string name="roms_data_json_fixed_successfully">Fixed successfully. But some virtual machines may disappear and they were moved to the Recycle bin folder.</string>
@@ -389,13 +240,11 @@
     <string name="copy_file_content">Always copy the selected file to the virtual machine instead of using it directly.</string>
     <string name="reinstall_system">Reinstall system</string>
     <string name="reinstall_system_content">If you find that your system is having serious problems, you can reinstall the system. And all virtual machines will be kept.</string>
-    <string name="reinstalling">Reinstalling…</string>
     <string name="mini_tools">Mini tools</string>
     <string name="error_NO_SUCH_FILE_OR_DIRECTORY">A problem occurred and the virtual machine failed to run because a file or directory that the virtual machine needs to run does not exist.</string>
     <string name="auto_create_new_hard_drive_when_creating_new_vm">Automatically create new hard drive when creating new virtual machine</string>
     <string name="with_size_is_128GB">With size is 128GB.</string>
     <string name="delete_all_content">All data will be erased except the system.</string>
-    <string name="hide_advanced_setup">Hide advanced setup</string>
     <string name="change_thumbnail">Change thumbnail</string>
     <string name="do_you_want_to_change_or_remove">Do you want to change or remove?</string>
     <string name="change">Change</string>
@@ -404,19 +253,15 @@
     <string name="do_you_want_to_change_the_mirror_before_setting_up_the_current_mirror_is">Do you want to change the mirror before setting up?\nThe current mirror is:</string>
     <string name="connecting_to_mirror_in">Connecting to mirror in</string>
     <string name="mirror">Mirror</string>
+    <string name="mirrors">Mirrors</string>
     <string name="letstart">Let\'s start</string>
     <string name="welcome">Welcome!</string>
     <string name="welcome_to_vectras_vm_lets_get_started">Welcome to Vectras VM. Let\'s get started!</string>
     <string name="processing_this_may_take_a_few_minutes">Processing...\nThis may take a few minutes.</string>
-    <string name="check_for_updates_from_the_beta_channel">Check for updates from the Beta channel</string>
-    <string name="check_from_the_Beta_channel_instead_of_the_Stable_channel">Check from the Beta channel instead of the Stable channel.</string>
     <string name="update">Update</string>
-    <string name="new_version_is_now_available">New version is now available</string>
     <string name="ok">OK</string>
     <string name="you_are_using_beta_version">You are using Beta version</string>
     <string name="switch_to_check_for_updates_on_the_Beta_channel_now">Switch to check for updates on the Beta channel now.</string>
-    <string name="there_seems_to_be_no_signal">There seems to be no signal</string>
-    <string name="do_you_want_to_exit">Do you want to exit?</string>
     <string name="you_need_to_complete_vectras_vm_setup_before_importing_this_file">You need to complete Vectras VM setup before importing this file.</string>
     <string name="unable_to_create_the_directory_to_create_the_vm">Unable to create directory to create virtual machine, this may be because you have not granted permission, there is not enough free space of internal storage or other.</string>
     <string name="with">With</string>
@@ -432,26 +277,20 @@
     <string name="dont_miss_out">Don\'t miss out!</string>
     <string name="disclaimer_here">When you import any ROM or use files that contain anything, you accept all of this. Click here to read it all.</string>
     <string name="join_now_on_telegram_if_you_want">Join now on Telegram if you want.</string>
-    <string name="skip">Skip</string>
     <string name="donate">Donate</string>
     <string name="donatecontent">If you really like Vectras VM, you can donate to us on Patreon. Thanks a lot!</string>
-    <string name="visit_now">Visit now</string>
     <string name="you_are_ready_to_go">You are ready to go!</string>
     <string name="shared_folder_is_not_used_because_i386_does_not_support_it">Shared Folder is not used because i386 does not support it.</string>
-    <string name="use_uefi_for_x64_only">Use UEFI (x64 only)</string>
+    <string name="use_uefi">Use UEFI</string>
     <string name="remove_and_do_not_keep_files">Remove and don\'t keep files</string>
     <string name="remove_but_keep_files">Remove and keep files</string>
     <string name="remove_vm_content">Do you want to remove it? You can choose to keep or not keep the files.</string>
-    <string name="macos">macOS</string>
-    <string name="seconds_left">seconds left</string>
-    <string name="learn_more">Learn more</string>
-    <string name="open">Open</string>
     <string name="general">General</string>
     <string name="personalization">Personalization</string>
     <string name="system">System</string>
     <string name="vnc_server">VNC Server</string>
     <string name="system_settings_description">Language, check for updates and files.</string>
-    <string name="personalization_settings_description">Themes and user interface.</string>
+    <string name="personalization_settings_description">Light, dark and dynamic color.</string>
     <string name="qemu_settings_description">Settings for the emulator.</string>
     <string name="vnc_settings_description">Using VNC Server for external.</string>
     <string name="x11_settings_description">X11 user interface environment.</string>
@@ -470,31 +309,30 @@
     <string name="note_for_selecting_ppc">You can run older versions of Mac OS and other operating systems intended for the PowerPC architecture.</string>
     <string name="note_for_selecting_import">You can import now by selecting the file in cvbi format.</string>
     <string name="note_for_selecting_qemu">Learn more about this open source emulator.</string>
-    <string name="create_command">Create command</string>
+    <string name="create_command">Param Notebook</string>
     <string name="note_for_selecting_create_command">Create new virtual machines for Vectras VM with easier customization.</string>
     <string name="import_or_choose_an_architecture_to_start_creating">Import or choose an architecture to start creating.</string>
     <string name="set_arch_universal_note">You can drag and drop cvbi file to Import card to import.</string>
     <string name="copy">Copy</string>
     <string name="search">Search</string>
     <string name="no_matching_results_found">No matching results found.</string>
+    <string name="no_matching_results_found_search_content">No matching results found.\nTry adding or removing the filters below.</string>
     <string name="unknow">Unknow</string>
     <string name="verified">Verified</string>
     <string name="verified_content">It has been tested to work and is not harmful to the device. But it may not work on your device.</string>
     <string name="not_verified">Not verified</string>
     <string name="not_verified_content">Untested, it may not work or have unexpected behavior.</string>
-    <string name="creator">Creator</string>
     <string name="architecture">Architecture</string>
     <string name="sizetext">Size</string>
     <string name="file_name">File name</string>
     <string name="who_created_this_rom">Who created this rom?</string>
     <string name="setup_command">Setup command</string>
     <string name="later">Later</string>
-    <string name="cdrom">CDROM</string>
+    <string name="cdrom">CD-ROM</string>
     <string name="floppy_drive">Floppy drive</string>
     <string name="floppy_drive_a">Floppy drive A</string>
     <string name="floppy_drive_b">Floppy drive B</string>
     <string name="sd_card">SD card</string>
-    <string name="no_support_for_arm">No support for ARM.</string>
     <string name="change_removable_devices">Change removable devices</string>
     <string name="ejected">Ejected.</string>
     <string name="eject_failed">Eject failed.</string>
@@ -509,7 +347,8 @@
     <string name="you_need_to_enter_the_device_id">You need to enter the device ID.</string>
     <string name="this_is_not_a_removable_device">This is not a removable device.</string>
     <string name="power">Power</string>
-    <string name="shutdown_or_reset_content">Do you want to shut down or reset? This can cause some unexpected problems for the virtual machine. You can leave without shutting down by pressing and holding the exit button or pressing the back key.</string>
+    <string name="shutdown_or_reset_content">Do you want to shut down or reset? This can cause some unexpected problems for the virtual machine. Select Power to press the power button.</string>
+    <string name="shutdown_or_reset_content_vnc">Do you want to shut down or reset? This can cause some unexpected problems for the virtual machine. Select Power to press the power button. You can leave without shutting down by pressing and holding the exit button or pressing the back key.</string>
     <string name="external">External</string>
     <string name="use_external_vnc_server">Use external VNC Server</string>
     <string name="enter_display_number_hint">Enter display number (Recommended 0 – 9)</string>
@@ -523,7 +362,7 @@
     <string name="new_vm">New VM</string>
     <string name="invalid_file_path_content">Invalid file path, please select a file from elsewhere.</string>
     <string name="invalid_iso_file_path_content">The file you selected is not in the correct format, please select an iso file.</string>
-    <string name="unable_to_copy_iso_file_content">Unable to copy iso file, try selecting this iso file elsewhere.</string>
+    <string name="unable_to_copy_file_content">Unable to copy this file, try selecting this file elsewhere.</string>
     <string name="unable_to_copy_hard_drive_file_content">Unable to copy hard drive file, try selecting this iso file elsewhere.</string>
     <string name="could_not_process_cvbi_file_content">Could not process cvbi file, the file path is invalid or the file may be corrupted.</string>
     <string name="unable_to_cvbi_file_vm_dir_content">Unable to process cvbi file because virtual machine directory creation failed</string>
@@ -550,14 +389,334 @@
     <string name="action_needed">Action needed</string>
     <string name="repair_vm_list_content">Data about the virtual machines has been corrupted and needs to be repaired.</string>
     <string name="start_repair">Start repair</string>
-
+    <string name="not_enough_storage_to_set_up_content">There is not enough storage available on your device to set up. Please clear up and try again later.</string>
+    <string name="no_signal">No signal</string>
+    <string name="tap_to_try_again">Tap to try again.</string>
+    <string name="force_refresh">Force refresh</string>
+    <string name="force_refresh_vnc_description">The VNC screen will restart every time there is a change, which helps troubleshoot problems.</string>
+    <string name="settings_for_vnc">Quality, refresh rate and external.</string>
+    <string name="imported">Imported</string>
+    <string name="file_imported_successfully">File imported successfully.</string>
+    <string name="file_import_failed">File import failed.</string>
+    <string name="importing_file">Importing file…</string>
+    <string name="replace">Replace</string>
+    <string name="delete_file_failed_content">An error occurred while deleting the file, please try again later.</string>
+    <string name="file_deleted">File deleted.</string>
+    <string name="open_main_folder">Open main folder</string>
+    <string name="there_is_no_app_to_perform_this_action">There is no app to perform this action.</string>
+    <string name="directory_does_not_exist">Directory does not exist.</string>
+    <string name="shared_folder_is_too_large_content">The shared folder is too large. Please delete some of the following files so that the total size of all files in the shared folder does not exceed 516 MB.</string>
+    <string name="open_shared_folder">Open shared folder</string>
+    <string name="vm_could_not_be_run_content">An error occurred and the virtual machine could not be run.</string>
+    <string name="error_ANOTHER_PROCESS_USING_IMAGE">An error occurred and the virtual machine could not be started. Another process is using a file that this virtual machine also needs. Find and terminate that process.</string>
+    <string name="could_not_create_dir_to_save_cvbi_content">Something went wrong. Could not create directory to save cvbi file.</string>
+    <string name="quick_start">Quick start</string>
+    <string name="quick_start_description">To start up faster the next time you open Vectras VM if you don\'t remove it from multitasking.</string>
+    <string name="cpu_not_support_64_xfce">Your device\'s Android OS or CPU doesn\'t support 64-bit, which means you can\'t use this feature.</string>
+    <string name="the_file_could_not_be_processed_content">The file could not be processed, possibly due to an invalid file path or a corrupted file. Please try again later.</string>
+    <string name="focus_or_defocus_the_qemu_window">Focus or defocus the QEMU window</string>
+    <string name="theme">Theme</string>
+    <string name="themes">Themes</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="dynamic_color">Dynamic color</string>
+    <string name="dynamic_color_description">Automatically change color according to the system.</string>
+    <string name="edit">Edit</string>
+    <string name="importing">Importing…</string>
+    <string name="completed">Completed</string>
+    <string name="please_stay_here">Please stay here.</string>
+    <string name="exporting">Exporting…</string>
+    <string name="developers">Developers</string>
+    <string name="our_social">Our social</string>
+    <string name="like">Like</string>
+    <string name="liked">Liked</string>
+    <string name="unit_of_view">view</string>
+    <string name="unit_of_views">views</string>
+    <string name="views">Views</string>
+    <string name="import_and_export">Import &amp; export</string>
+    <string name="import_and_export_description">Settings for importing and exporting roms.</string>
+    <string name="smart_size_calculation">Smart size calculation</string>
+    <string name="smart_size_calculation_description">Skip size calculation when importing rom if needed for faster import but import progress will not be shown.</string>
+    <string name="cyclic_redundancy_check">Cyclic redundancy check</string>
+    <string name="cyclic_redundancy_check_description">Check and detect data errors when exporting rom, you can turn it off for faster exporting.</string>
+    <string name="unable_to_connect_to_alpine_linux_server_content">Unable to connect to Alpine Linux server or it is temporarily down, please try checking your network connection, change another mirror or try again in a few hours.</string>
+    <string name="system_files_installation_failed_content">An error occurred while installing system files. You can try uninstalling and reinstalling this app to fix it.</string>
+    <string name="copying_file">Copying file…</string>
+    <string name="cdrom_hint">CD-ROM (iso file only)</string>
+    <string name="invalid_file">Invalid file</string>
+    <string name="processes">Processes</string>
+    <string name="use_vnc">Use VNC</string>
+    <string name="installing_system_files">Installing system files</string>
+    <string name="connecting">Connecting…</string>
+    <string name="how_do_you_want_to_install">How do you want to install?</string>
+    <string name="how_do_you_want_to_install_note">Standard or manual?</string>
+    <string name="standard">Standard</string>
+    <string name="standard_note">Recommended and setup will automatically install everything.</string>
+    <string name="custom">Custom</string>
+    <string name="custom_note">If you want to manually select the bootstrap file you want to install the Qemu version you desire.</string>
+    <string name="mirror_note">Choose the mirror closest to you for faster setup.</string>
+    <string name="please_do_not_disconnect_the_network_this_may_take_a_few_minutes">Please do not disconnect the network. This may take a few minutes.</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="the_setup_could_not_be_completed_and_below_is_the_log">The setup could not be completed and below is the log.</string>
+    <string name="this_option_is_temporarily_unavailable_because_the_server_cannot_be_connected">This option is temporarily unavailable because the server cannot be connected.</string>
+    <string name="vectras_vm_cannot_run_on_this_device">Vectras VM cannot run on this device.</string>
+    <string name="not_enough_storage_space">Not enough storage space.</string>
+    <string name="there_are_no_logs">There are no logs.</string>
+    <string name="the_required_package_is_not_installed_content">The required package is not installed, you need to install it before using this feature.</string>
+    <string name="need_install_termux_x11_content">Termux:X11 app is not installed, you need to install it to continue.</string>
+    <string name="X11_display">X11 display</string>
+    <string name="settings_for_X11_display">Settings for X11 display.</string>
+    <string name="use_X11_display">Use X11 display</string>
+    <string name="check_before_extract">Check before extract</string>
+    <string name="check_before_extract_note">Quickly detect errors to avoid wasting time decompressing and errors occurring after decompression.</string>
+    <string name="checking">Checking…</string>
+    <string name="x11_display_cannot_be_used_at_this_time_content">X11 display cannot be used at this time, try closing and reopening the Vectras VM.</string>
+    <string name="run_qemu_with_xterm">Run Qemu with Xterm</string>
+    <string name="run_qemu_with_xterm_note">To run commands with Qemu monitor easier without switching.</string>
+    <string name="quick_edit">Quick edit</string>
+    <string name="write_something">Write something…</string>
+    <string name="switch_to_vnc">Switch to VNC</string>
+    <string name="preferences">Preferences</string>
+    <string name="go_to_termux_x11_settings">Go to Termux:X11 settings.</string>
+    <string name="size_gb">Size (GB)</string>
+    <string name="create_a_new_virtual_disk">Create a new virtual disk</string>
+    <string name="it_will_be_created_in">It will be created in</string>
+    <string name="software_and_driver">Software &amp; driver</string>
+    <string name="shared_by">Shared by</string>
+    <string name="system_update">System update</string>
+    <string name="system_update_note">A system update is available, update now for a full experience.</string>
+    <string name="use_sdl">Use SDL</string>
+    <string name="use_sdl_note">Turn it on if you want to use 3Dfx and play old retro games (only with x86_64 and i386).</string>
+    <string name="qemu_documentation">QEMU documentation</string>
+    <string name="you_need_to_switch_to_sdl_to_use_3dfx">You need to switch to SDL to use 3Dfx.</string>
+    <string name="device_manager">Device manager</string>
+    <string name="show_in_folder">Show in folder</string>
+    <string name="exit">Exit</string>
+    <string name="threedfx">3dfx</string>
+    <string name="cpu_support_3dfx_content">Your device\'s CPU supports acceleration for 3Dfx. But it may be unstable or not working.</string>
+    <string name="cpu_not_support_3dfx_content">Your device\'s CPU does not support acceleration for 3Dfx.</string>
+    <string name="threedfx_is_not_available">3Dfx is not available.</string>
+    <string name="refresh">Refresh</string>
+    <string name="last_crash_note">We are very sorry about an incident that occurred and app crashed earlier.</string>
+    <string name="virtual_mouse">Virtual mouse</string>
+    <string name="show_virtual_mouse">Show virtual mouse</string>
+    <string name="hide_virtual_mouse">Hide virtual mouse</string>
+    <string name="this_bootstrap_file_is_invalid">This bootstrap file is invalid.</string>
+    <string name="vm_has_been_created">VM has been created.</string>
+    <string name="vm_has_been_edited">VM has been edited.</string>
+    <string name="an_error_occurred_and_vm_was_not_created">An error occurred and VM was not created.</string>
+    <string name="an_error_occurred_and_vm_was_not_modified">An error occurred and VM was not modified.</string>
+    <string name="edit_with_create_command">Edit with Param Notebook</string>
+    <string name="edit_with_create_command_content">You can edit this VM with Param Notebook app.</string>
+    <string name="unable_to_save_please_try_again_later">Unable to save, please try again later.</string>
+    <string name="advanced">Advanced</string>
+    <string name="boot">Boot</string>
+    <string name="show_boot_menu">Show boot menu</string>
+    <string name="defaulttext">Default</string>
+    <string name="hard_disk">Hard disk</string>
+    <string name="floppy_disk">Floppy disk</string>
+    <string name="network">Network</string>
+    <string name="rom_successfully_exported">Rom successfully exported.</string>
+    <string name="options">Options</string>
+    <string name="add_file">Add file</string>
+    <string name="file_added">File added</string>
+    <string name="copy_full_path">Copy full path</string>
+    <string name="adding_file_failed_content">Adding file failed, please try again later.</string>
+    <string name="items_have_been_cleared">items have been cleared.</string>
+    <string name="show_recycle_bin">Show recycle bin</string>
+    <string name="an_error_occurred_while_deleting_the_vm">An error occurred while deleting the virtual machine.</string>
+    <string name="the_vm_files_were_retained_because_they_are_still_being_used_elsewhere">The virtual machine\'s files were retained because they are still being used elsewhere.</string>
+    <string name="pause">Pause</string>
+    <string name="pause_vm_note">The virtual machine\'s state will be saved and shut down to conserve resources. It will remain in this state on the next boot. Please do not change, move, or delete files used with this virtual machine.</string>
+    <string name="pausing_vm_note">VM is pausing…\nDon\'t leave here.</string>
+    <string name="resuming">Resuming…</string>
+    <string name="vm_resume_error_note">An issue occurred while resuming loading of previously paused virtual machine state. If you modified this virtual machine or Qemu settings in the Vectras VM setup before booting, please check that you changed them to the same settings as the last time this virtual machine was powered on. Do you want to keep or remove the saved state?</string>
+    <string name="keep_and_continue">Keep and continue</string>
+    <string name="remove_and_continue">Remove and continue</string>
+    <string name="vm_state_save_failed_note">An error occurred and the virtual machine\'s state could not be saved. Please try again later.</string>
+    <string name="this_folder_cannot_be_opened">This folder cannot be opened.</string>
+    <string name="new_notification">New notification</string>
+    <string name="tap_to_view">Tap to view.</string>
+    <string name="view_in_an_bui_app">View in the An Bui app</string>
+    <string name="view_in_an_bui_app_note">You can view and get it here.</string>
+    <string name="tools">Tools</string>
+    <string name="threedfx_wrappers">3Dfx wrappers</string>
+    <string name="virtio_tools_for_windows">VirtIO tools for Windows</string>
+    <string name="download_required">Download required</string>
+    <string name="this_tool_needs_to_be_downloaded_before_use">This tool needs to be downloaded before use. You will be notified when the download is complete.</string>
+    <string name="download_failed_note">Download failed. Please try again later.</string>
+    <string name="virtio_tools_for_windows_is_now_ready_to_use">VirtIO tools for Windows is now ready to use</string>
+    <string name="do_you_want_to_insert_it_into_the_optical_drive_right_now">Do you want to insert it into the optical drive right now?</string>
+    <string name="try_play_store_version">Try Play Store version</string>
+    <string name="enter_a_command">Enter a command</string>
+    <string name="console">Console</string>
+    <string name="take_screenshot">Take screenshot</string>
+    <string name="unable_to_take_a_screenshot">Unable to take a screenshot.</string>
+    <string name="saved_to_the_gallery">Saved to the gallery.</string>
+    <string name="taking_a_screenshot">Taking a screenshot…</string>
+    <string name="this_vm_is_already_running">This VM is already running.</string>
+    <string name="the_server_is_running">The server is running</string>
+    <string name="host_shared_folder_format_content">Access this link on the virtual machine to access the Download folder on your device:\n\n%s\n\nYou can also send files from the virtual machine to the Download folder on your device, here\'s an example using curl:\n\n%s</string>
+    <string name="host_shared_folder_error_content">An error occurred while starting the server. Please try again later.</string>
+    <string name="copy_link">Copy link</string>
+    <string name="copy_upload_command">Copy upload command</string>
+    <string name="folder_sharing_server">Folder sharing server</string>
+    <string name="mute">Mute</string>
+    <string name="unmute">Unmute</string>
+    <string name="cdrom_1">CD-ROM 1</string>
+    <string name="cdrom_2">CD-ROM 2</string>
+    <string name="locked_and_cannot_be_ejected_content">The device is locked and cannot be ejected right now. Please try again later. You can try opening device manager or file manager in the operating system running in this virtual machine and requesting eject.</string>
+    <string name="locked_and_cannot_be_changed_content">The device is locked and cannot be changed right now. Please try again later. You can try eject it and then trying to change it again.</string>
+    <string name="manage">Manage</string>
+    <string name="connect">Connect</string>
+    <string name="shutting_down">Shutting down…</string>
+    <string name="cannot_save_here_please_choose_another_location">Cannot save here, please choose another location.</string>
+    <string name="processor">Processor</string>
+    <string name="board">Board</string>
+    <string name="core">Core</string>
+    <string name="cores">Cores</string>
+    <string name="thread">Thread</string>
+    <string name="threads">Threads</string>
+    <string name="refresh_rate">Refresh rate</string>
+    <string name="low_refresh_rate">Low refresh rate</string>
+    <string name="low_refresh_rate_note">If your device is overloaded from drawing many frames, you can enable this feature to improve virtual machine performance and reduce the refresh rate to 30.</string>
+    <string name="edge_to_edge">Edge-to-edge</string>
+    <string name="disable_edge_to_edge">Disable edge-to-edge</string>
+    <string name="pinch_to_zoom">Pinch to zoom</string>
+    <string name="vm_picker">VM picker</string>
+    <string name="switchtext">Switch</string>
+    <string name="switch_to">Switch to</string>
+    <string name="no_vms_are_available">No virtual machines are available.</string>
+    <string name="hard_drive_0">Hard drive 0</string>
+    <string name="hard_drive_1">Hard drive 1</string>
+    <string name="optical_drive">Optical drive</string>
+    <string name="optical_drive_0">Optical drive 0</string>
+    <string name="optical_drive_1">Optical drive 1</string>
+    <string name="vm_creator_this_file_is_already_in_use_content">This file is already in use elsewhere on the virtual machine. You need to find and remove or rename it and select it again.</string>
+    <string name="higher_quality">Higher quality</string>
+    <string name="vnc_higher_quality_note">Image quality will improve, but the latency will be greater if using external.</string>
+    <string name="battery">Battery</string>
+    <string name="preparing">Preparing…</string>
+    <string name="notification">Notification</string>
+    <string name="notification_system_description">Manage notification types and topics.</string>
+    <string name="suggestions_and_tips">Suggestions and tips</string>
+    <string name="suggestions_and_tips_settings_description">Receive notifications about our tips and suggestions.</string>
+    <string name="in_system_settings">In system settings.</string>
+    <string name="missing_packages">Missing packages</string>
+    <string name="missing_packages_content">These are the missing packages that you should install:</string>
+    <string name="x11_general_setting_note">You need to restart the app when switching between built-in and external.</string>
+    <string name="contains_ads">Contains ads</string>
+    <string name="linux" translatable="false">Linux</string>
+    <string name="windows" translatable="false">Windows</string>
+    <string name="macos" translatable="false">macOS</string>
+    <string name="android" translatable="false">Android</string>
+    <string name="bsd" translatable="false">BSD</string>
+    <string name="other">Other</string>
+    <string name="operating_system">Operating system</string>
+    <string name="free_community">Free/Community</string>
+    <string name="high_quality_contains_ads">High quality/Contains ads</string>
+    <string name="gui" translatable="false">GUI</string>
+    <string name="no_gui">No GUI</string>
+    <string name="random_suggestion">Random suggestion</string>
+    <string name="search_settings_note">Search in store and suggestions.</string>
+    <string name="random_suggestion_settings_note">Guess what will appear?</string>
+    <string name="filters">Filters</string>
+    <string name="filters_settings_note">Search with more control and browse faster.</string>
+    <string name="reset_uefi_bios">Reset UEFI/BIOS</string>
+    <string name="reset_uefi_bios_note">All UEFI/BIOS settings will be reset. Do you want to continue?</string>
+    <string name="need_to_shut_down_all_running_vm_note">You need to shut down all running virtual machines to perform this action.</string>
+    <string name="auto_switch_to_external_mouse">Auto switch to external mouse</string>
+    <string name="auto_switch_to_external_mouse_note">Automatically switches when the mouse is connected and disconnected.</string>
+    <string name="the_necessary_packages_have_been_installed">The necessary packages have been installed.</string>
+    <string name="an_error_occurred_while_creating_the_virtual_drive">An error occurred while creating the virtual drive.</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="equalizer_settings_note">Treble, mid and bass.</string>
+    <string name="equalizer_note">You may need to restart the virtual machine for the changes to take effect. Sound effects may be affected if you use accessories such as headphones.</string>
+    <string name="use_equalizer">Use equalizer</string>
+    <string name="upper_treble">Upper treble</string>
+    <string name="treble">Treble</string>
+    <string name="mid">Mid</string>
+    <string name="bass">Bass</string>
+    <string name="low_bass">Low bass</string>
+    <string name="your_device_is_not_supported">Your device is not supported.</string>
+    <string name="undo">Undo</string>
+    <string name="internal_storage">Internal storage</string>
+    <string name="open_with">Open with</string>
+    <string name="file_picker">File picker</string>
+    <string name="file_picker_settings_note">Built-in file picker and browser.</string>
+    <string name="use_file_picker">Use file picker</string>
+    <string name="resume">Resume</string>
+    <string name="file_picker_resume_note">Continue in the last folder where you selected the file in the previous use.</string>
+    <string name="show_hidden_files">Show hidden files</string>
+    <string name="show_hidden_files_note">This applies to files and folders whose names begin with \".\".</string>
+    <string name="the_folder_path_has_been_copied_to_the_clipboard">The folder path has been copied to the clipboard.</string>
+    <string name="divider">Divider</string>
+    <string name="file_picker_divier_note">Add dividers between items.</string>
+    <string name="storage_note">Drives, shared folder,…</string>
+    <string name="open_source_licenses">Open source licenses</string>
+    <string name="board_note">Processor, cores, threads,…</string>
+    <string name="firmware">Firmware</string>
+    <string name="firmware_note">UEFI, boot from, boot menu,…</string>
+    <string name="advanced_note">Extra params,…</string>
+    <string name="network_note">Network card,…</string>
+    <string name="card_type">Card type</string>
+    <string name="network_card">Network card</string>
+    <string name="none">None</string>
+    <string name="use_external_x11_note">Use the Termux:X11 app instead of the built-in screen.</string>
+    <string name="blur_effect">Blur effect</string>
+    <string name="blur_effect_note">Blur the surrounding area to increase focus on a specific area that needs attention.</string>
+    <string name="machine_type">Machine type</string>
+    <string name="machine">Machine</string>
+    <string name="nested_virtualization">Nested virtualization</string>
+    <string name="play_sound">Play sound</string>
+    <string name="the_system_has_not_been_installed">The system has not been installed.</string>
+    <string name="choose_this_folder">Choose this folder</string>
+    <string name="change_optical_drive">Change optical drive</string>
+    <string name="do_you_want_to_change_create_or_remove_optical_drive">Do you want to change, create or remove?\n\nIf you choose to create, you need to select the folder containing the necessary files to create the optical disc.</string>
+    <string name="you_are_not_allowed_to_use_this_folder">You are not allowed to use this folder.</string>
+    <string name="delete_broken_vm_content">This virtual machine is broken, would you like to delete it?</string>
+    <string name="report">Report</string>
+    <string name="send_log_to_server_content">This log will be sent to our server. Do you want to continue?</string>
+    <string name="send">Send</string>
+    <string name="sending">Sending…</string>
+    <string name="thank_you_for_sending_the_report">Thank you for sending the report.</string>
+    <string name="send_the_report_failed_content">An error occurred while submitting the report. Please try again later.</string>
+    <string name="wifi_card_dummy">Wi-Fi card (dummy)</string>
+    <string name="pick">Pick</string>
+    <string name="capacity_too_large">Capacity too large.</string>
+    <string name="turnip_and_zink">Turnip &amp; Zink</string>
+    <string name="ready_to_install">Ready to install.</string>
+    <string name="please_try_again_later">Please try again later.</string>
+    <string name="turnip_and_zink_setting_note">Nightly! Leverage the power of your device\'s Adreno GPU to enhance the graphics performance of QEMU 3Dfx and more.</string>
+    <string name="has_meets_the_requirements_to_install_content">Your device has met the requirements and is ready to begin installation now.</string>
+    <string name="your_device_does_not_meet_the_requirements_to_continue">Your device does not meet the requirements to continue.</string>
+    <string name="error_in_core_feature_content">A core feature of the app has just experienced an issue. You may need to close and reopen the app for the features to work properly again.</string>
+    <string name="force_stop">Force stop</string>
+    <string name="sound">Sound</string>
+    <string name="sound_note">Sound card,…</string>
+    <string name="cards">Cards</string>
+    <string name="always_show_logs">Always show logs</string>
+    <string name="always_show_logs_setting_note">The log display dialog will appear even if no serious problems occurred with the virtual machine after it was powered off.</string>
+    <string name="graphics">Graphics</string>
+    <string name="graphics_note">Graphics card,…</string>
+    <string name="opengl_setting_note">The display will support OpenGL when running a virtual machine. 3Dfx will not work when using this feature.</string>
+    <string name="qemu_opengl_is_not_available_content">OpenGL is only available when using an X11 display and with OpenGL enabled. Go to settings to learn more.</string>
+    <string name="input_devices">Input devices</string>
+    <string name="input_devices_note">Mouse, keyboard,…</string>
+    <string name="mouse">Mouse</string>
+    <string name="usb_tablet">USB tablet</string>
+    <string name="types">Types</string>
+    <string name="acceleration">Acceleration</string>
+    <string name="acceleration_note">Acceleration type,…</string>
+    <string name="acceleration_type">Acceleration type</string>
+    <string name="tcg_single_thread">TCG (single-threaded)</string>
+    <string name="tcg_multi_thread">TCG (multi-threaded)</string>
+    <string name="bubble">Bubble</string>
+    <string name="bubble_setting_note">Use bubble to show hidden controls instead of using the back button.</string>
 
 
     <!--======================TERMUX STRINGS====================-->
     <string name="application_name" translatable="false">Vterm</string>
-    <string name="shared_user_label">Vterm user</string>
-    <string name="run_command_permission_label">Run commands in Vterm environment</string>
-    <string name="run_command_permission_description">execute arbitrary commands within Vterm environment</string>
     <string name="new_session">New session</string>
     <string name="new_session_failsafe">Failsafe</string>
     <string name="toggle_soft_keyboard">Keyboard</string>
@@ -607,76 +766,24 @@
 
 
     <!--======================TERMUX-X11 STRINGS====================-->
-    <string name="plugin_info">lol</string>
-
-    <!-- TermuxX11Activity -->
-    <string name="msg_storage_permission_not_granted_warning">The storage permission must be granted
-        to Vectras VM app to…</string>
-    <string name="action_grant_storage_permission">Grant Storage Permission</string>
-
-    <string name="msg_battery_optimization_not_disabled_warning">Android battery optimizations
-        should be disabled for the Vectras VM app so that…
-        Check https://developer.android.com/about/versions/oreo/background for more info and
-        https://developer.android.com/guide/components/foreground-services#background-start-restrictions
-        for more info.
-
-        \n\nAlso check https://dontkillmyapp.com for info on vendor specific app killers.
-        Depending on vendor you may need to do things like enable AutoStart, disable DuraSpeed,
-        enable `Display pop-up windows while running in the background` for the app.</string>
-    <string name="action_disable_battery_optimizations">Disable Battery Optimizations</string>
-
-    <string name="msg_display_over_other_apps_permission_not_granted_warning">The display over other
-        apps permission should be granted to Vectras VM app for starting foreground
-        activities from background. Check https://developer.android.com/guide/components/activities/background-starts
-        for more info.
-    </string>
-    <string name="action_grant_display_over_other_apps_permission">Grant Draw Over Apps Permission</string>
-
-    <string name="action_already_granted">Already Granted</string>
-    <string name="action_already_disabled">Already Disabled</string>
-    <string name="not_connected">Not connected</string>
-    <string name="help_button_text">   Help   </string>
-    <string name="preferences_button_text">   Preferences   </string>
-    <string name="extra_keys_config_desc">Here you can set value of extra-keys variable like in Termux app (read <a href="http://wiki.termux.com/wiki/Touch_Keyboard#Extra_Keys_Row">this</a>) and more (e.g. META).
-    Put empty string for the default value.</string>
 
     <!-- Log Level -->
-    <string name="log_level_title">Log Level</string>
-    <string name="log_level_off">Off</string>
-    <string name="log_level_normal">Normal</string>
-    <string name="log_level_debug">Debug</string>
-    <string name="log_level_verbose">Verbose</string>
-    <string name="log_level_unknown">*Unknown*</string>
-    <string name="log_level_value">Logcat log level set to \"%1$s\"</string>
-    <string name="yes">Yes</string>
-    <string name="no">Cancel</string>
     <string name="cancel">Cancel</string>
     <string name="back_to_the_display">Back to the Display</string>
-    <string name="x11_ui_environment">x11 ui environment.</string>
     <string name="x11">X11</string>
-    <string name="rom_options">Rom Options</string>
     <string name="about_app">About App</string>
     <string name="join_us_on_telegram">Join us on Telegram</string>
     <string name="join_us_on_telegram_where_we_publish_all_the_news_and_updates_and_receive_your_opinions_and_bugs">Join us on Telegram where we publish all the news and updates and receive your opinions and bugs.</string>
     <string name="join">Join</string>
     <string name="dont_show_again">Don\'t show again</string>
-    <string name="this_version_unstable_and_has_alot_of_bugs_br"><![CDATA[this version unstable and has a lot of bugs<br>]]></string>
-    <string name="debug_testing_build_5">DEBUG TESTING BUILD 5</string>
-    <string name="welcome_to_debug_build_of_vectras_vm_br"><![CDATA[welcome to debug build of vectras vm :)<br>]]></string>
-    <string name="don_t_forget_to_tell_us_on_github_issues_or_telegram_bot_br"><![CDATA[don\'t forget to tell us on github issues or telegram bot<br>]]></string>
-    <string name="a_href_https_t_me_vectras_protect_bot_telegram_report_bot_a_br"><![CDATA[<a href=\"https://t.me/vectras_protect_bot\">telegram report bot</a><br>]]></string>
-    <string name="a_href_https_github_com_epicstudios856_vectras_vm_android_issues_github_issues_page_a_br"><![CDATA[<a href=\"https://github.com/epicstudios856/Vectras-VM-Android/issues\">github issues page</a><br>]]></string>
     <string name="getting_ready_for_you_please_don_t_disconnect_the_network">Getting ready for you…\nPlease don\'t disconnect the network.</string>
-    <string name="it_won_t_take_long">It won\'t take long…</string>
     <string name="completed_10_it_won_t_take_long">Completed 10%\nIt won\'t take long…</string>
     <string name="completed_20_it_won_t_take_long">Completed 20%\nIt won\'t take long…</string>
     <string name="completed_30_it_won_t_take_long">Completed 30%\nIt won\'t take long…</string>
     <string name="completed_40_it_won_t_take_long">Completed 40%\nIt won\'t take long…</string>
     <string name="completed_50_it_won_t_take_long">Completed 50%\nIt won\'t take long…</string>
-    <string name="don_t_disconnect">Don\'t disconnect…</string>
     <string name="completed_75_don_t_disconnect">Completed 75%\nDon\'t disconnect…</string>
     <string name="keep_it_up">Keep it up…</string>
-    <string name="completed_80_keep_it_up">Completed 80%\nKeep it up…</string>
     <string name="completed_95_keep_it_up">Completed 95%\nKeep it up…</string>
     <string name="almost_there">Almost there.</string>
     <string name="show_advanced_setup">Show advanced setup</string>
@@ -694,46 +801,7 @@
     <string name="you_can_choose_between_auto_download_and_setup_or_manual_setup_by_choosing_bootstrap_file">You can choose between auto download and setup or manual setup by choosing bootstrap file.</string>
     <string name="manual_setup">Manual setup</string>
 
-    <string name="lorem_ipsum">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
-        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
-        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
-        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
-        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
-        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
-        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
-        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
-        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
-        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
-        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
-        bibendum, vel congue leo egestas.\n\n
-        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
-        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
-        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
-        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
-        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
-        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
-        est.\n\n
-        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
-        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
-        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
-        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
-        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
-        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
-        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
-        convallis.\n\n
-        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
-        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
-        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
-        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
-        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
-        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
-        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
-    </string>
-    <string name="title_activity_rom_info">RomInfo</string>
     <string name="alpine_desktop">Alpine Xfce4</string>
-    <string name="discord">Discord</string>
-    <string name="extraction_complete">Extraction complete!</string>
     <string name="settings_x11_display_resolution_mode">Display resolution mode</string>
     <string name="settings_x11_display_scale">Display scale, %</string>
     <string name="settings_x11_display_resolution">Display resolution</string>
@@ -767,15 +835,12 @@
     <string name="settings_x11_prefer_scancode_summary">Let X server handle hardware keyboard layout (with DE settings or setxkbmap).</string>
     <string name="settings_x11_fix_hard_keyboard_scancode_title">Hardware keyboard scancodes workaround</string>
     <string name="settings_x11_fix_hard_keyboard_scancode_summary">Fixes scancodes on some devices. Might cause problems with multiple layouts.</string>
-    <string name="settings_x11_intercept_system_shortcuts_title">Intercept system shortcuts</string>
-    <string name="settings_x11_intercept_system_shortcuts_summery">Samsung Dex only. Allows interception of &quot;Alt+F4&quot;, &quot;Meta+D&quot;, &quot;Meta+E&quot;, etc.</string>
     <string name="settings_x11_capture_shortcut_manually_title">Enable Accessibility service for intercepting system shortcuts manually.</string>
     <string name="settings_x11_capture_shortcut_manually_summary">Open Accessibility settings.</string>
     <string name="settings_x11_intercepting_esc">Pause key intercepting with Esc key</string>
     <string name="settings_x11_opacity_extra_keys_bar">Opacity of extra keys bar, %</string>
     <string name="settings_extra_keys_config">Extra keys config</string>
     <string name="settings_clipboard_sharing">Clipboard sharing</string>
-    <string name="settings_x11_request_notification_permission">Request notification permission</string>
     <string name="x11_feature_not_supported">X11 Feature Not Supported</string>
     <string name="the_x11_feature_is_currently_not_supported_on_android_14_and_above_please_use_a_device_with_android_13_or_below_for_x11_functionality">The X11 feature is currently not supported on Android 14 and above. Please use a device with Android 13 or below for X11 functionality.</string>
     <string name="booting_up">Booting up…</string>
@@ -796,4 +861,372 @@
     <string name="settings_tag_keyboard">Keyboard</string>
     <string name="settings_tag_other">Other</string>
     <string name="executing_command_please_wait">Executing command, please wait…</string>
+
+    <string name="not_connected">Not connected</string>
+    <string name="preferences_button_text">   PREFERENCES   </string>
+    <string name="help_button_text">   HELP   </string>
+    <string name="exit_button_text">   EXIT   </string>
+
+    <string name="extra_keys_config_desc">Here you can set value of extra-keys variable like in Termux app (read <a href="http://wiki.termux.com/wiki/Touch_Keyboard#Extra_Keys_Row">this</a>) and more \n
+E.g. <b>META</b> for <i>META key</i>, \n
+<b>KEYBOARD</b> for <i>soft keyboard toggling key</i>, \n
+<b>PREFERENCES</b> for <i>preferences opening key</i>, \n
+<b>MOUSE_HELPER</b> for <i>mouse helper toggling key</i>, \n
+<b>STYLUS_HELPER</b> for <i>stylus click override overlay toggling key</i>, \n
+<b>EXIT</b> for <i>application exit key</i>.</string>
+    <string name="lorie_notification_content_text">Pull down to show options</string>
+    <string name="lorie_notification_open_preferences">Preferences</string>
+    <string name="lorie_notification_exit">Exit</string>
+    <string name="lorie_notification_restart_activity">Restart</string>
+    <string name="lorie_notification_toggle_soft_keyboard">Toggle IME</string>
+    <string name="lorie_notification_toggle_additional_key_bar">Toggle additional keyboard</string>
+    <string name="lorie_notification_release_pointer_and_keyboard_capture">Release captures</string>
+    <string name="lorie_notification_toggle_fullscreen">Toggle fullscreen</string>
+
+    <string name="lorie_pref_main">Preferences</string>
+    <string name="lorie_pref_output">Output</string>
+    <string name="lorie_pref_pointer">Pointer</string>
+    <string name="lorie_pref_kbd">Keyboard</string>
+    <string name="lorie_pref_other">Other</string>
+    <string name="lorie_pref_version">Version</string>
+    <string name="lorie_pref_ekbar">Extra key bar preferences</string>
+    <string name="lorie_pref_userActions">Response to user actions</string>
+
+    <string name="lorie_pref_displayResolutionMode">Display resolution mode</string>
+    <string name="lorie_pref_displayScale">Display scale, %</string>
+    <string name="lorie_pref_displayResolutionExact">Display resolution</string>
+    <string name="lorie_pref_displayResolutionCustom">Display resolution</string>
+    <string name="lorie_pref_displayFilteringMode">Display filtering mode</string>
+    <string name="lorie_pref_adjustResolution">Adjust the set resolution to fit screen orientation</string>
+    <string name="lorie_pref_displayStretch">Stretch to fit display</string>
+    <string name="lorie_pref_Reseed">Reseed screen while soft keyboard is open</string>
+    <string name="lorie_pref_Reseed_summary">The screen size will be adjusted while Soft Keyboard is open.</string>
+    <string name="lorie_pref_PIP">PIP mode</string>
+    <string name="lorie_pref_PIP_summary">Show app in picture-in-picture mode when home button or recents button is pressed</string>
+    <string name="lorie_pref_fullscreen">Fullscreen</string>
+    <string name="lorie_pref_fullscreen_summary">Toggle immersive mode in your device display</string>
+    <string name="lorie_pref_forceOrientation">Screen orientation</string>
+    <string name="lorie_pref_hideCutout">Hide display cutout (if any)</string>
+    <string name="lorie_pref_keepScreenOn">Keep Screen On</string>
+
+    <string name="lorie_pref_touchMode">Touchscreen input mode</string>
+    <string name="lorie_pref_scaleTouchpad">Apply display scale factor to touchpad</string>
+    <string name="lorie_pref_showStylusClickOverride">Show stylus click options</string>
+    <string name="lorie_pref_showStylusClickOverride_summary">Stylus touch override, left, middle or right click (stylus only)</string>
+    <string name="lorie_pref_stylusIsMouse">Enable stylus mouse mode</string>
+    <string name="lorie_pref_stylusIsMouse_summary">Make your stylus work like a mouse. When activated, stylus will only move the cursor and send mouse clicks, ignoring pressure, angle, and tilt.</string>
+    <string name="lorie_pref_stylusButtonContactModifierMode">Stylus button contact modifier mode</string>
+    <string name="lorie_pref_stylusButtonContactModifierMode_summary">Enable this option to send right or middle mouse buttons only when stylus touches the screen while the button is pressed.</string>
+    <string name="lorie_pref_showMouseHelper">Show mouse click helper overlay</string>
+    <string name="lorie_pref_showMouseHelper_summary">Onscreen mouse buttons usable with touchpad</string>
+    <string name="lorie_pref_pointerCapture">Capture external pointer devices when possible</string>
+    <string name="lorie_pref_pointerCapture_summary">Intercept all hardware pointer events. Pointer is back to Android after pressing Escape key.</string>
+    <string name="lorie_pref_transformCapturedPointer">Transform captured pointer movements</string>
+    <string name="lorie_pref_capturedPointerSpeedFactor">Captured pointer speed factor, %</string>
+    <string name="lorie_pref_tapToMove">Enable tap-to-move for touchpads</string>
+    <string name="lorie_pref_ignoreGamepadEvents">Ignore gamepad input events</string>
+    <string name="lorie_pref_ignoreGamepadEvents_summary">Prevent gamepad and joystick events from being forwarded to X server</string>
+
+    <string name="lorie_pref_showAdditionalKbd">Show additional keyboard</string>
+    <string name="lorie_pref_showAdditionalKbd_summary">Show keyboard with additional keys.</string>
+    <string name="lorie_pref_showIMEWhileExternalConnected">Show IME with external keyboard</string>
+    <string name="lorie_pref_showIMEWhileExternalConnected_summary">Show software keyboard while hardware keyboard is connected.</string>
+    <string name="lorie_pref_preferScancodes">Prefer scancodes when possible</string>
+    <string name="lorie_pref_preferScancodes_summary">Let X server handle hardware keyboard layout (with DE settings or setxkbmap).</string>
+    <string name="lorie_pref_hardwareKbdScancodesWorkaround">Hardware keyboard scancodes workaround</string>
+    <string name="lorie_pref_hardwareKbdScancodesWorkaround_summary">Fixes scancodes on some devices. Might cause problems with multiple layouts.</string>
+    <string name="lorie_pref_dexMetaKeyCapture">Intercept system shortcuts</string>
+    <string name="lorie_pref_dexMetaKeyCapture_summary">Samsung Dex only. Allows interception of &quot;Alt+F4&quot;, &quot;Meta+D&quot;, &quot;Meta+E&quot;, etc.</string>
+    <string name="lorie_pref_enableAccessibilityService">Enable Accessibility service for intercepting system shortcuts manually.</string>
+    <string name="lorie_pref_enableAccessibilityService_summary">Open Accessibility settings.</string>
+    <string name="lorie_pref_enableAccessibilityServiceAutomatically">Enable Accessibility service for intercepting system shortcuts automatically.</string>
+    <string name="lorie_pref_enableAccessibilityServiceAutomatically_summary">Requires WRITE_SECURE_SETTINGS permission.</string>
+    <string name="lorie_pref_pauseKeyInterceptingWithEsc">Pause key intercepting with Esc key</string>
+    <string name="lorie_pref_filterOutWinkey">Filter out intercepted Win (Meta/Mod4) key.</string>
+    <string name="lorie_pref_filterOutWinkey_summary">Allows you to use Dex shortcuts while intercepting. Requires Accessibility service to work.</string>
+    <string name="lorie_pref_enforceCharBasedInput">Enforce char based input</string>
+    <string name="lorie_pref_enforceCharBasedInput_summary">Suppresses suggestions, predictive typing and CJK languages</string>
+
+    <string name="lorie_pref_clipboardEnable">Clipboard sharing</string>
+    <string name="lorie_pref_requestNotificationPermission">Request notification permission</string>
+    <string name="lorie_pref_xrMode">Meta Oculus XR mode</string>
+    <string name="lorie_pref_configureResponseToUserActions">Configure response to user actions</string>
+    <string name="lorie_pref_storeSecondaryDisplayPreferencesSeparately">Store preferences for secondary displays separately</string>
+    <string name="lorie_pref_storeSecondaryDisplayPreferencesSeparately_summary">Open this screen on display you want to configure</string>
+
+    <string name="lorie_pref_adjustHeightForEK">Prevent extra keys bar from covering the display</string>
+    <string name="lorie_pref_useTermuxEKBarBehaviour">Deactivate special keys on additional key bar after each keypress</string>
+    <string name="lorie_pref_useTermuxEKBarBehaviour_summary">Use long-tap to lock special keys</string>
+    <string name="lorie_pref_opacityEKBar">Opacity of extra keys bar, %</string>
+    <string name="lorie_pref_extra_keys_config">Extra keys config</string>
+
+    <string name="lorie_pref_swipeUpAction">Three finger swipe up</string>
+    <string name="lorie_pref_swipeDownAction">Three finger swipe down</string>
+    <string name="lorie_pref_volumeUpAction">Volume up</string>
+    <string name="lorie_pref_volumeDownAction">Volume down</string>
+    <string name="lorie_pref_backButtonAction">Back button</string>
+    <string name="lorie_pref_notificationTapAction">Notification tap</string>
+    <string name="lorie_pref_notificationButton0Action">Notification first button</string>
+    <string name="lorie_pref_notificationButton1Action">Notification second button</string>
+    <string name="lorie_pref_mediaKeysAction">Media keys</string>
+
+    <string name="lorie_pref_summary_requiresExactOrCustom">Requires "display resolution mode" to be "exact" or "custom"</string>
+    <string name="lorie_pref_summary_requiresIntercepting">Requires intercepting system shortcuts with Dex mode or with Accessibility service</string>
+    <string name="lorie_pref_summary_requiresTrackpadAndNative">Requires "Touchscreen input mode" to be "Trackpad" and "Display resolution mode" to be not "native"</string>
+
+    <string name="usb" translatable="false">USB</string>
+    <string name="ps_2" translatable="false">PS/2</string>
+
+    <string name="opengl" translatable="false">OpenGL</string>
+
+
+    <!-- CPUs -->
+    <string name="max_cpu" translatable="false">Max</string>
+    <string name="host_cpu" translatable="false">Host</string>
+    <string name="qemu64" translatable="false">QEMU64</string> <!-- Default -->
+    <string name="qemu32" translatable="false">QEMU32</string>
+    <string name="base_cpu" translatable="false">Base</string>
+    <string name="kvm64" translatable="false">KVM64</string>
+    <string name="kvm32" translatable="false">KVM32</string>
+    <string name="intel_snow_ridge" translatable="false">Intel Snow Ridge</string>
+    <string name="intel_cooper_lake" translatable="false">Intel Cooper Lake</string>
+    <string name="intel_cascade_lake_server" translatable="false">Intel Cascade Lake Server</string>
+    <string name="intel_knights_mill" translatable="false">Intel Knights Mill</string>
+    <string name="intel_denverton" translatable="false">Intel Denverton</string>
+    <string name="intel_skylake_server" translatable="false">Intel Skylake Server</string>
+    <string name="intel_skylake_client" translatable="false">Intel Skylake Client</string>
+    <string name="intel_broadwell" translatable="false">Intel Broadwell</string>
+    <string name="intel_haswell" translatable="false">Intel Haswell</string>
+    <string name="intel_ivy_bridge" translatable="false">Intel Ivy Bridge</string>
+    <string name="intel_sandy_bridge" translatable="false">Intel Sandy Bridge</string>
+    <string name="intel_westmere" translatable="false">Intel Westmere</string>
+    <string name="intel_nehalem" translatable="false">Intel Nehalem</string>
+    <string name="intel_altom_n270" translatable="false">Intel Altom N270</string>
+    <string name="intel_penryn" translatable="false">Intel Penryn</string>
+    <string name="intel_core_2_duo" translatable="false">Intel Core 2 Duo</string>
+    <string name="intel_core_duo" translatable="false">Intel Core Duo</string>
+    <string name="intel_conroe" translatable="false">Intel Conroe</string>
+    <string name="intel_pentium_iii" translatable="false">Intel Pentium III</string>
+    <string name="intel_pentium_ii" translatable="false">Intel Pentium II</string>
+    <string name="intel_pentium" translatable="false">Intel Pentium</string>
+    <string name="intel_486" translatable="false">Intel 486</string>
+    <string name="amd_epyc_milan" translatable="false">AMD EPYC Milan</string>
+    <string name="amd_epyc_rome" translatable="false">AMD EPYC Rome</string>
+    <string name="amd_epyc" translatable="false">AMD EPYC</string>
+    <string name="amd_opteron_g5" translatable="false">AMD Opteron G5</string>
+    <string name="amd_opteron_g4" translatable="false">AMD Opteron G4</string>
+    <string name="amd_phenom" translatable="false">AMD Phenom</string>
+    <string name="amd_opteron_g3" translatable="false">AMD Opteron G3</string>
+    <string name="amd_opteron_g2" translatable="false">AMD Opteron G2</string>
+    <string name="amd_opteron_g1" translatable="false">AMD Opteron G1</string>
+    <string name="amd_athlon" translatable="false">AMD Athlon</string>
+    <string name="hygon_dhyana" translatable="false">Hygon Dhyana</string>
+
+    <string name="cortex_a76" translatable="false">Cortex A76</string>
+    <string name="cortex_a72" translatable="false">Cortex A72</string>
+    <string name="cortex_a57" translatable="false">Cortex A57</string>
+    <string name="cortex_a55" translatable="false">Cortex A55</string>
+    <string name="cortex_a53" translatable="false">Cortex A53</string>
+    <string name="cortex_a35" translatable="false">Cortex A35</string>
+    <string name="cortex_a15" translatable="false">Cortex A15</string>
+    <string name="cortex_a9" translatable="false">Cortex A9</string>
+    <string name="cortex_a8" translatable="false">Cortex A8</string>
+    <string name="cortex_a7" translatable="false">Cortex A7</string>
+    <string name="cortex_m55" translatable="false">Cortex M55</string>
+    <string name="cortex_m33" translatable="false">Cortex M33</string>
+    <string name="cortex_m7" translatable="false">Cortex M7</string>
+    <string name="cortex_m4" translatable="false">Cortex M4</string>
+    <string name="cortex_m3" translatable="false">Cortex M3</string>
+    <string name="cortex_m0" translatable="false">Cortex M0</string>
+    <string name="cortex_r52" translatable="false">Cortex R52</string>
+    <string name="cortex_r5f" translatable="false">Cortex R5F</string>
+    <string name="cortex_r5" translatable="false">Cortex R5</string>
+
+    <string name="cpu_460ex" translatable="false">460EX</string>
+    <string name="e500v2_cpu" translatable="false">e500</string>
+    <string name="g4_cpu_turbo">G4 (Turbo)</string>
+    <string name="g4_cpu_basic">G4 (Basic)</string>
+    <string name="g3_cpu" translatable="false">G3</string>
+    <string name="g2_cpu_workstation">G2 (Workstation)</string>
+    <string name="g2_cpu_low_power">G2 (Low-Power)</string>
+
+    <!-- Network cards -->
+    <string name="intel_e1000e_82574l" translatable="false">Intel E1000E (82574L)</string>
+    <string name="intel_igb_82576" translatable="false">Intel IGB (82576)</string>
+    <string name="intel_e1000_82540em" translatable="false">Intel E1000 (82540EM)</string>
+    <string name="intel_e1000_82545em" translatable="false">Intel E1000 (82545EM)</string>
+    <string name="intel_e1000_82544gc" translatable="false">Intel E1000 (82544GC)</string>
+    <string name="intel_i82801" translatable="false">Intel i82801</string>
+    <string name="intel_i82562" translatable="false">Intel i82562</string>
+    <string name="intel_i82559er" translatable="false">Intel i82559ER</string>
+    <string name="intel_i82558b" translatable="false">Intel i82558B</string>
+    <string name="intel_i82557c" translatable="false">Intel i82557C</string>
+    <string name="intel_i82551" translatable="false">Intel i82551</string>
+    <string name="intel_i82550" translatable="false">Intel i82550</string>
+    <string name="realtek_rtl8139" translatable="false">Realtek RTL8139</string>
+    <string name="amd_pcnet" translatable="false">AMD PCNET</string>
+    <string name="novell_ne2000" translatable="false">Novell NE2000</string>
+    <string name="vmware_vmxnet3" translatable="false">VMWare (VMXNET3)</string>
+    <string name="virtio_net" translatable="false">VirtIO Net</string>
+    <string name="virtio_net_transitional" translatable="false">VirtIO Net (Transitional)</string>
+
+    <!-- Boards -->
+    <string name="i440fx" translatable="false">i440FX</string>
+    <string name="q35" translatable="false">Q35</string>
+
+    <string name="virt" translatable="false">ARM Virtual Machine</string>
+
+    <string name="mac99" translatable="false">Mac99</string>
+    <string name="g3beige" translatable="false">Heathrow</string> <!-- Default -->
+    <string name="pegasos2" translatable="false">bPlan Pegasos II</string>
+    <string name="amigaone" translatable="false">Eyetech AmigaOne</string>
+    <string name="sam460ex" translatable="false">aCube Sam460ex</string>
+
+    <!-- Sound cards -->
+    <string name="intel_hd_audio_controller_ich9" translatable="false">Intel HD Audio Controller (ich9)</string>
+    <string name="intel_hd_audio_controller_ich6" translatable="false">Intel HD Audio Controller (ich6)</string>
+    <string name="crystal_semiconductor_cs4231a" translatable="false">Crystal Semiconductor CS4231A</string>
+    <string name="intel_82801aa_ac97_audio" translatable="false">Intel 82801AA AC97 Audio</string>
+    <string name="ensoniq_audiopci_es1370" translatable="false">ENSONIQ AudioPCI ES1370</string>
+    <string name="creative_sound_blaster_16" translatable="false">Creative Sound Blaster 16</string>
+    <string name="yamaha_ym3812_opl2" translatable="false">Yamaha YM3812 (OPL2)</string>
+
+    <!-- Graphics cards -->
+    <string name="standard_vga" translatable="false">Standard VGA</string>
+    <string name="vmware_svga" translatable="false">vmWare SVGA</string>
+    <string name="cirrus_vga" translatable="false">Cirrus VGA</string>
+    <string name="qxl_vga" translatable="false">QXL VGA</string>
+    <string name="virtio_vga" translatable="false">VirtIO VGA</string>
+    <string name="ati" translatable="false">ATi</string>
+    <string name="bochs" translatable="false">Bochs</string>
+
+    <!-- Feature: User Profile -->
+
+    <!-- Feature: Settings -->
+    <!-- Common Strings -->
+    <!-- ======================= VIRTUAL MACHINE MANAGEMENT ===================== -->
+
+    <!-- VM Creation & Setup -->
+    <!-- Was: new_vm -->
+    <!-- Was: setup_command -->
+    <!-- Was: who_created_this_rom -->
+    <!-- Was: vm_cache_dir_failed_to_create_content -->
+
+    <!-- VM Details & Information -->
+    <!-- Was: creator -->
+    <!-- Was: architecture -->
+    <!-- Was: sizetext -->
+    <!-- Was: file_name -->
+    <!-- Was: verified -->
+    <!-- Was: verified_content -->
+    <!-- Was: not_verified -->
+    <!-- Was: not_verified_content -->
+
+    <!-- VM Controls & Devices -->
+    <!-- Was: power -->
+    <!-- Was: shutdown_or_reset_content -->
+    <!-- Was: change_removable_devices -->
+    <!-- Was: enter_device_id -->
+    <!-- Was: you_need_to_enter_the_device_id -->
+    <!-- Was: this_is_not_a_removable_device -->
+
+    <!-- VM List & Search -->
+    <!-- Was: no_matching_results_found -->
+    <!-- Was: vm_list_data_is_corrupted_content -->
+    <!-- Was: action_needed -->
+    <!-- Was: repair_vm_list_content -->
+
+    <!-- ========================== GENERAL APP STRINGS ========================== -->
+    <!-- Assuming this could be your app name -->
+    <!-- Added common string -->
+    <!-- "No" often used as a negative confirmation, "Cancel" for dismissing -->
+    <!-- Was: unknow -->
+
+    <!-- ========================== VIRTUAL MACHINE (VM) CORE ========================== -->
+    <!-- VM Creation & Setup -->
+    <string name="vm_action_create_new">New VM</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Was: verified_content -->
+    <!-- Was: not_verified_content -->
+
+    <!-- VM Controls & Power -->
+    <!-- Was: power -->
+    <!-- Added for clarity -->
+    <!-- Was: shutdown_or_reset_content -->
+
+    <!-- VM Removable Devices (CDROM, Floppy, SD Card) -->
+    <!-- Was: ejected -->
+
+    <!-- VM List & Management -->
+    <!-- Was: no_matching_results_found -->
+    <!-- Was: vm_list_data_is_corrupted_content -->
+    <!-- Was: action_needed -->
+    <!-- Was: repair_vm_list_content -->
+    <!-- Was: start_repair -->
+
+    <!-- ========================== FILE & STORAGE OPERATIONS ========================== -->
+    <!-- Was: invalid_file_path_content -->
+    <!-- Was: invalid_iso_file_path_content -->
+    <!-- Was: unable_to_copy_iso_file_content -->
+    <!-- Was: unable_to_copy_hard_drive_file_content -->
+    <!-- Was: could_not_process_cvbi_file_content -->
+    <!-- Was: unable_to_cvbi_file_vm_dir_content -->
+    <!-- Was: unable_to_process_thumbnail_content -->
+
+    <!-- ========================== DEVICE STORAGE & UPDATES ========================== -->
+    <!-- Was: very_low_available_storage_space_content -->
+    <!-- Was: not_enough_storage_to_set_up_content -->
+
+    <!-- Was: update_now_content -->
+
+    <!-- ========================== VNC / EXTERNAL DISPLAY ========================== -->
+    <!-- Was: external -->
+    <!-- Was: need_to_set_smaller_screen_number -->
+    <!-- Was: the_vnc_server_port_you_set_is_currently_in_use_by_other -->
+    <!-- Was: you_need_to_set_a_number_for_the_display -->
+
+    <!-- ========================== SYSTEM MONITOR ========================== -->
+    <!-- Was: status_qemu -->
+    <!-- Was: port_qemu -->
+    <!-- Was: running_vm_with_vnc_server_content -->
+    <!-- Assuming translatable=false -->
+
+    <!-- TermuxX11Activity -->
+    <!-- Was: msg_storage_permission_not_granted_warning -->
+    <!-- Was: action_grant_storage_permission -->
+
+    <!-- Was: msg_battery_optimization_not_disabled_warning -->
+    <!-- Was: action_disable_battery_optimizations -->
+
+    <!-- Was: msg_display_over_other_apps_permission_not_granted_warning -->
+    <!-- Was: action_grant_display_over_other_apps_permission -->
+
+    <!-- Was: action_already_granted -->
+    <!-- Was: action_already_disabled -->
+
+    <!-- Consider removing leading/trailing spaces if not intentional for specific rendering -->
+    <!-- Same as above -->
+
+    <!-- Log Level -->
+    <!-- Was: log_level_value -->
+
+    <!-- <string name="app_name" translatable="false">My Awesome App</string> -->
+
+    <!-- <string name="shared_user_label" translatable="false">Vterm user</string> -->
+
+    <!-- <string name="run_command_permission_description">execute arbitrary commands within Vterm
+        environment
+    </string> -->
+
+    <!-- <string name="bootstrap_error_not_primary_user_message">Vterm can only be installed on the
+        primary user account.
+    </string> -->
+
+    <!-- <string name="max_terminals_reached_message">Close down existing ones before creating new.
+    </string> -->
+
+
+    <!-- ========================== TERMUX-X11 STRINGS ========================== -->
+    <!-- <string name="plugin_info" translatable="false">lol</string> -->
 </resources>

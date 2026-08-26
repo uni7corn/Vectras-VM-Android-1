@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".Minitools">
+    tools:context=".settings.Minitools">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -17,22 +17,12 @@
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            style="?attr/collapsingToolbarLayoutLargeStyle"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/collapsingToolbarLayoutLargeSize"
-            android:fitsSystemWindows="true"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.Material3.TitleMedium"
-            app:expandedTitleTextAppearance="@style/TextAppearance.Material3.DisplaySmall"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            style="@style/App.CollapsingToolbarLarge"
             app:title="@string/mini_tools">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="0dp"
-                app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/arrow_back_24px" />
+                style="@style/App.CollapsingMaterialToolbar" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -54,12 +44,9 @@
                 android:id="@+id/mirror"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/object_shape_top"
+                android:background="@drawable/object_shape_top_high"
                 android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:paddingTop="2dp"
-                android:paddingRight="2dp"
-                android:paddingBottom="2dp">
+                android:padding="16dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -70,21 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:layout_weight="1"
                     android:text="@string/mirror" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/object_shape_inside_object_top">
-
-                    <Spinner
-                        android:id="@+id/spinnerselectmirror"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:spinnerMode="dialog"
-                        tools:listitem="@layout/simple_layout_for_spiner" />
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -92,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:background="@drawable/object_shape_middle"
+                android:background="@drawable/object_shape_middle_high"
                 android:gravity="center_vertical"
                 android:padding="16dp">
 
@@ -113,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:background="@drawable/object_shape_middle"
+                android:background="@drawable/object_shape_middle_high"
                 android:gravity="center_vertical"
                 android:padding="16dp">
 
@@ -134,7 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:background="@drawable/object_shape_middle"
+                android:background="@drawable/object_shape_middle_high"
                 android:gravity="center_vertical"
                 android:padding="16dp">
 
@@ -155,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:background="@drawable/object_shape_middle"
+                android:background="@drawable/object_shape_middle_high"
                 android:gravity="center_vertical"
                 android:padding="16dp">
 
@@ -176,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:background="@drawable/object_shape_middle"
+                android:background="@drawable/object_shape_middle_high"
                 android:gravity="center_vertical"
                 android:padding="16dp">
 
@@ -192,12 +165,33 @@
                     android:text="@string/delete_all" />
             </LinearLayout>
 
+<!--            <LinearLayout-->
+<!--                android:id="@+id/ln_reset_uefi_bios"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="2dp"-->
+<!--                android:background="@drawable/object_shape_middle_high"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:padding="16dp">-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:src="@drawable/restore_page_24px" />-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="8dp"-->
+<!--                    android:text="@string/reset_uefi_bios" />-->
+<!--            </LinearLayout>-->
+
             <LinearLayout
                 android:id="@+id/reinstallsystem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:background="@drawable/object_shape_bottom"
+                android:background="@drawable/object_shape_bottom_high"
                 android:gravity="center_vertical"
                 android:padding="16dp">
 

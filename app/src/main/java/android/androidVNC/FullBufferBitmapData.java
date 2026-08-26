@@ -42,15 +42,26 @@ class FullBufferBitmapData extends AbstractBitmapData {
 		 */
 		@Override
 		public void draw(Canvas canvas) {
-			if (vncCanvas.getScaleType() == ImageView.ScaleType.FIT_CENTER)
+			int[] pixels = bitmapPixels;
+			if (pixels == null) {
+				return;
+			}
+
+			if (vncCanvas.getScaleType() == ImageView.ScaleType.FIT_CENTER || vncCanvas.getScaleType() == ImageView.ScaleType.FIT_XY)
 			{
 				//canvas.drawBitmap(data.bitmapPixels, 0, data.framebufferwidth, xoffset, yoffset, framebufferwidth, framebufferheight, false, null);
 
                 //XXX; Vectras: for Hardware accelerated surfaces we have to stop using the above deprecated method and use a bitmap-backed method
                 // this fixes the issue with Nougat Devices displaying black screen for 24bit color mode C24bit
                 Bitmap bitmapTmp = Bitmap.createBitmap(framebufferwidth, framebufferheight, Config.bitmapConfig);
-                bitmapTmp.setPixels(bitmapPixels, 0, data.framebufferwidth, 0, 0, framebufferwidth, framebufferheight);
-                canvas.drawBitmap(bitmapTmp, xoffset, yoffset, null);
+                bitmapTmp.setPixels(pixels, 0, data.framebufferwidth, 0, 0, framebufferwidth, framebufferheight);
+
+				if (vncCanvas.getScaleType() == ImageView.ScaleType.FIT_XY) {
+					canvas.drawBitmap(bitmapTmp, (float) vncCanvas.getWidth() / 2 + (float) framebufferwidth / -2, (float) vncCanvas.getHeight() / 2 - (float) framebufferheight / 2, null);
+				} else {
+					canvas.drawBitmap(bitmapTmp, xoffset, yoffset, null);
+				}
+
 
 			}
 			else
@@ -75,8 +86,8 @@ class FullBufferBitmapData extends AbstractBitmapData {
                     //XXX; for Hardware accelerated surfaces we have to stop using the above deprecated method and use a bitmap-backed method
                     // this fixes the issue with Nougat Devices displaying black screen for 24bit color mode C24bit
                     Bitmap bitmapTmp = Bitmap.createBitmap(framebufferwidth, framebufferheight, Config.bitmapConfig);
-                    bitmapTmp.setPixels(bitmapPixels, offset(xo, yo), data.framebufferwidth, 0, 0, drawWidth, drawHeight);
-                    canvas.drawBitmap(bitmapTmp, xo, yo, null);
+                    bitmapTmp.setPixels(pixels, offset(xo, yo), data.framebufferwidth, 0, 0, drawWidth, drawHeight);
+                    canvas.drawBitmap(bitmapTmp, 0, 0, null);
 
 				/*
 				}
@@ -94,7 +105,21 @@ class FullBufferBitmapData extends AbstractBitmapData {
 			}
 			if(data.vncCanvas.connection.getUseLocalCursor())
 			{
-				setCursorRect(data.vncCanvas.mouseX, data.vncCanvas.mouseY);
+				// OneToOne
+                int locationX = data.vncCanvas.mouseX;
+                int locationY = data.vncCanvas.mouseY;
+
+				if (vncCanvas.getScaleType() == ImageView.ScaleType.FIT_CENTER) {
+					// Full screen
+					locationX = data.vncCanvas.mouseX;
+					locationY = data.vncCanvas.mouseY;
+				} else if (vncCanvas.getScaleType() == ImageView.ScaleType.FIT_XY){
+					// Scale to fit screen
+					locationX = vncCanvas.getWidth() / 2 + framebufferwidth / -2 + data.vncCanvas.mouseX;
+					locationY = vncCanvas.getHeight() / 2 - framebufferheight / 2 + data.vncCanvas.mouseY;
+				}
+
+				setCursorRect(locationX, locationY);
 				clipRect.set(cursorRect);
 				if (canvas.clipRect(cursorRect))
 				{
@@ -122,6 +147,7 @@ class FullBufferBitmapData extends AbstractBitmapData {
 		bitmapheight=framebufferheight;
 		android.util.Log.i("FBBM", "bitmapsize = ("+bitmapwidth+","+bitmapheight+")");
 		bitmapPixels = new int[framebufferwidth * framebufferheight];
+		Arrays.fill(bitmapPixels, 0xFF000000);
 	}
 
 	/* (non-Javadoc)
@@ -146,7 +172,7 @@ class FullBufferBitmapData extends AbstractBitmapData {
 	 */
 	@Override
 	void drawRect(int x, int y, int w, int h, Paint paint) {
-		int color = paint.getColor();
+		int color = 0xFF000000 | paint.getColor();
 		int offset = offset(x,y);
 		if (w > 10)
 		{
